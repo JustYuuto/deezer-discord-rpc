@@ -1,0 +1,19 @@
+{
+  "name": "deezer-discord-rpc",
+  "version": "1.0.0",
+  "description": "A Discord RPC for Deezer",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "discord-rpc": "^4.0.1",
+    "node-fetch": "^3.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "repository": "https://github.com/NetherMCtv/deezer-discord-rpc.git",
+  "author": "NetherMC",
+  "license": "MIT"
+}
