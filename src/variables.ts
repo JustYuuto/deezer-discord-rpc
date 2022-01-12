@@ -1,0 +1,1 @@
+export const DEEZER_API_BASE = 'https://api.deezer.com';
