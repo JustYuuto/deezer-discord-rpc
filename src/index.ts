@@ -1,6 +1,6 @@
 import RPC from 'discord-rpc';
 import {
-  getTrack, getTrackTitle, getTrackCover, getTrackLink, getTrackArtist, getTrackDuration
+  getTrackTitle, getTrackCover, getTrackLink, getTrackArtist, getTrackDuration
 } from './activity/track';
 import {
   getAlbumLink, getAlbumTitle
@@ -8,8 +8,9 @@ import {
 import ms from 'ms';
 
 const clientId = '899229435130183690';
-
-const rpc = new RPC.Client({ transport: 'ipc' });
+const rpc = new RPC.Client({
+  transport: 'ipc'
+});
 
 async function setActivity() {
   if (!rpc) return;
@@ -20,8 +21,8 @@ async function setActivity() {
     endTimestamp: new Date().getTime() + ms(await getTrackDuration(3135556) + 's'),
     largeImageKey: await getTrackCover(3135556),
     largeImageText: await getAlbumTitle(302127),
-    smallImageKey: 'snek_small',
-    smallImageText: 'no',
+    smallImageKey: 'play',
+    smallImageText: 'Playing',
     instance: false,
     buttons: [
       {
@@ -42,7 +43,7 @@ rpc.on('ready', () => {
 
   setInterval(() => {
     setActivity();
-  }, 15e3);
+  }, 5e3);
 });
 
 rpc.login({ clientId }).catch(console.error);
