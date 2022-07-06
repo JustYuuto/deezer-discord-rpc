@@ -6,8 +6,8 @@ import {
   getAlbumLink, getAlbumTitle
 } from './activity/album';
 import ms from 'ms';
+import { CLIENT_ID, ACTIVITY_REFRESH_EVERY } from './variables';
 
-const clientId = '899229435130183690';
 const rpc = new RPC.Client({
   transport: 'ipc'
 });
@@ -43,7 +43,7 @@ rpc.on('ready', () => {
 
   setInterval(() => {
     setActivity();
-  }, 5e3);
+  }, ACTIVITY_REFRESH_EVERY);
 });
 
-rpc.login({ clientId }).catch(console.error);
+rpc.login({ clientId: CLIENT_ID }).catch(console.error);
