@@ -4,6 +4,7 @@
     "module": "AMD",
     "esModuleInterop": true,
     "outDir": "dist/",
-    "moduleResolution": "Node"
+    "moduleResolution": "Node",
+    "resolveJsonModule": true
   },
 }
