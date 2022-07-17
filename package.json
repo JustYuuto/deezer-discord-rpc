@@ -5,8 +5,8 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "nodemon src/index.ts",
-    "start": "electron src/index.js",
-    "build": "tsc src/index.ts --resolveJsonModule",
+    "start": "electron dist/src/index.js",
+    "build": "tsc --resolveJsonModule",
     "run": "yarn build && yarn start",
     "icon": "png-to-ico src/img/icon.png > src/img/icon.ico"
   },
