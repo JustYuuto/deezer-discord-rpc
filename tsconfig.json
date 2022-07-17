@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "AMD",
+    "esModuleInterop": true,
+    "outDir": "dist/",
+    "moduleResolution": "Node"
+  },
+}
