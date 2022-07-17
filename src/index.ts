@@ -1,49 +1,26 @@
-import RPC from 'discord-rpc';
-import {
-  getTrackTitle, getTrackCover, getTrackLink, getTrackArtist, getTrackDuration
-} from './activity/track';
-import {
-  getAlbumLink, getAlbumTitle
-} from './activity/album';
-import ms from 'ms';
+import * as RPC from 'discord-rpc';
 import { CLIENT_ID, ACTIVITY_REFRESH_EVERY } from './variables';
+import { initTrayIcon, setActivity } from './functions';
+import { app } from 'electron';
 
-const rpc = new RPC.Client({
+const client = new RPC.Client({
   transport: 'ipc'
 });
 
-async function setActivity() {
-  if (!rpc) return;
+app.whenReady().then(() => {
+  initTrayIcon(app);
+});
 
-  rpc.setActivity({
-    details: await getTrackTitle(3135556),
-    state: `By ${await getTrackArtist(3135556)}`,
-    endTimestamp: new Date().getTime() + ms(await getTrackDuration(3135556) + 's'),
-    largeImageKey: await getTrackCover(3135556),
-    largeImageText: await getAlbumTitle(302127),
-    smallImageKey: 'play',
-    smallImageText: 'Playing',
-    instance: false,
-    buttons: [
-      {
-        label: 'See title on Deezer',
-        url: await getTrackLink(3135556)
-      },
-      {
-        label: 'See album on Deezer',
-        url: await getAlbumLink(302127)
-      }
-    ]
-  });
-  
-}
-
-rpc.on('ready', () => {
-  setActivity();
+client.on('ready', () => {
+  console.log([
+    `Logged in as ${client.application?.name}`,
+    `Authed for user ${client.user?.username}#${client.user?.discriminator}`
+  ].join('\n'));
+  setActivity(client);
 
   setInterval(() => {
-    setActivity();
+    setActivity(client);
   }, ACTIVITY_REFRESH_EVERY);
 });
 
-rpc.login({ clientId: CLIENT_ID }).catch(console.error);
+client.login({ clientId: CLIENT_ID }).catch(console.error);
