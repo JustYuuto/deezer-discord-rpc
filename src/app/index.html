@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deezer Discord RPC</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' http://www.deezer.com; frame-src http://www.deezer.com; style-src 'self' 'sha256-WcPqrWEj3vGswZdks/mw/MZf8KoR5VqbZL9iBOwkCds='" />
+    <script src="../modules/deezer.js"></script>
+    <script src="./script.js" defer></script>
+    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.min.css" />
+  </head>
+  <body>
+    <div id="dz-root"></div>
+    <div id="root">
+      <section id="section-login" class="m-5 text-center" hidden>
+        <div class="mb-4">
+          <h2>Welcome!</h2>
+          <h3>To use the RPC, you need to login to your Deezer account.</h3>
+          <p>It will be used for getting to song you are currently listening, using the Deezer API.</p>
+        </div>
+        <div>
+          <button class="btn btn-primary">Login</button>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>
