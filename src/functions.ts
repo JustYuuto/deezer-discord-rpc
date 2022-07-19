@@ -1,4 +1,4 @@
-import { Menu, Tray } from 'electron';
+import { Menu, Tray, BrowserWindow } from 'electron';
 import {
   getTrackTitle, getTrackCover, getTrackLink, getTrackArtist, getTrackDuration
 } from './activity/track';
@@ -12,6 +12,7 @@ import { version } from '../package.json';
 
 export async function initTrayIcon(app: Electron.App) {
   let tray: Tray|null = null;
+
   app?.whenReady().then(() => {
     tray = new Tray(resolve('src', 'img', 'icon.ico'));
     const contextMenu = Menu.buildFromTemplate([
@@ -26,9 +27,39 @@ export async function initTrayIcon(app: Electron.App) {
   });
 }
 
+export async function loadWindow() {
+  const win = new BrowserWindow({
+    width: 450,
+    height: 575,
+    minimizable: true,
+    maximizable: false,
+    resizable: false
+  });
+
+  win.webContents.openDevTools();
+  win.menuBarVisible = false;
+
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    if (url.includes('deezer.com')) {
+      return {
+        action: 'allow',
+        menuBarVisible: false,
+        overrideBrowserWindowOptions: {
+          minimizable: false,
+          maximizable: false,
+          resizable: false,
+          autoHideMenuBar: true
+        }
+      };
+    }
+    return { action: 'deny' };
+  });
+  
+  win.loadFile(resolve('src', 'app', 'index.html'));
+}
+
 export async function setActivity(client: RPC.Client) {
   if (!client) return;
-  //console.log(getCurrentTrack());
   
   let isPlaying = false;
 
