@@ -33,9 +33,10 @@ export async function loadWindow() {
   win = new BrowserWindow({
     width: 450,
     height: 575,
-    minimizable: false,
+    minimizable: true,
     maximizable: false,
-    resizable: true,
+    closable: false,
+    resizable: false,
     webPreferences: {
       preload: resolve('src', 'preload.js')
     }
