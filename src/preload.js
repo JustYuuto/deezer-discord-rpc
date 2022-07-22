@@ -1,4 +1,6 @@
 if (localStorage.getItem('first_run') !== false) {
+  localStorage.setItem('first_run', false);
+  
   const alertText = 
   `PLEASE READ THE TEXT BELOW BEFORE CLOSING THIS WINDOW!!
 
@@ -7,6 +9,4 @@ if (localStorage.getItem('first_run') !== false) {
   The web player will automatically update the current song, so don't worry the RPC it will update by itself.`;
 
   alert(alertText);
-
-  localStorage.setItem('first_run', false);
 }
