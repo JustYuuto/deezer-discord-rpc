@@ -54,16 +54,12 @@ export async function loadWindow() {
 export async function setActivity(client: RPC.Client, albumId: number, artistId: number, trackId: number) {
   if (!client) return;
   
-  let isPlaying = false;
-
   client.setActivity({
     details: await getTrackTitle(trackId),
     state: `By ${await getTrackArtist(trackId)}`,
     endTimestamp: new Date().getTime() + ms(await getTrackDuration(trackId) + 's'),
     largeImageKey: await getTrackCover(trackId),
     largeImageText: await getAlbumTitle(albumId),
-    smallImageKey: isPlaying && 'play' || 'pause',
-    smallImageText: isPlaying && 'Playing' || 'Paused',
     instance: false,
     buttons: [
       {
