@@ -15,7 +15,7 @@ export async function initTrayIcon(app: Electron.App) {
   let tray: Tray|null = null;
 
   app?.whenReady().then(() => {
-    tray = new Tray(resolve('src', 'img', 'icon.ico'));
+    tray = new Tray(resolve(__dirname, 'img', 'icon.ico'));
     const contextMenu = Menu.buildFromTemplate([
       { label: 'Deezer Discord RPC', type: 'normal', enabled: false },
       { label: `Version: ${version}`, type: 'normal', enabled: false },
@@ -38,7 +38,7 @@ export async function loadWindow() {
     closable: false,
     resizable: false,
     webPreferences: {
-      preload: resolve('src', 'preload.js')
+      preload: resolve(__dirname, 'preload.js')
     }
   });
 
