@@ -57,7 +57,6 @@ export async function setActivity(client: RPC.Client, albumId: number, artistId:
   client.setActivity({
     details: await getTrackTitle(trackId),
     state: `By ${await getTrackArtist(trackId)}`,
-    endTimestamp: new Date().getTime() + ms(await getTrackDuration(trackId) + 's'),
     largeImageKey: await getTrackCover(trackId),
     largeImageText: await getAlbumTitle(albumId),
     instance: false,
