@@ -20,7 +20,7 @@ export async function initTrayIcon(app: Electron.App) {
       { label: 'Deezer Discord RPC', type: 'normal', enabled: false },
       { label: `Version: ${version}`, type: 'normal', enabled: false },
       { type: 'separator' },
-      { label: 'Quit', type: 'normal', click: () => app.quit() }
+      { label: 'Quit', type: 'normal', click: () => process.exit() }
     ]);
 
     tray.setToolTip('Deezer Discord RPC');
