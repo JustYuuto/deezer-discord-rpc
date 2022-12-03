@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "CommonJS",
+    "esModuleInterop": true,
+    "outDir": "dist/",
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "allowJs": true
+  },
+  "include": ["src/*", "src/activity/*"],
+}
