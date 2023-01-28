@@ -1,7 +1,7 @@
 import { Menu, Tray, BrowserWindow, Notification } from 'electron';
 import { USE_AS_MAIN_APP } from './variables';
 import * as RPC from 'discord-rpc';
-import { resolve } from 'path';
+import { resolve, join } from 'path';
 import { version } from '../package.json';
 import axios from 'axios';
 
@@ -39,7 +39,7 @@ export async function initTrayIcon(app: Electron.App) {
   let tray: Tray | null = null;
 
   app?.whenReady().then(() => {
-    tray = new Tray(resolve('src', 'img', 'icon.ico'));
+    tray = new Tray(join(__dirname, 'img', 'icon.ico'));
     const contextMenu = Menu.buildFromTemplate([
       { label: 'Deezer Discord RPC', type: 'normal', enabled: false },
       { label: `Version: ${version}`, type: 'normal', enabled: false },
@@ -50,7 +50,7 @@ export async function initTrayIcon(app: Electron.App) {
               const notification = new Notification({
                 title: 'Deezer Discord RPC',
                 body: 'New update available, click to update',
-                icon: resolve('src', 'img', 'icon.png')
+                icon: join(__dirname, 'img', 'icon.png')
               });
               notification.on('click', () => {
 
