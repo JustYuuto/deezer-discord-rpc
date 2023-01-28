@@ -7,22 +7,6 @@ export async function getAlbum(albumId: number): Promise<Album> {
   return album.data || {};
 }
 
-export async function getAlbumTitle(albumId: number) {
-  return await getAlbum(albumId).then(album => album.title);
-}
-
-export async function getAlbumLink(albumId: number) {
-  return await getAlbum(albumId).then(album => album.link);
-}
-
-export async function getAlbumDuration(albumId: number) {
-  return await getAlbum(albumId).then(album => album.duration);
-}
-
-export async function getAlbumCover(albumId: number) {
-  return await getAlbum(albumId).then(album => album.cover_xl);
-}
-
 export async function findTrackInAlbum(trackName: string, albumId: number) {
   return (async () => (await axios.get(`${DEEZER_API_BASE}/album/${albumId}/tracks`)).data)()
     .then((tracks: AlbumTrack) => tracks.data)

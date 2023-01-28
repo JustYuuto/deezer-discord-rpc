@@ -8,26 +8,6 @@ export async function getTrack(trackId: number): Promise<Track> {
   return track.data;
 }
 
-export async function getTrackTitle(trackId: number) {
-  return await getTrack(trackId).then(track => track.title);
-}
-
-export async function getTrackArtists(trackId: number) {
-  return await getTrack(trackId).then(track => track.contributors?.map(c => c.name)?.join(', '));
-}
-
-export async function getTrackLink(trackId: number) {
-  return await getTrack(trackId).then(track => track.link);
-}
-
-export async function getTrackDuration(trackId: number) {
-  return await getTrack(trackId).then(track => track.duration);
-}
-
-export async function getTrackCover(trackId: number) {
-  return await getTrack(trackId).then(track => track.album.cover_xl);
-}
-
 export interface Track {
   id: number,
   title: string,

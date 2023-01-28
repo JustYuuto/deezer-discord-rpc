@@ -1,6 +1,4 @@
 import { Menu, Tray, BrowserWindow, Notification } from 'electron';
-import { getTrackTitle, getTrackCover, getTrackArtists } from './activity/track';
-import { getAlbumTitle } from './activity/album';
 import { USE_AS_MAIN_APP } from './variables';
 import * as RPC from 'discord-rpc';
 import { resolve } from 'path';
@@ -46,7 +44,7 @@ export async function initTrayIcon(app: Electron.App) {
       { label: 'Deezer Discord RPC', type: 'normal', enabled: false },
       { label: `Version: ${version}`, type: 'normal', enabled: false },
       { type: 'separator' },
-      { label: `Check for updates`, type: 'normal', enabled: true, click: () => {
+      { label: 'Check for updates', type: 'normal', enabled: true, click: () => {
           getLatestRelease().then((release) => {
             if (release.tag_name !== version) {
               const notification = new Notification({
@@ -59,16 +57,14 @@ export async function initTrayIcon(app: Electron.App) {
               });
               notification.show();
             } else {
-              new Notification({
-                title: 'Deezer Discord RPC',
-                body: 'You are using the latest version.',
-                icon: resolve('src', 'img', 'icon.png')
-              }).show();
+              win.webContents.executeJavaScript('alert("You are using the latest version.");');
             }
           });
         } },
       // { label: `Start when Windows start`, type: 'checkbox', enabled: true, checked: true },
-      USE_AS_MAIN_APP && { label: 'Show window', type: 'normal', enabled: true, click: () => win.show() },
+      USE_AS_MAIN_APP && {
+        label: `${win.isVisible() ? 'Hide' : 'Show'} window`, type: 'normal', enabled: true, click: () => win.isVisible() ? win.hide() : win.show()
+      },
       { type: 'separator' },
       { label: 'Quit', type: 'normal', click: () => process.exit() }
     ]);
@@ -79,28 +75,30 @@ export async function initTrayIcon(app: Electron.App) {
   });
 }
 
-export async function setActivity(client: RPC.Client, albumId: number, trackId: number, playing: boolean, timeLeft: number) {
+export async function setActivity(options: {
+  client: RPC.Client, albumId: number, trackId: number, playing: boolean, timeLeft: number,
+  trackTitle: string, trackArtists: any, trackLink: string, albumCover: string, albumTitle: string,
+}) {
+  const {
+    timeLeft, playing, client, albumTitle, trackArtists, trackLink, trackTitle, albumCover
+  } = options;
   if (!client) return;
 
-  console.log(USE_AS_MAIN_APP)
-  console.log(playing)
-  console.log(timeLeft)
-
+  const buttons = [];
+  (trackLink !== undefined) && buttons.push({ label: 'Listen along', url: trackLink });
+  buttons.push({
+    label: 'View RPC on GitHub', url: 'https://github.com/NetherMCtv/deezer-discord-rpc'
+  });
   await client.setActivity({
-    details: await getTrackTitle(trackId),
-    state: await getTrackArtists(trackId),
-    largeImageKey: await getTrackCover(trackId),
-    largeImageText: await getAlbumTitle(albumId),
+    details: trackTitle,
+    state: trackArtists,
+    largeImageKey: albumCover,
+    largeImageText: albumTitle,
     instance: false,
     endTimestamp: (USE_AS_MAIN_APP && playing) && timeLeft,
     smallImageKey: 'https://raw.githubusercontent.com/NetherMCtv/deezer-discord-rpc/master/src/img/icon.png',
     smallImageText: `Deezer Discord RPC ${version}`,
-    buttons: [
-      {
-        label: 'View RPC on GitHub',
-        url: 'https://github.com/NetherMCtv/deezer-discord-rpc'
-      }
-    ]
+    buttons
   });
 }
 
