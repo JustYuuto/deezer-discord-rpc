@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { DEEZER_API_BASE } from '../variables';
-import {Artist} from "./artist";
-import {Album} from "./album";
+import { Artist } from './artist';
+import { Album } from './album';
 
 export async function getTrack(trackId: number): Promise<Track> {
   const track = await axios.get(`${DEEZER_API_BASE}/track/${trackId}`);
@@ -13,7 +13,7 @@ export async function getTrackTitle(trackId: number) {
 }
 
 export async function getTrackArtists(trackId: number) {
-  return await getTrack(trackId).then(track => track.contributors.map(c => c.name).join(', '));
+  return await getTrack(trackId).then(track => track.contributors?.map(c => c.name)?.join(', '));
 }
 
 export async function getTrackLink(trackId: number) {

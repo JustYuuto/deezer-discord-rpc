@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { DEEZER_API_BASE } from '../variables';
-import {Track} from "./track";
+import { Track } from './track';
 
 export async function getAlbum(albumId: number): Promise<Album> {
   const album = await axios.get(`${DEEZER_API_BASE}/album/${albumId}`);
-  return album.data;
+  return album.data || {};
 }
 
 export async function getAlbumTitle(albumId: number) {

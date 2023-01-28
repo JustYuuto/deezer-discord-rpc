@@ -1,38 +1,23 @@
-import { Menu, Tray, BrowserWindow } from 'electron';
-import { getTrackTitle, getTrackCover, getTrackArtists, getTrack } from './activity/track';
+import { Menu, Tray, BrowserWindow, Notification } from 'electron';
+import { getTrackTitle, getTrackCover, getTrackArtists } from './activity/track';
 import { getAlbumTitle } from './activity/album';
+import { USE_AS_MAIN_APP } from './variables';
 import * as RPC from 'discord-rpc';
 import { resolve } from 'path';
 import { version } from '../package.json';
-
-export async function initTrayIcon(app: Electron.App) {
-  let tray: Tray | null = null;
-
-  app?.whenReady().then(() => {
-    tray = new Tray(resolve('src', 'img', 'icon.ico'));
-    const contextMenu = Menu.buildFromTemplate([
-      { label: 'Deezer Discord RPC', type: 'normal', enabled: false },
-      { label: `Version: ${version}`, type: 'normal', enabled: false },
-      { type: 'separator' },
-      { label: 'Quit', type: 'normal', click: () => process.exit() }
-    ]);
-
-    tray.setToolTip('Deezer Discord RPC');
-    tray.setContextMenu(contextMenu);
-  });
-}
+import axios from 'axios';
 
 export let win: BrowserWindow;
 export async function loadWindow() {
   win = new BrowserWindow({
-    width: 450,
-    height: 575,
-    minimizable: false,
-    maximizable: false,
+    width: USE_AS_MAIN_APP ? 1920 : 450,
+    height: USE_AS_MAIN_APP ? 1080 : 575,
+    minimizable: USE_AS_MAIN_APP,
+    maximizable: USE_AS_MAIN_APP,
     closable: true,
     resizable: true,
     webPreferences: {
-      preload: resolve(__dirname, 'preload.js')
+      preload: !USE_AS_MAIN_APP && resolve(__dirname, 'preload.js')
     }
   });
 
@@ -52,15 +37,75 @@ export async function loadWindow() {
   });
 }
 
-export async function setActivity(client: RPC.Client, albumId: number, trackId: number) {
+export async function initTrayIcon(app: Electron.App) {
+  let tray: Tray | null = null;
+
+  app?.whenReady().then(() => {
+    tray = new Tray(resolve('src', 'img', 'icon.ico'));
+    const contextMenu = Menu.buildFromTemplate([
+      { label: 'Deezer Discord RPC', type: 'normal', enabled: false },
+      { label: `Version: ${version}`, type: 'normal', enabled: false },
+      { type: 'separator' },
+      { label: `Check for updates`, type: 'normal', enabled: true, click: () => {
+          getLatestRelease().then((release) => {
+            if (release.tag_name !== version) {
+              const notification = new Notification({
+                title: 'Deezer Discord RPC',
+                body: 'New update available, click to update',
+                icon: resolve('src', 'img', 'icon.png')
+              });
+              notification.on('click', () => {
+
+              });
+              notification.show();
+            } else {
+              new Notification({
+                title: 'Deezer Discord RPC',
+                body: 'You are using the latest version.',
+                icon: resolve('src', 'img', 'icon.png')
+              }).show();
+            }
+          });
+        } },
+      // { label: `Start when Windows start`, type: 'checkbox', enabled: true, checked: true },
+      USE_AS_MAIN_APP && { label: 'Show window', type: 'normal', enabled: true, click: () => win.show() },
+      { type: 'separator' },
+      { label: 'Quit', type: 'normal', click: () => process.exit() }
+    ]);
+
+    tray.setToolTip('Deezer Discord RPC');
+    tray.setContextMenu(contextMenu);
+    USE_AS_MAIN_APP && tray.on('click', () => win.show());
+  });
+}
+
+export async function setActivity(client: RPC.Client, albumId: number, trackId: number, playing: boolean, timeLeft: number) {
   if (!client) return;
 
-  console.log(await getTrack(trackId));
+  console.log(USE_AS_MAIN_APP)
+  console.log(playing)
+  console.log(timeLeft)
+
   await client.setActivity({
     details: await getTrackTitle(trackId),
-    state: `${await getTrackArtists(trackId)}`,
+    state: await getTrackArtists(trackId),
     largeImageKey: await getTrackCover(trackId),
     largeImageText: await getAlbumTitle(albumId),
-    instance: false
+    instance: false,
+    endTimestamp: (USE_AS_MAIN_APP && playing) && timeLeft,
+    smallImageKey: 'https://raw.githubusercontent.com/NetherMCtv/deezer-discord-rpc/master/src/img/icon.png',
+    smallImageText: `Deezer Discord RPC ${version}`,
+    buttons: [
+      {
+        label: 'View RPC on GitHub',
+        url: 'https://github.com/NetherMCtv/deezer-discord-rpc'
+      }
+    ]
   });
+}
+
+export async function getLatestRelease() {
+  const url = 'https://api.github.com/repos/NetherMCtv/deezer-discord-rpc/releases/latest';
+  const release = await axios.get(url);
+  return release.data;
 }
