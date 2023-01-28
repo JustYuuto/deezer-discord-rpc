@@ -1,8 +1,10 @@
 /node_modules/
-/dist/
-/out/
 
 *-error.log*
 *-log.log*
 
 /.idea/
+
+# Builds
+/DeezerDiscordRPC-win32-x64/
+/dist/
