@@ -1,32 +1,14 @@
 # Deezer Discord RPC
 
-## Requirements
+A Discord RPC for showing the music you're listening to on Deezer (like Spotify integration).
 
-As the app isn't is an executable format (`.exe`/`.dmg`/...), you need the following things to run the app:
-* Node.js
-* Yarn
+## Features
 
-## Running the app
+* Updates every 500ms so the RPC updates almost instantly
+* Shows the song title, the song artist(s), the album cover (when the mouse is over the album cover the album title is shown), the song duration
+* On the RPC there's a "Listen along" button like on the Spotify integration. This is a link to the song
+* An in-app updater
 
-Install npm modules:
-```bash
-npm install
-```
+## Screenshots
 
-Then run this command who build the code, then executes Electron (for the tray icon and window) and Discord RPC:
-```bash
-yarn run run
-# or
-npm run run
-```
-
-## Building
-
-For building the app, run:
-
-```bash
-yarn build
-# or
-npm run build
-```
-
+![RPC on profile](screenshots/rpc_on_profile.png)
