@@ -20,6 +20,7 @@ app.whenReady().then(async () => {
 
 client.on('ready', () => {
   console.log([
+    `Deezer Discord RPC version ${require('../package.json').version}`,
     `Authed for user ${client.user?.username}#${client.user?.discriminator}`
   ].join('\n'));
 
