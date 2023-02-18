@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { DEEZER_API_BASE } from '../variables';
+import { deezerApiBase } from '../variables';
 import { Artist } from './artist';
 import { Album } from './album';
 
 export async function getTrack(trackId: number): Promise<Track> {
-  const track = await axios.get(`${DEEZER_API_BASE}/track/${trackId}`);
+  const track = await axios.get(`${deezerApiBase}/track/${trackId}`);
   return track.data;
 }
 

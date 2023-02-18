@@ -1,14 +1,14 @@
 import axios from 'axios';
-import { DEEZER_API_BASE } from '../variables';
+import { deezerApiBase } from '../variables';
 import { Track } from './track';
 
 export async function getAlbum(albumId: number): Promise<Album> {
-  const album = await axios.get(`${DEEZER_API_BASE}/album/${albumId}`);
+  const album = await axios.get(`${deezerApiBase}/album/${albumId}`);
   return album.data || {};
 }
 
 export async function findTrackInAlbum(trackName: string, albumId: number) {
-  return (async () => (await axios.get(`${DEEZER_API_BASE}/album/${albumId}/tracks`)).data)()
+  return (async () => (await axios.get(`${deezerApiBase}/album/${albumId}/tracks`)).data)()
     .then((tracks: AlbumTrack) => tracks.data)
     .then((tracks: AlbumTrack['data']) => {
       const find = tracks?.find(elem => elem.title === trackName);
