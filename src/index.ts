@@ -1,6 +1,6 @@
 import * as RPC from 'discord-rpc';
-import { CLIENT_ID } from './variables';
-import { initTrayIcon, setActivity, loadWindow, win } from './functions';
+import { clientId } from './variables';
+import { initTrayIcon, setActivity, loadWindow, win, updater } from './functions';
 import { app, BrowserWindow } from 'electron';
 import { findTrackInAlbum, getAlbum } from './activity/album';
 import { getTrack } from './activity/track';
@@ -74,4 +74,4 @@ client.on('ready', () => {
   });
 });
 
-client.login({ clientId: CLIENT_ID }).catch(console.error);
+client.login({ clientId }).catch(console.error);
