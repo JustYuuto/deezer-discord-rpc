@@ -9,14 +9,14 @@ import { existsSync, writeFileSync } from 'fs';
 export let win: BrowserWindow;
 export async function loadWindow() {
   win = new BrowserWindow({
-    width: USE_AS_MAIN_APP ? 1920 : 450,
-    height: USE_AS_MAIN_APP ? 1080 : 575,
-    minimizable: USE_AS_MAIN_APP,
-    maximizable: USE_AS_MAIN_APP,
+    width: useAsMainApp ? 1920 : 450,
+    height: useAsMainApp ? 1080 : 575,
+    minimizable: useAsMainApp,
+    maximizable: useAsMainApp,
     closable: true,
     resizable: true,
     webPreferences: {
-      preload: !USE_AS_MAIN_APP && resolve(__dirname, 'preload.js')
+      preload: !useAsMainApp && resolve(__dirname, 'preload.js')
     }
   });
 
@@ -82,7 +82,7 @@ export async function initTrayIcon(app: Electron.App) {
       } },
       {
         label: 'Hide/show window', type: 'normal', enabled: true, click: () => win.isVisible() ? win.hide() : win.show(),
-        visible: USE_AS_MAIN_APP
+        visible: useAsMainApp
       },
       {
         label: 'Only show RPC if music is playing', type: 'checkbox', checked: getConfig(app, 'only_show_if_playing'),
@@ -122,7 +122,7 @@ export async function setActivity(options: {
     largeImageKey: albumCover,
     largeImageText: albumTitle,
     instance: false,
-    endTimestamp: (USE_AS_MAIN_APP && playing) && timeLeft,
+    endTimestamp: (useAsMainApp && playing) && timeLeft,
     smallImageKey: 'https://raw.githubusercontent.com/NetherMCtv/deezer-discord-rpc/master/src/img/icon.png',
     smallImageText: `Deezer Discord RPC ${version}`,
     buttons
