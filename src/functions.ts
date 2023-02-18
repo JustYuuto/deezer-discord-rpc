@@ -24,7 +24,7 @@ export async function loadWindow() {
   await win.loadURL('https://www.deezer.com/login', {
     // Windows 10 (x64) with Google Chrome 103.0.0.0
     // The default user agent does not work with Deezer (the player does not update by itself)
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
+    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36'
   });
 
   win.on('close', (e) => {
@@ -45,28 +45,28 @@ export async function initTrayIcon(app: Electron.App) {
       { label: `Version: ${version}`, type: 'normal', enabled: false },
       { type: 'separator' },
       { label: 'Check for updates', type: 'normal', enabled: true, click: () => {
-          getLatestRelease().then((release) => {
-            if (release.tag_name !== version) {
-              const notification = new Notification({
-                title: 'Deezer Discord RPC',
-                body: 'New update available, click to update',
-                icon: join(__dirname, 'img', 'icon.png')
-              });
-              notification.on('click', () => {
-
-              });
-              notification.show();
-            } else {
-              win.webContents.executeJavaScript('alert("You are using the latest version.");');
-            }
-          });
-        } },
-      // { label: `Start when Windows start`, type: 'checkbox', enabled: true, checked: true },
+        getLatestRelease().then(release => {
+          if (release.tag_name !== version) {
+            const notification = new Notification({
+              title: 'Deezer Discord RPC',
+              body: 'New update available, click to update',
+              icon: join(__dirname, 'img', 'icon.png')
+            });
+            notification.on('click', () => {
+              require('shell').openExternal(release.assets.find(f => f.split('.').pop() === 'exe').browser_download_url)
+            });
+            notification.show();
+          } else {
+            win.webContents.executeJavaScript('alert("You are using the latest version.");');
+          }
+        });
+      } },
       USE_AS_MAIN_APP && {
-        label: `${win.isVisible() ? 'Hide' : 'Show'} window`, type: 'normal', enabled: true, click: () => win.isVisible() ? win.hide() : win.show()
+        label: 'Hide/show window', type: 'normal', enabled: true, click: () => win.isVisible() ? win.hide() : win.show()
       },
+      { label: 'Only show RPC if music is in playing state', type: 'checkbox', checked: false },
       { type: 'separator' },
-      { label: 'Quit', type: 'normal', click: () => process.exit() }
+      { label: 'Quit', type: 'normal', click: () => process.exit(), role: 'quit' }
     ]);
 
     tray.setToolTip('Deezer Discord RPC');

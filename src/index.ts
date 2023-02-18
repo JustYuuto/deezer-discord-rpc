@@ -3,7 +3,6 @@ import { CLIENT_ID } from './variables';
 import { initTrayIcon, setActivity, loadWindow, win } from './functions';
 import { app, BrowserWindow } from 'electron';
 import { findTrackInAlbum, getAlbum } from './activity/album';
-import './server';
 import { getTrack } from './activity/track';
 
 const client = new RPC.Client({
