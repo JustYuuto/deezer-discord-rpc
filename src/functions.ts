@@ -80,8 +80,9 @@ export async function initTrayIcon(app: Electron.App) {
           }
         });
       } },
-      USE_AS_MAIN_APP && {
-        label: 'Hide/show window', type: 'normal', enabled: true, click: () => win.isVisible() ? win.hide() : win.show()
+      {
+        label: 'Hide/show window', type: 'normal', enabled: true, click: () => win.isVisible() ? win.hide() : win.show(),
+        visible: USE_AS_MAIN_APP
       },
       {
         label: 'Only show RPC if music is playing', type: 'checkbox', checked: getConfig(app, 'only_show_if_playing'),
@@ -129,7 +130,7 @@ export async function setActivity(options: {
 }
 
 export async function getLatestRelease() {
-  const url = 'https://api.github.com/repos/NetherMCtv/deezer-discord-rpc/releases/latest';
+  const url = 'https://api.github.com/repos/JustYuuto/deezer-discord-rpc/releases/latest';
   const release = await axios.get(url);
   return release.data;
 }
