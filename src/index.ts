@@ -15,6 +15,7 @@ app.whenReady().then(async () => {
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) loadWindow();
+    updater();
   });
 });
 

@@ -1,5 +1,5 @@
-import { Menu, Tray, BrowserWindow, Notification, shell } from 'electron';
-import { USE_AS_MAIN_APP } from './variables';
+import { Menu, Tray, BrowserWindow, shell, dialog } from 'electron';
+import { useAsMainApp } from './variables';
 import * as RPC from 'discord-rpc';
 import { resolve, join } from 'path';
 import { version } from '../package.json';
@@ -53,6 +53,42 @@ export function getConfig(app: Electron.App, key?: string) {
   return key ? data[key] : data;
 }
 
+export function updater() {
+  return getLatestRelease()
+    .then(release => {
+      if (release.tag_name === version) {
+        dialog.showMessageBox({
+          type: 'info',
+          title: 'Update available',
+          buttons: ['Cancel', 'Download'],
+          message: `The version ${release.tag_name} is available to download!`,
+          defaultId: 0,
+        }).then((res) => {
+          if (res.response === 1) {
+            shell.openExternal(release.assets.find(f => f.name.split('.').pop() === 'exe').browser_download_url);
+          }
+        });
+      } else {
+        dialog.showMessageBox(null, {
+          type: 'info',
+          title: 'No update available',
+          message: 'You are using the latest version.',
+        });
+      }
+    })
+    .catch(reason => {
+      dialog.showMessageBox(null, {
+        type: 'error',
+        buttons: ['Close', 'Retry'],
+        title: 'Cannot get latest release',
+        message: 'Cannot get the latest release.',
+        detail: reason?.toString(),
+      }).then((res) => {
+        if (res.response === 1) updater();
+      });
+    });
+}
+
 export async function initTrayIcon(app: Electron.App) {
   let tray: Tray | null = null;
 
@@ -63,23 +99,12 @@ export async function initTrayIcon(app: Electron.App) {
       { label: 'Deezer Discord RPC', type: 'normal', enabled: false },
       { label: `Version: ${version}`, type: 'normal', enabled: false },
       { type: 'separator' },
-      { label: 'Check for updates', type: 'normal', enabled: true, click: () => {
-        getLatestRelease().then(release => {
-          if (release.tag_name !== version) {
-            const notification = new Notification({
-              title: 'Deezer Discord RPC',
-              body: 'New update available, click to update',
-              icon: iconPath
-            });
-            notification.on('click', () => {
-              shell.openExternal(release.assets.find(f => f.name.split('.').pop() === 'exe').browser_download_url)
-            });
-            notification.show();
-          } else {
-            win.webContents.executeJavaScript('alert("You are using the latest version.");');
-          }
-        });
-      } },
+      { label: 'Check for updates', type: 'normal', enabled: true, click: updater },
+      {
+        label: 'Check for updates on startup', type: 'checkbox', checked: getConfig(app, 'check_for_updates_on_startup'),
+        click: (menuItem) => saveConfigKey(app, 'check_for_updates_on_startup', menuItem.checked)
+      },
+      { type: 'separator' },
       {
         label: 'Hide/show window', type: 'normal', enabled: true, click: () => win.isVisible() ? win.hide() : win.show(),
         visible: useAsMainApp
