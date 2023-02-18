@@ -56,7 +56,7 @@ export function getConfig(app: Electron.App, key?: string) {
 export function updater() {
   return getLatestRelease()
     .then(release => {
-      if (release.tag_name === version) {
+      if (release.tag_name !== version) {
         dialog.showMessageBox({
           type: 'info',
           title: 'Update available',
