@@ -4,6 +4,7 @@ import * as RPC from 'discord-rpc';
 import { resolve, join } from 'path';
 import { version } from '../package.json';
 import axios from 'axios';
+import { existsSync, writeFileSync } from 'fs';
 
 export let win: BrowserWindow;
 export async function loadWindow() {
@@ -33,6 +34,23 @@ export async function loadWindow() {
 
     return false;
   });
+}
+
+export function saveConfigKey(app: Electron.App, key: string, value: any) {
+  const userDataPath = app.getPath('userData');
+  const path = join(userDataPath, 'config.json');
+  if (!existsSync(path)) writeFileSync(path, '{}');
+  const data = require(path);
+  data[key] = value;
+  writeFileSync(path, JSON.stringify(data));
+}
+
+export function getConfig(app: Electron.App, key?: string) {
+  const userDataPath = app.getPath('userData');
+  const path = join(userDataPath, 'config.json');
+  if (!existsSync(path)) writeFileSync(path, '{}');
+  const data = require(path);
+  return key ? data[key] : data;
 }
 
 export async function initTrayIcon(app: Electron.App) {
