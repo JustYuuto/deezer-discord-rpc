@@ -119,7 +119,11 @@ export async function initTrayIcon(app: Electron.App) {
 
     tray.setToolTip('Deezer Discord RPC');
     tray.setContextMenu(contextMenu);
-    USE_AS_MAIN_APP && tray.on('click', () => win.show());
+    useAsMainApp && tray.on('click', () => win.show());
+    win.webContents.setWindowOpenHandler((details) => {
+      shell.openExternal(details.url);
+      return { action: 'deny' };
+    });
   });
 }
 
