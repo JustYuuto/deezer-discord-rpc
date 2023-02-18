@@ -114,7 +114,7 @@ export async function initTrayIcon(app: Electron.App) {
         click: (menuItem) => saveConfigKey(app, 'only_show_if_playing', menuItem.checked)
       },
       { type: 'separator' },
-      { label: 'Quit', type: 'normal', click: () => process.exit(), role: 'quit' }
+      { label: 'Quit', type: 'normal', click: () => process.exit() }
     ]);
 
     tray.setToolTip('Deezer Discord RPC');
