@@ -1,4 +1,4 @@
-import { Menu, Tray, BrowserWindow, Notification } from 'electron';
+import { Menu, Tray, BrowserWindow, Notification, shell } from 'electron';
 import { USE_AS_MAIN_APP } from './variables';
 import * as RPC from 'discord-rpc';
 import { resolve, join } from 'path';
@@ -53,7 +53,7 @@ export async function initTrayIcon(app: Electron.App) {
               icon: join(__dirname, 'img', 'icon.png')
             });
             notification.on('click', () => {
-              require('shell').openExternal(release.assets.find(f => f.split('.').pop() === 'exe').browser_download_url)
+              shell.openExternal(release.assets.find(f => f.name.split('.').pop() === 'exe').browser_download_url)
             });
             notification.show();
           } else {
