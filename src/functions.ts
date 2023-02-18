@@ -57,7 +57,8 @@ export async function initTrayIcon(app: Electron.App) {
   let tray: Tray | null = null;
 
   app?.whenReady().then(() => {
-    tray = new Tray(join(__dirname, 'img', 'icon.ico'));
+    const iconPath = join(__dirname, 'img', 'icon.ico');
+    tray = new Tray(iconPath);
     const contextMenu = Menu.buildFromTemplate([
       { label: 'Deezer Discord RPC', type: 'normal', enabled: false },
       { label: `Version: ${version}`, type: 'normal', enabled: false },
@@ -68,7 +69,7 @@ export async function initTrayIcon(app: Electron.App) {
             const notification = new Notification({
               title: 'Deezer Discord RPC',
               body: 'New update available, click to update',
-              icon: join(__dirname, 'img', 'icon.png')
+              icon: iconPath
             });
             notification.on('click', () => {
               shell.openExternal(release.assets.find(f => f.name.split('.').pop() === 'exe').browser_download_url)
