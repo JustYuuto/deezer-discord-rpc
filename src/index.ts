@@ -45,12 +45,12 @@ client.on('ready', () => {
             currentTrack = {
               id: trackId, title: (await getTrack(trackId)).title, contributors: (await getTrack(trackId)).contributors,
               link: (await getTrack(trackId)).link, albumCover: (await getAlbum(result[0])).cover_medium,
-              albumTitle: (await getAlbum(result[0])).title,
+              albumTitle: (await getAlbum(result[0])).title, app
             };
             await setActivity({
               client, albumId: result[0], trackId, playing: result[2] === 'true', timeLeft, trackTitle: (await getTrack(trackId)).title,
               trackArtists: (await getTrack(trackId)).contributors?.map(c => c.name)?.join(', '), trackLink: (await getTrack(trackId)).link,
-              albumCover: (await getAlbum(result[0])).cover_medium, albumTitle: (await getAlbum(result[0])).title,
+              albumCover: (await getAlbum(result[0])).cover_medium, albumTitle: (await getAlbum(result[0])).title, app
             });
           } else {
             if (!currentTrack) {
@@ -58,13 +58,13 @@ client.on('ready', () => {
               currentTrack = {
                 id: trackId, title: (await getTrack(trackId)).title, contributors: (await getTrack(trackId)).contributors,
                 link: (await getTrack(trackId)).link, albumCover: (await getAlbum(result[0])).cover_medium,
-                albumTitle: (await getAlbum(result[0])).title,
+                albumTitle: (await getAlbum(result[0])).title, app
               };
             }
             await setActivity({
               client, albumId: result[0], trackId: currentTrack?.id, playing: result[2] === 'true', timeLeft,
               trackTitle: currentTrack?.title, trackArtists: currentTrack?.contributors?.map(c => c.name)?.join(', '),
-              trackLink: currentTrack?.link, albumCover: currentTrack?.albumCover, albumTitle: currentTrack?.albumTitle,
+              trackLink: currentTrack?.link, albumCover: currentTrack?.albumCover, albumTitle: currentTrack?.albumTitle, app
             });
           }
           currentTrack.title = result[1];

@@ -83,7 +83,10 @@ export async function initTrayIcon(app: Electron.App) {
       USE_AS_MAIN_APP && {
         label: 'Hide/show window', type: 'normal', enabled: true, click: () => win.isVisible() ? win.hide() : win.show()
       },
-      { label: 'Only show RPC if music is in playing state', type: 'checkbox', checked: false },
+      {
+        label: 'Only show RPC if music is playing', type: 'checkbox', checked: getConfig(app, 'only_show_if_playing'),
+        click: (menuItem) => saveConfigKey(app, 'only_show_if_playing', menuItem.checked)
+      },
       { type: 'separator' },
       { label: 'Quit', type: 'normal', click: () => process.exit(), role: 'quit' }
     ]);
@@ -96,15 +99,19 @@ export async function initTrayIcon(app: Electron.App) {
 
 export async function setActivity(options: {
   client: RPC.Client, albumId: number, trackId: number, playing: boolean, timeLeft: number,
-  trackTitle: string, trackArtists: any, trackLink: string, albumCover: string, albumTitle: string,
+  trackTitle: string, trackArtists: any, trackLink: string, albumCover: string, albumTitle: string, app: Electron.App
 }) {
   const {
-    timeLeft, playing, client, albumTitle, trackArtists, trackLink, trackTitle, albumCover
+    timeLeft, playing, client, albumTitle, trackArtists, trackLink, trackTitle, albumCover, app
   } = options;
   if (!client) return;
 
+  if (getConfig(app, 'only_show_if_playing') && !playing) {
+    await client.clearActivity(process.pid); return;
+  }
+
   const buttons = [];
-  (trackLink !== undefined) && buttons.push({ label: 'Listen along', url: trackLink });
+  if (trackLink !== undefined) buttons.push({ label: 'Listen along', url: trackLink });
   buttons.push({
     label: 'View RPC on GitHub', url: 'https://github.com/NetherMCtv/deezer-discord-rpc'
   });
