@@ -11,7 +11,7 @@ const client = new RPC.Client({
 
 app.whenReady().then(async () => {
   await loadWindow();
-  await initTrayIcon(app);
+  await initTrayIcon(app, client);
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) loadWindow();
