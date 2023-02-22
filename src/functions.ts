@@ -109,6 +109,30 @@ export async function initTrayIcon(app: Electron.App, client: RPC.Client) {
         visible: useAsMainApp
       },
       {
+        label: 'Tooltip text', type: 'submenu', submenu: [
+          {
+            label: 'App name', type: 'radio', id: 'app_name', checked: getConfig(app, 'tooltip_text') === 'app_name',
+            click: (menuItem) => saveConfigKey(app, 'tooltip_text', menuItem.id)
+          },
+          {
+            label: 'App version', type: 'radio', id: 'app_version', checked: getConfig(app, 'tooltip_text') === 'app_version',
+            click: (menuItem) => saveConfigKey(app, 'tooltip_text', menuItem.id)
+          },
+          {
+            label: 'App name and version', type: 'radio', id: 'app_name_and_version', checked: getConfig(app, 'tooltip_text') === 'app_name_and_version',
+            click: (menuItem) => saveConfigKey(app, 'tooltip_text', menuItem.id)
+          },
+          {
+            label: 'Artists song - Song title', type: 'radio', id: 'artists_and_title', checked: getConfig(app, 'tooltip_text') === 'artists_and_title',
+            click: (menuItem) => saveConfigKey(app, 'tooltip_text', menuItem.id)
+          },
+          {
+            label: 'Song title - Artists song', type: 'radio', id: 'title_and_artists', checked: getConfig(app, 'tooltip_text') === 'title_and_artists',
+            click: (menuItem) => saveConfigKey(app, 'tooltip_text', menuItem.id)
+          }
+        ]
+      },
+      {
         label: 'Only show RPC if music is playing', type: 'checkbox', checked: getConfig(app, 'only_show_if_playing'),
         click: (menuItem) => saveConfigKey(app, 'only_show_if_playing', menuItem.checked)
       },
@@ -138,7 +162,19 @@ export async function setActivity(options: {
   const {
     timeLeft, playing, client, albumTitle, trackArtists, trackLink, trackTitle, albumCover, app
   } = options;
-  tray.setToolTip(`${trackArtists} - ${trackTitle}`);
+  const tooltipText = getConfig(app, 'tooltip_text');
+  switch (tooltipText) {
+    case 'app_name':
+      tray.setToolTip('Deezer Discord RPC'); break;
+    case 'app_version':
+      tray.setToolTip(`Version ${version}`); break;
+    case 'app_name_and_version':
+      tray.setToolTip(`Deezer Discord RPC version ${version}`); break;
+    case 'artists_and_title':
+      tray.setToolTip(`${trackArtists} - ${trackTitle}`); break;
+    case 'title_and_artists':
+      tray.setToolTip(`${trackTitle} - ${trackArtists}`); break;
+  }
   if (!client) return;
 
   if (getConfig(app, 'only_show_if_playing') && !playing) {
@@ -148,7 +184,7 @@ export async function setActivity(options: {
   const buttons = [];
   if (trackLink !== undefined) buttons.push({ label: 'Listen along', url: trackLink });
   buttons.push({
-    label: 'View RPC on GitHub', url: 'https://github.com/NetherMCtv/deezer-discord-rpc'
+    label: 'View RPC on GitHub', url: 'https://github.com/JustYuuto/deezer-discord-rpc'
   });
   await client.setActivity({
     details: trackTitle,
@@ -157,7 +193,7 @@ export async function setActivity(options: {
     largeImageText: albumTitle,
     instance: false,
     endTimestamp: (useAsMainApp && playing) && timeLeft,
-    smallImageKey: 'https://raw.githubusercontent.com/NetherMCtv/deezer-discord-rpc/master/src/img/icon.png',
+    smallImageKey: 'https://raw.githubusercontent.com/JustYuuto/deezer-discord-rpc/master/src/img/icon.png',
     smallImageText: `Deezer Discord RPC ${version}`,
     buttons
   });
