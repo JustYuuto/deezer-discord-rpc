@@ -1,6 +1,6 @@
 import * as RPC from 'discord-rpc';
 import { clientId } from './variables';
-import { initTrayIcon, setActivity, loadWindow, win, updater } from './functions';
+import { initTrayIcon, setActivity, loadWindow, win, updater, wait } from './functions';
 import { app, BrowserWindow } from 'electron';
 import { findTrackInAlbum, getAlbum } from './activity/album';
 import { getTrack } from './activity/track';
@@ -26,53 +26,51 @@ client.on('ready', () => {
   ].join('\n'));
 
   win.webContents.on('did-finish-load', () => {
-    setTimeout(() => {
+    wait(5000).then(() => {
       let currentTrack;
       setInterval(() => {
         let code =
-        `(() => {
-          const albumId = document.querySelector('.track-link[href*="album"]')?.getAttribute('href').split('/')[3];
-          const trackName = document.querySelector('.track-link[href*="album"]')?.textContent;
-          const playing = !!document.querySelector('#page_player > div > div.player-controls > ul > li:nth-child(3) > button > svg[data-testid="PauseIcon"]');
-          const songTime = document.querySelector('#page_player > div > div.player-track > div > div.track-seekbar > div > div.slider-counter-max')?.textContent?.split(':');
-          const timeLeft = document.querySelector('#page_player > div > div.player-track > div > div.track-seekbar > div > div.slider-counter-current')?.textContent?.split(':');
-          return [albumId, trackName, playing, songTime[0], songTime[1], timeLeft[0], timeLeft[1]].join(',');
-        })();`;
+          `(() => {
+            const albumId = document.querySelector('.track-link[href*="album"]')?.getAttribute('href').split('/')[3];
+            const trackName = document.querySelector('.track-link[href*="album"]')?.textContent;
+            const playing = !!document.querySelector('#page_player > div > div.player-controls > ul > li:nth-child(3) > button > svg[data-testid="PauseIcon"]');
+            const songTime = document.querySelector('#page_player > div > div.player-track > div > div.track-seekbar > div > div.slider-counter-max')?.textContent?.split(':');
+            const timeLeft = document.querySelector('#page_player > div > div.player-track > div > div.track-seekbar > div > div.slider-counter-current')?.textContent?.split(':');
+            return JSON.stringify({ albumId, trackName, playing, songTime: { minutes: songTime[0], seconds: songTime[1] }, timeLeft: { minutes: timeLeft[0], seconds: timeLeft[1] } });
+          })();`;
         win.webContents.executeJavaScript(code, true).then(async (result) => {
-          result = result.split(',');
-          const songTime = Date.now() + (((+0) * 60 * 60 + (+result[3]) * 60 + (+result[4])) * 1000);
-          const timeLeft = songTime - (((+0) * 60 * 60 + (+result[5]) * 60 + (+result[6])) * 1000);
-          if (currentTrack?.title !== result[1]) {
-            const trackId = await findTrackInAlbum(result[1], result[0]);
+          result = JSON.parse(result);
+          const songTime = Date.now() + (((+0) * 60 * 60 + (+result.songTime.minutes) * 60 + (+result.songTime.seconds)) * 1000);
+          const timeLeft = songTime - (((+0) * 60 * 60 + (+result.timeLeft.minutes) * 60 + (+result.timeLeft.seconds)) * 1000);
+          if (currentTrack?.title !== result.trackName) {
+            const trackId = await findTrackInAlbum(result.trackName, result.albumId);
+            const track = await getTrack(trackId);
+            const album = await getAlbum(result.albumId);
             currentTrack = {
-              id: trackId, title: (await getTrack(trackId)).title, contributors: (await getTrack(trackId)).contributors,
-              link: (await getTrack(trackId)).link, albumCover: (await getAlbum(result[0])).cover_medium,
-              albumTitle: (await getAlbum(result[0])).title, app
+              trackId, trackTitle: track.title, trackArtists: track.contributors?.map(c => c.name)?.join(', '), trackLink: track.link,
+              albumCover: album.cover_medium, albumTitle: album.title, app
             };
             await setActivity({
-              client, albumId: result[0], trackId, playing: result[2] === 'true', timeLeft, trackTitle: (await getTrack(trackId)).title,
-              trackArtists: (await getTrack(trackId)).contributors?.map(c => c.name)?.join(', '), trackLink: (await getTrack(trackId)).link,
-              albumCover: (await getAlbum(result[0])).cover_medium, albumTitle: (await getAlbum(result[0])).title, app
+              client, albumId: result.albumId, playing: result.playing, timeLeft, app, ...currentTrack
             });
           } else {
             if (!currentTrack) {
-              const trackId = await findTrackInAlbum(result[1], result[0]);
+              const trackId = await findTrackInAlbum(result.trackName, result.albumId);
+              const track = await getTrack(trackId);
+              const album = await getAlbum(result.albumId);
               currentTrack = {
-                id: trackId, title: (await getTrack(trackId)).title, contributors: (await getTrack(trackId)).contributors,
-                link: (await getTrack(trackId)).link, albumCover: (await getAlbum(result[0])).cover_medium,
-                albumTitle: (await getAlbum(result[0])).title, app
+                trackId, trackTitle: track.title, trackArtists: track.contributors?.map(c => c.name)?.join(', '), trackLink: track.link,
+                albumCover: album.cover_medium, albumTitle: album.title, app
               };
             }
             await setActivity({
-              client, albumId: result[0], trackId: currentTrack?.id, playing: result[2] === 'true', timeLeft,
-              trackTitle: currentTrack?.title, trackArtists: currentTrack?.contributors?.map(c => c.name)?.join(', '),
-              trackLink: currentTrack?.link, albumCover: currentTrack?.albumCover, albumTitle: currentTrack?.albumTitle, app
+              client, albumId: result.albumId, playing: result.playing, timeLeft, app, ...currentTrack
             });
           }
-          currentTrack.title = result[1];
+          currentTrack.title = result.trackName;
         });
       }, 500);
-    }, 5000);
+    });
   });
 });
 
