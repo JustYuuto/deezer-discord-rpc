@@ -12,10 +12,10 @@ const client = new RPC.Client({
 app.whenReady().then(async () => {
   await loadWindow();
   await initTrayIcon(app, client);
+  await updater(true);
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) loadWindow();
-    updater();
   });
 });
 

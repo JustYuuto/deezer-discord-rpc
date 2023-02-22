@@ -54,22 +54,26 @@ export function getConfig(app: Electron.App, key?: string) {
   return key ? data[key] : data;
 }
 
-export function updater() {
+export function updater(fromStartup: boolean = false) {
+  console.log('Checking for updates...');
   return getLatestRelease()
     .then(release => {
       if (release.tag_name !== version) {
+        console.log(`The version ${release.tag_name} is available to download!`);
         dialog.showMessageBox({
           type: 'info',
           title: 'Update available',
           buttons: ['Cancel', 'Download'],
           message: `The version ${release.tag_name} is available to download!`,
           defaultId: 0,
-        }).then((res) => {
-          if (res.response === 1) {
+        }).then(({ response }) => {
+          if (response === 1) {
             shell.openExternal(release.assets.find(f => f.name.split('.').pop() === 'exe').browser_download_url);
           }
         });
       } else {
+        console.log('No updates found.');
+        if (!fromStartup)
         dialog.showMessageBox(null, {
           type: 'info',
           title: 'No update available',
@@ -78,14 +82,15 @@ export function updater() {
       }
     })
     .catch(reason => {
+      console.log(`Cannot get the latest release: ${reason?.toString()}`);
       dialog.showMessageBox(null, {
         type: 'error',
         buttons: ['Close', 'Retry'],
         title: 'Cannot get latest release',
         message: 'Cannot get the latest release.',
         detail: reason?.toString(),
-      }).then((res) => {
-        if (res.response === 1) updater();
+      }).then(({ response }) => {
+        if (response === 1) updater();
       });
     });
 }
@@ -97,12 +102,7 @@ export async function initTrayIcon(app: Electron.App, client: RPC.Client) {
     const contextMenu = Menu.buildFromTemplate([
       { label: 'Deezer Discord RPC', type: 'normal', enabled: false },
       { label: `Version: ${version}`, type: 'normal', enabled: false },
-      { type: 'separator' },
-      { label: 'Check for updates', type: 'normal', enabled: true, click: updater },
-      {
-        label: 'Check for updates on startup', type: 'checkbox', checked: getConfig(app, 'check_for_updates_on_startup'),
-        click: (menuItem) => saveConfigKey(app, 'check_for_updates_on_startup', menuItem.checked)
-      },
+      { label: 'Check for updates', type: 'normal', enabled: true, click: () => updater() },
       { type: 'separator' },
       {
         label: 'Hide/show window', type: 'normal', enabled: true, click: () => win.isVisible() ? win.hide() : win.show(),
