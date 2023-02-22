@@ -213,9 +213,16 @@ export async function prompt(message: string, options?: {
     resizable: false,
     minimizable: false,
     maximizable: false,
-    closable: typeof options?.closable !== 'undefined' ? options?.closable : true
+    closable: typeof options?.closable !== 'undefined' ? options?.closable : true,
+    webPreferences: {
+      preload: join(__dirname, 'prompt.js')
+    }
+  });
+
+  ipcMain.on('token-received', (e, data) => {
+    console.log(data);
   });
 
   win.setMenuBarVisibility(false);
-  await win.loadFile(join(__dirname, 'prompt.html'), { hash: 'ws' });
+  await win.loadFile(join(__dirname, 'prompt.html'), { hash: message });
 }

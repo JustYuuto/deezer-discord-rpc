@@ -48,7 +48,7 @@
 <body>
 <div class="input">
     <label for="input"></label>
-    <input type="text" id="input" />
+    <input type="text" id="input"/>
 </div>
 <div class="submit">
     <button></button>
@@ -72,7 +72,25 @@
             '(If you need to check the code we are using to communicate with the Discord WebSocket server, you can check it ' +
             'here: <a href="" target="_blank"></a>)'
         ].join('<br />');
+        input.setAttribute('type', 'password');
         button.innerHTML = 'Submit';
+        button.addEventListener('click', async () => {
+            const token = input.value;
+            let invalid = false;
+            if (token.startsWith('Bot') || token.startsWith('Bearer') || token.includes(' ')) invalid = true;
+            else {
+                const verifyToken = await fetch('https://discord.com/api/v10/users/@me', {
+                    headers: { Authorization: token }
+                });
+                if (verifyToken.status !== 200) invalid = true;
+                else {
+                    window.promptSubmit.send('token-received', token);
+                }
+            }
+            if (invalid) {
+                alert('The token you provided seems to be invalid!');
+            }
+        });
     }
 </script>
 </body>
