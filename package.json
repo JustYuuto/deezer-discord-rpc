@@ -5,9 +5,10 @@
   "main": "./src/index.js",
   "scripts": {
     "start": "electron ./dist/src/index.js",
-    "build": "tsc --resolveJsonModule",
-    "build:exe": "yarn build && yarn icon && cd dist && yarn install --prod && electron-packager dist/ DeezerDiscordRPC --platform=win32 --arch=x64",
-    "run": "yarn build && yarn start",
+    "build": "yarn build:ts && yarn icon && yarn install --prod --non-interactive --cwd ./dist && yarn build:exe",
+    "build:ts": "tsc --resolveJsonModule",
+    "build:exe": "electron-packager dist/ DeezerDiscordRPC --platform=win32 --arch=x64",
+    "run": "yarn build:ts && yarn start",
     "icon": "png-to-ico src/img/icon.png > src/img/icon.ico && cd ./dist/src && mkdir img && png-to-ico ../../src/img/icon.png > img/icon.ico"
   },
   "dependencies": {
