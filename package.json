@@ -1,12 +1,12 @@
 {
   "name": "deezer-discord-rpc",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A Discord RPC for Deezer",
   "main": "./src/index.js",
   "scripts": {
     "start": "electron ./dist/src/index.js",
-    "build": "tsc --resolveJsonModule && yarn icon && cd dist && yarn install --prod",
-    "build:exe": "yarn build && electron-packager dist/ DeezerDiscordRPC --platform=win32 --arch=x64",
+    "build": "tsc --resolveJsonModule",
+    "build:exe": "yarn build && yarn icon && cd dist && yarn install --prod && electron-packager dist/ DeezerDiscordRPC --platform=win32 --arch=x64",
     "run": "yarn build && yarn start",
     "icon": "png-to-ico src/img/icon.png > src/img/icon.ico && cd ./dist/src && mkdir img && png-to-ico ../../src/img/icon.png > img/icon.ico"
   },
@@ -17,7 +17,7 @@
   "devDependencies": {
     "@types/discord-rpc": "^4.0.0",
     "@types/node": "^18.7.6",
-    "electron": "20.0.3",
+    "electron": "^23.1.0",
     "electron-packager": "^17.1.1",
     "png-to-ico": "^2.1.4",
     "ts-node": "^10.4.0",
