@@ -1,5 +1,5 @@
 import { Menu, Tray, BrowserWindow, shell, dialog } from 'electron';
-import { useAsMainApp } from './variables';
+import { clientId, useAsMainApp } from './variables';
 import * as RPC from 'discord-rpc';
 import { resolve, join } from 'path';
 import { version } from '../package.json';
@@ -7,6 +7,7 @@ import axios from 'axios';
 import { existsSync, writeFileSync } from 'fs';
 
 export let win: BrowserWindow;
+export let tray: Tray | null = null;
 export async function loadWindow() {
   win = new BrowserWindow({
     width: useAsMainApp ? 1920 : 450,
@@ -23,7 +24,7 @@ export async function loadWindow() {
   win.menuBarVisible = false;
 
   await win.loadURL('https://www.deezer.com/login', {
-    // Windows 10 (x64) with Google Chrome 103.0.0.0
+    // Windows 10 (x64) with Google Chrome 110.0.0.0
     // The default user agent does not work with Deezer (the player does not update by itself)
     userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36'
   });
@@ -89,9 +90,7 @@ export function updater() {
     });
 }
 
-export async function initTrayIcon(app: Electron.App) {
-  let tray: Tray | null = null;
-
+export async function initTrayIcon(app: Electron.App, client: RPC.Client) {
   app?.whenReady().then(() => {
     const iconPath = join(__dirname, 'img', 'icon.ico');
     tray = new Tray(iconPath);
@@ -113,8 +112,13 @@ export async function initTrayIcon(app: Electron.App) {
         label: 'Only show RPC if music is playing', type: 'checkbox', checked: getConfig(app, 'only_show_if_playing'),
         click: (menuItem) => saveConfigKey(app, 'only_show_if_playing', menuItem.checked)
       },
+      {
+        label: 'Reconnect RPC', type: 'normal', enabled: true, click: () => {
+          client.connect(clientId).then(() => console.log('Reconnected to RPC'));
+        }
+      },
       { type: 'separator' },
-      { label: 'Quit', type: 'normal', click: () => process.exit() }
+      { label: 'Quit', type: 'normal', click: () => { app.quit(); process.exit(); } }
     ]);
 
     tray.setToolTip('Deezer Discord RPC');
@@ -134,6 +138,7 @@ export async function setActivity(options: {
   const {
     timeLeft, playing, client, albumTitle, trackArtists, trackLink, trackTitle, albumCover, app
   } = options;
+  tray.setToolTip(`${trackArtists} - ${trackTitle}`);
   if (!client) return;
 
   if (getConfig(app, 'only_show_if_playing') && !playing) {
