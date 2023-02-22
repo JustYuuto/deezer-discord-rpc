@@ -8,6 +8,7 @@ import { existsSync, writeFileSync } from 'fs';
 
 export let win: BrowserWindow;
 export let tray: Tray | null = null;
+export const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export async function loadWindow() {
   win = new BrowserWindow({
     width: useAsMainApp ? 1920 : 450,
