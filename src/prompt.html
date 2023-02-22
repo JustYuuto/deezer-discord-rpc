@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        *, *:before, *:after {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 10px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            font-size: 1rem;
+        }
+
+        input, button {
+            font-family: inherit;
+        }
+
+        .submit {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .input {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            display: inline;
+            margin-bottom: .5rem;
+        }
+
+        input {
+            padding: 5px 10px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 5px 15px;
+        }
+    </style>
+</head>
+<body>
+<div class="input">
+    <label for="input"></label>
+    <input type="text" id="input" />
+</div>
+<div class="submit">
+    <button></button>
+</div>
+<script>
+    const intent = window.location.hash.replace('#', '');
+    const label = document.querySelector('label');
+    const input = document.querySelector('input');
+    const button = document.querySelector('button');
+    if (intent === 'ws') {
+        document.title = 'Enter your Discord token';
+        label.innerHTML = [
+            'We can\'t display a "Listening to" status using the RPC. If you don\'t understand what is the "Listening to" ' +
+            'status, that\'s like the Spotify integration (you\'ve probably seen <i>Listening to Spotify</i> on someone profile).',
+            'Through using the Discord WebSocket server (which is used for real-time events, like sending messages, or setting ' +
+            'a status), we <strong>can</strong> show a "Listening to" status that works perfectly.',
+            'If you want that status (that\'s much better than a "Playing" status...), you need to enter your Discord token. ' +
+            'Your Discord token will <strong>ONLY be used for logging in the Discord ' +
+            'WebSocket server, and setting the "Listening to" activity</strong>.',
+            '',
+            '(If you need to check the code we are using to communicate with the Discord WebSocket server, you can check it ' +
+            'here: <a href="" target="_blank"></a>)'
+        ].join('<br />');
+        button.innerHTML = 'Submit';
+    }
+</script>
+</body>
+</html>

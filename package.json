@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron ./dist/src/index.js",
     "build": "yarn build:ts && yarn icon && yarn install --prod --non-interactive --cwd ./dist && yarn build:exe",
-    "build:ts": "tsc --resolveJsonModule",
+    "build:ts": "tsc --resolveJsonModule && cpy ./src/prompt.html dist/",
     "build:exe": "electron-packager dist/ DeezerDiscordRPC --platform=win32 --arch=x64",
     "run": "yarn build:ts && yarn start",
     "icon": "png-to-ico src/img/icon.png > src/img/icon.ico && cd ./dist/src && mkdir img && png-to-ico ../../src/img/icon.png > img/icon.ico"
@@ -18,6 +18,7 @@
   "devDependencies": {
     "@types/discord-rpc": "^4.0.0",
     "@types/node": "^18.7.6",
+    "cpy-cli": "^4.2.0",
     "electron": "^23.1.0",
     "electron-packager": "^17.1.1",
     "png-to-ico": "^2.1.4",

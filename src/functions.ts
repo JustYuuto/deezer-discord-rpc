@@ -205,3 +205,17 @@ export async function getLatestRelease() {
   const release = await axios.get(url);
   return release.data;
 }
+
+export async function prompt(message: string, options?: {
+  closable?: boolean
+}) {
+  const win = new BrowserWindow({
+    resizable: false,
+    minimizable: false,
+    maximizable: false,
+    closable: typeof options?.closable !== 'undefined' ? options?.closable : true
+  });
+
+  win.setMenuBarVisibility(false);
+  await win.loadFile(join(__dirname, 'prompt.html'), { hash: 'ws' });
+}
