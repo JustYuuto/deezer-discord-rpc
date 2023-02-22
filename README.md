@@ -19,3 +19,7 @@ A Discord RPC for showing the music you're listening to on Deezer (like Spotify 
 #### Tray menu:
 
 ![Tray menu.png](screenshots/tray_menu.png)
+
+## Todo
+
+* [ ] Implement Discord WebSocket server to get a "Listening to" status on the profile
