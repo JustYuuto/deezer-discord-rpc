@@ -196,7 +196,7 @@ export async function getLatestRelease() {
   return release.data;
 }
 
-export async function prompt(message: string, options?: {
+export async function prompt(message: string, app: Electron.App, options?: {
   closable?: boolean
 }) {
   const win = new BrowserWindow({
