@@ -79,11 +79,11 @@ export function updater(fromStartup: boolean = false) {
       } else {
         console.log('No updates found.');
         if (!fromStartup)
-        dialog.showMessageBox(null, {
-          type: 'info',
-          title: 'No update available',
-          message: 'You are using the latest version.',
-        });
+          dialog.showMessageBox(null, {
+            type: 'info',
+            title: 'No update available',
+            message: 'You are using the latest version.',
+          });
       }
     })
     .catch(reason => {
