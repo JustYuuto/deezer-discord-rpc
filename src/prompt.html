@@ -46,13 +46,15 @@
     </style>
 </head>
 <body>
-<div class="input">
-    <label for="input"></label>
-    <input type="text" id="input"/>
-</div>
-<div class="submit">
-    <button></button>
-</div>
+    <form>
+        <div class="input">
+            <label for="input"></label>
+            <input type="text" id="input" autofocus />
+        </div>
+        <div class="submit">
+            <button type="submit"></button>
+        </div>
+    </form>
 <script>
     const intent = window.location.hash.replace('#', '');
     const label = document.querySelector('label');
@@ -74,7 +76,8 @@
         ].join('<br />');
         input.setAttribute('type', 'password');
         button.innerHTML = 'Submit';
-        button.addEventListener('click', async () => {
+        button.addEventListener('click', async (e) => {
+            e.preventDefault();
             const token = input.value;
             let invalid = false;
             if (token.startsWith('Bot') || token.startsWith('Bearer') || token.includes(' ')) invalid = true;
@@ -85,6 +88,8 @@
                 if (verifyToken.status !== 200) invalid = true;
                 else {
                     window.promptSubmit.send('token-received', token);
+                    input.disabled = true;
+                    button.disabled = true;
                 }
             }
             if (invalid) {
