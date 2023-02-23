@@ -1,14 +1,18 @@
-import { Menu, Tray, BrowserWindow, shell, dialog } from 'electron';
+import { BrowserWindow, dialog, Menu, shell, Tray, ipcMain } from 'electron';
 import { clientId, useAsMainApp } from './variables';
 import * as RPC from 'discord-rpc';
 import { resolve, join } from 'path';
 import { version } from '../package.json';
 import axios from 'axios';
 import { existsSync, writeFileSync } from 'fs';
+import { client as rpcClient } from './index';
+
+const WebSocket = require('websocket').client;
 
 export let win: BrowserWindow;
 export let tray: Tray | null = null;
 export const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export async function loadWindow() {
   win = new BrowserWindow({
     width: useAsMainApp ? 1920 : 450,
