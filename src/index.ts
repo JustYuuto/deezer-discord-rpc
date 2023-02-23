@@ -5,7 +5,7 @@ import { app, BrowserWindow } from 'electron';
 import { findTrackInAlbum, getAlbum } from './activity/album';
 import { getTrack } from './activity/track';
 
-const client = new RPC.Client({
+export const client = new RPC.Client({
   transport: 'ipc'
 });
 
