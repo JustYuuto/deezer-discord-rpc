@@ -115,27 +115,15 @@ export async function initTrayIcon(app: Electron.App, client: RPC.Client) {
       },
       {
         label: 'Tooltip text', type: 'submenu', submenu: [
-          {
-            label: 'App name', type: 'radio', id: 'app_name', checked: getConfig(app, 'tooltip_text') === 'app_name',
-            click: (menuItem) => saveConfigKey(app, 'tooltip_text', menuItem.id)
-          },
-          {
-            label: 'App version', type: 'radio', id: 'app_version', checked: getConfig(app, 'tooltip_text') === 'app_version',
-            click: (menuItem) => saveConfigKey(app, 'tooltip_text', menuItem.id)
-          },
-          {
-            label: 'App name and version', type: 'radio', id: 'app_name_and_version', checked: getConfig(app, 'tooltip_text') === 'app_name_and_version',
-            click: (menuItem) => saveConfigKey(app, 'tooltip_text', menuItem.id)
-          },
-          {
-            label: 'Artists song - Song title', type: 'radio', id: 'artists_and_title', checked: getConfig(app, 'tooltip_text') === 'artists_and_title',
-            click: (menuItem) => saveConfigKey(app, 'tooltip_text', menuItem.id)
-          },
-          {
-            label: 'Song title - Artists song', type: 'radio', id: 'title_and_artists', checked: getConfig(app, 'tooltip_text') === 'title_and_artists',
-            click: (menuItem) => saveConfigKey(app, 'tooltip_text', menuItem.id)
-          }
-        ]
+          ['App name', 'app_name'],
+          ['App version', 'app_version'],
+          ['App name and version', 'app_name_and_version'],
+          ['Artists song - Song title', 'artists_and_title'],
+          ['Song title - Artists song', 'title_and_artists'],
+        ].map(v => ({
+          label: v[0], type: 'radio', id: v[1], checked: getConfig(app, 'tooltip_text') === v[1],
+          click: (menuItem) => saveConfigKey(app, 'tooltip_text', menuItem.id)
+        }))
       },
       {
         label: 'Only show RPC if music is playing', type: 'checkbox', checked: getConfig(app, 'only_show_if_playing'),
