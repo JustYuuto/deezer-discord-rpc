@@ -74,4 +74,6 @@ client.on('ready', () => {
   });
 });
 
-client.login({ clientId }).catch(console.error);
+process.on('beforeExit', () => {
+  getConfig(app, 'use_listening_to') ? wsClient?.close() : rpcClient?.destroy();
+});
