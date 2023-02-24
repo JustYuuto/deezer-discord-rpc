@@ -5,7 +5,9 @@ import { app, BrowserWindow } from 'electron';
 import { findTrackInAlbum, getAlbum } from './activity/album';
 import { getTrack } from './activity/track';
 
-export const client = new RPC.Client({
+console.log(`[App] Deezer Discord RPC version ${require('../package.json').version}`);
+
+export const rpcClient = new RPC.Client({
   transport: 'ipc'
 });
 
