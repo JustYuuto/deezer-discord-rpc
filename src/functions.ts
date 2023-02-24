@@ -1,13 +1,16 @@
-import { BrowserWindow, dialog, Menu, shell, Tray, ipcMain } from 'electron';
-import { clientId, useAsMainApp } from './variables';
+import { BrowserWindow, dialog, Menu, shell, Tray, ipcMain, app } from 'electron';
+import { clientId, useAsMainApp, userAgent } from './variables';
 import * as RPC from 'discord-rpc';
 import { resolve, join } from 'path';
 import { version } from '../package.json';
 import axios from 'axios';
 import { existsSync, writeFileSync } from 'fs';
-import { client as rpcClient } from './index';
-
-const WebSocket = require('websocket').client;
+import { noRPC, rpcClient } from './index';
+import { findTrackInAlbum, getAlbum } from './activity/album';
+import { getTrack } from './activity/track';
+import WebSocket from 'ws';
+import UAParser from 'ua-parser-js';
+import { log } from './utils/Log';
 
 export let win: BrowserWindow;
 export let tray: Tray | null = null;
