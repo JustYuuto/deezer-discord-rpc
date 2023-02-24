@@ -10,6 +10,7 @@ console.log(`[App] Deezer Discord RPC version ${require('../package.json').versi
 export const rpcClient = new RPC.Client({
   transport: 'ipc'
 });
+export const noRPC = getConfig(app, 'use_listening_to');
 
 app.whenReady().then(async () => {
   await loadWindow();
