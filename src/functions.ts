@@ -242,8 +242,9 @@ export async function initTrayIcon(app: Electron.App, client: RPC.Client) {
 }
 
 export async function setActivity(options: {
-  client: RPC.Client, albumId: number, trackId: number, playing: boolean, timeLeft: number,
-  trackTitle: string, trackArtists: any, trackLink: string, albumCover: string, albumTitle: string, app: Electron.App
+  client: RPC.Client | WebSocket, albumId: number, trackId: number, playing: boolean, timeLeft: number,
+  trackTitle: string, trackArtists: any, trackLink: string, albumCover: string, albumTitle: string, app: Electron.App,
+  songTime: number
 }) {
   const {
     timeLeft, playing, client, albumTitle, trackArtists, trackLink, trackTitle, albumCover, app
