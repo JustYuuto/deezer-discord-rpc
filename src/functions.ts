@@ -147,7 +147,7 @@ export function updater(fromStartup: boolean = false) {
       }
     })
     .catch(reason => {
-      console.log(`Cannot get the latest release: ${reason?.toString()}`);
+      console.log(`[Updater] Cannot get the latest release: ${reason?.toString()}`);
       dialog.showMessageBox(null, {
         type: 'error',
         buttons: ['Close', 'Retry'],
