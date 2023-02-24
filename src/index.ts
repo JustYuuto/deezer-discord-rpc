@@ -11,7 +11,7 @@ export const client = new RPC.Client({
 
 app.whenReady().then(async () => {
   await loadWindow();
-  await initTrayIcon(app, client);
+  await initTrayIcon(app, rpcClient);
   await updater(true);
 
   app.on('activate', () => {
