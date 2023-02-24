@@ -1,9 +1,7 @@
 import * as RPC from 'discord-rpc';
 import { clientId } from './variables';
-import { initTrayIcon, setActivity, loadWindow, win, updater, wait } from './functions';
-import { app, BrowserWindow } from 'electron';
-import { findTrackInAlbum, getAlbum } from './activity/album';
-import { getTrack } from './activity/track';
+import { initTrayIcon, loadWindow, updater, getConfig, discordWebSocket, wsClient } from './functions';
+import { app, BrowserWindow, dialog, protocol } from 'electron';
 
 console.log(`[App] Deezer Discord RPC version ${require('../package.json').version}`);
 
