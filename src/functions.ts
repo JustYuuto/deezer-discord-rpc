@@ -341,3 +341,81 @@ export async function prompt(message: string, app: Electron.App, options?: {
   win.setMenuBarVisibility(false);
   await win.loadFile(join(__dirname, 'prompt.html'), { hash: message });
 }
+
+export let wsClient: WebSocket;
+
+export function discordWebSocket(token: string) {
+  return new Promise<void>((resolve, reject) => {
+    const socket = new WebSocket('wss://gateway.discord.gg/?v=10&encoding=json', {
+      headers: {
+        'User-Agent': userAgent,
+        Origin: 'https://discord.com'
+      }
+    });
+    const ua = new UAParser(userAgent);
+    const payload = {
+      op: 2,
+      d: {
+        token,
+        capabilities: 4093,
+        properties: {
+          os: ua.getOS().name,
+          browser: ua.getBrowser().name,
+          device: '',
+          system_locale: 'en-US',
+          browser_user_agent: userAgent,
+          browser_version: ua.getBrowser().version,
+          os_version: ua.getOS().version,
+          referrer: 'https://discord.com/developers/docs/resources/invite',
+          referring_domain: 'discord.com',
+          referrer_current: '',
+          referring_domain_current: '',
+          release_channel: 'stable',
+          client_build_number: 176471,
+          client_event_source: null
+        },
+        presence: {
+          activities: []
+        }
+      }
+    };
+
+    socket.on('open', async () => {
+      if (!noRPC) {
+        await rpcClient.clearActivity(process.pid);
+        await rpcClient.destroy();
+      }
+      console.log('[WebSocket] Connected to Discord WebSocket server');
+      resolve();
+      wsClient = socket;
+
+      socket.send(JSON.stringify(payload), () => {
+        console.log('[WebSocket] Sent authentication payload');
+      });
+    });
+
+    socket.on('error', reject);
+
+    socket.on('message', (data) => {
+      const payload = JSON.parse(data.toString());
+      const { d, op } = payload;
+
+      switch (op) {
+        case 10:
+          const { heartbeat_interval } = d;
+          heartbeat(heartbeat_interval);
+          break;
+      }
+    });
+
+    socket.on('close', (code, desc) => {
+      console.log('[WebSocket]', code + ':', desc.toString());
+      console.log('[WebSocket] Connection closed; sending authentication payload');
+      socket.send(JSON.stringify(payload));
+    });
+
+    function heartbeat(ms: number) {
+      return setInterval(() => socket.send(JSON.stringify({ op: 1, d: null })), ms);
+    }
+  });
+}
