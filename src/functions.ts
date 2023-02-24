@@ -284,17 +284,50 @@ export async function setActivity(options: {
   buttons.push({
     label: 'View RPC on GitHub', url: 'https://github.com/JustYuuto/deezer-discord-rpc'
   });
-  await client.setActivity({
-    details: trackTitle,
-    state: trackArtists,
-    largeImageKey: albumCover,
-    largeImageText: albumTitle,
-    instance: false,
-    endTimestamp: (useAsMainApp && playing) && timeLeft,
-    smallImageKey: 'https://raw.githubusercontent.com/JustYuuto/deezer-discord-rpc/master/src/img/icon.png',
-    smallImageText: `Deezer Discord RPC ${version}`,
-    buttons
-  });
+  if (client instanceof RPC.Client) {
+    await client.setActivity({
+      details: trackTitle,
+      state: trackArtists,
+      largeImageKey: albumCover,
+      largeImageText: albumTitle,
+      instance: false,
+      endTimestamp: (useAsMainApp && playing) && timeLeft,
+      smallImageKey: 'https://raw.githubusercontent.com/JustYuuto/deezer-discord-rpc/master/src/img/icon.png',
+      smallImageText: `Deezer Discord RPC ${version}`,
+      buttons
+    }).catch(() => {});
+  } else {
+    client.send(JSON.stringify({
+      op: 3,
+      d: {
+        status: 'online',
+        since: 0,
+        afk: false,
+        activities: [
+          {
+            type: 2,
+            name: 'Deezer',
+            details: trackTitle,
+            state: trackArtists,
+            timestamps: {
+              // start: (useAsMainApp && playing) && Date.now() - songTime,
+              end: (useAsMainApp && playing) && timeLeft
+            },
+            party: {
+              id: 'ae488379-351d-4a4f-ad32-2b9b01c91657'
+            },
+            application_id: parseInt(clientId),
+            assets: {
+              large_image: albumCover,
+              large_text: albumTitle,
+              small_image_url: 'https://raw.githubusercontent.com/JustYuuto/deezer-discord-rpc/master/src/img/icon.png',
+              small_text: `Deezer Discord RPC ${version}`
+            }
+          }
+        ]
+      }
+    }));
+  }
 }
 
 export async function getLatestRelease() {
