@@ -227,15 +227,20 @@ export async function setActivity(options: {
   const tooltipText = getConfig(app, 'tooltip_text');
   switch (tooltipText) {
     case 'app_name':
-      tray.setToolTip('Deezer Discord RPC'); break;
+      tray.setToolTip('Deezer Discord RPC');
+      break;
     case 'app_version':
-      tray.setToolTip(`Version ${version}`); break;
+      tray.setToolTip(`Version ${version}`);
+      break;
     case 'app_name_and_version':
-      tray.setToolTip(`Deezer Discord RPC version ${version}`); break;
+      tray.setToolTip(`Deezer Discord RPC version ${version}`);
+      break;
     case 'artists_and_title':
-      tray.setToolTip(`${trackArtists} - ${trackTitle}`); break;
+      tray.setToolTip(`${trackArtists} - ${trackTitle}`);
+      break;
     case 'title_and_artists':
-      tray.setToolTip(`${trackTitle} - ${trackArtists}`); break;
+      tray.setToolTip(`${trackTitle} - ${trackArtists}`);
+      break;
   }
   if (!client) return;
 
