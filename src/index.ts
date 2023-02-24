@@ -15,6 +15,10 @@ app.whenReady().then(async () => {
   await initTrayIcon(app, rpcClient);
   await updater(true);
 
+  getConfig(app, 'use_listening_to') ?
+    discordWebSocket(getConfig(app, 'discord_token')).catch(console.error) :
+    rpcClient.login({ clientId }).catch(console.error);
+
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) loadWindow();
   });
