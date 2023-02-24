@@ -193,10 +193,18 @@ export async function initTrayIcon(app: Electron.App, client: RPC.Client) {
         click: (menuItem) => saveConfigKey(app, 'only_show_if_playing', menuItem.checked)
       },
       {
-        label: 'Reconnect RPC', type: 'normal', enabled: true, click: () => client.connect(clientId).then(() => console.log('Reconnected to RPC'))
+        label: 'Reconnect RPC',
+        type: 'normal',
+        enabled: true,
+        click: () => client.connect(clientId).then(() => console.log('Reconnected to RPC'))
       },
       { type: 'separator' },
-      { label: 'Quit', type: 'normal', click: () => { app.quit(); process.exit(); } }
+      {
+        label: 'Quit', type: 'normal', click: () => {
+          app.quit();
+          process.exit();
+        }
+      }
     ]);
 
     tray.setToolTip('Deezer Discord RPC');
