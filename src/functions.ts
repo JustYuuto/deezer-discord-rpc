@@ -270,7 +270,13 @@ export async function setActivity(options: {
   if (!client) return;
 
   if (getConfig(app, 'only_show_if_playing') && !playing) {
-    await client.clearActivity(process.pid); return;
+    if (client instanceof RPC.Client) {
+      await client.clearActivity(process.pid);
+      return;
+    } else {
+      client.close();
+      return;
+    }
   }
 
   const buttons = [];
