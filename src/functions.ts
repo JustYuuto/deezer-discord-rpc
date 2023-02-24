@@ -316,8 +316,22 @@ export async function prompt(message: string, app: Electron.App, options?: {
     }
   });
 
-  ipcMain.on('token-received', (e, data) => {
-    console.log(data);
+  ipcMain.on('token-received', async (e, data) => {
+    saveConfigKey(app, 'discord_token', data);
+    saveConfigKey(app, 'use_listening_to', true);
+    win.close();
+    await dialog.showMessageBox(null, {
+      type: 'info',
+      buttons: ['Restart later', 'Restart now'],
+      title: 'App restart needed',
+      message: 'The app needs to be restarted to apply the changes.',
+    }).then(({ response }) => {
+      if (response === 1) {
+        app.relaunch();
+        app.exit();
+      }
+    });
+    discordWebSocket(data).catch(console.error);
   });
 
   win.webContents.setWindowOpenHandler((details) => {
