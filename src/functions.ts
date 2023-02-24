@@ -170,7 +170,10 @@ export async function initTrayIcon(app: Electron.App, client: RPC.Client) {
       { label: 'Check for updates', type: 'normal', enabled: true, click: () => updater() },
       { type: 'separator' },
       {
-        label: 'Hide/show window', type: 'normal', enabled: true, click: () => win.isVisible() ? win.hide() : win.show(),
+        label: 'Hide/show window',
+        type: 'normal',
+        enabled: true,
+        click: () => win.isVisible() ? win.hide() : win.show(),
         visible: useAsMainApp
       },
       {
