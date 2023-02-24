@@ -55,14 +55,16 @@
             const label = document.createElement('label');
             label.innerHTML = item.label;
             label.setAttribute('for', item.id);
-            const input = document.createElement('input');
-            input.setAttribute('type', item.type || 'text');
-            input.setAttribute('autofocus', items[0].id === item.id);
-            input.setAttribute('id', item.id);
 
             form.append(labelInputDiv);
             labelInputDiv.append(label);
-            labelInputDiv.append(input);
+            if (item.type !== 'noinput') {
+                const input = document.createElement('input');
+                input.setAttribute('type', item.type || 'text');
+                input.setAttribute('autofocus', items[0].id === item.id);
+                input.setAttribute('id', item.id);
+                labelInputDiv.append(input);
+            }
         }
         const submitDiv = document.createElement('div');
         submitDiv.classList.add('submit');
@@ -103,7 +105,7 @@
         ].join('<br />');
         initElements([
             { id: 'discord-token', label: discordTokenLabel, type: 'password' },
-            { id: 'spotify', label: spotifyLabel }
+            { id: 'spotify', label: spotifyLabel, type: 'noinput' }
         ], {
             btnLabel: 'Submit', onSubmit: async (e) => {
                 e.preventDefault();
