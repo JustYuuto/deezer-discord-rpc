@@ -43,6 +43,63 @@ export async function loadWindow() {
 
     return false;
   });
+
+  wait(5000).then(() => {
+    let currentTrack;
+    setInterval(() => {
+      const client = getConfig(app, 'use_listening_to') ? wsClient : rpcClient;
+      let code =
+        `(() => {
+          const albumId = document.querySelector('.track-link[href*="album"]')?.getAttribute('href').split('/')[3];
+          const trackName = document.querySelector('.track-link[href*="album"]')?.textContent;
+          const playing = !!document.querySelector('#page_player > div > div.player-controls > ul > li:nth-child(3) > button > svg[data-testid="PauseIcon"]');
+          const songTime = document.querySelector('#page_player > div > div.player-track > div > div.track-seekbar > div > div.slider-counter-max')?.textContent?.split(':');
+          const timeLeft = document.querySelector('#page_player > div > div.player-track > div > div.track-seekbar > div > div.slider-counter-current')?.textContent?.split(':');
+          return JSON.stringify({ albumId, trackName, playing, songTime: { minutes: songTime[0], seconds: songTime[1] }, timeLeft: { minutes: timeLeft[0], seconds: timeLeft[1] } });
+        })();`;
+      win.webContents.executeJavaScript(code, true).then(async (result) => {
+        result = JSON.parse(result);
+        const songTime = Date.now() + (((+0) * 60 * 60 + (+result.songTime.minutes) * 60 + (+result.songTime.seconds)) * 1000);
+        const timeLeft = songTime - (((+0) * 60 * 60 + (+result.timeLeft.minutes) * 60 + (+result.timeLeft.seconds)) * 1000);
+        if (currentTrack?.title !== result.trackName) {
+          const trackId = await findTrackInAlbum(result.trackName, result.albumId);
+          const track = await getTrack(trackId);
+          const album = await getAlbum(result.albumId);
+          currentTrack = {
+            trackId,
+            trackTitle: track.title,
+            trackArtists: track.contributors?.map(c => c.name)?.join(', '),
+            trackLink: track.link,
+            albumCover: album.cover_medium,
+            albumTitle: album.title,
+            app
+          };
+          await setActivity({
+            client, albumId: result.albumId, playing: result.playing, timeLeft, app, ...currentTrack, songTime
+          });
+        } else {
+          if (!currentTrack) {
+            const trackId = await findTrackInAlbum(result.trackName, result.albumId);
+            const track = await getTrack(trackId);
+            const album = await getAlbum(result.albumId);
+            currentTrack = {
+              trackId,
+              trackTitle: track.title,
+              trackArtists: track.contributors?.map(c => c.name)?.join(', '),
+              trackLink: track.link,
+              albumCover: album.cover_medium,
+              albumTitle: album.title,
+              app
+            };
+          }
+          await setActivity({
+            client, albumId: result.albumId, playing: result.playing, timeLeft, app, ...currentTrack, songTime
+          });
+        }
+        currentTrack.title = result.trackName;
+      });
+    }, 1000);
+  });
 }
 
 export function saveConfigKey(app: Electron.App, key: string, value: any) {
