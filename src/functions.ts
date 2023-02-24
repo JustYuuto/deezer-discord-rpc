@@ -34,7 +34,7 @@ export async function loadWindow() {
   await win.loadURL('https://www.deezer.com/login', {
     // Windows 10 (x64) with Google Chrome 110.0.0.0
     // The default user agent does not work with Deezer (the player does not update by itself)
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36'
+    userAgent
   });
 
   win.on('close', (e) => {
