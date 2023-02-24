@@ -289,6 +289,10 @@ export async function prompt(message: string, app: Electron.App, options?: {
     console.log(data);
   });
 
+  win.webContents.setWindowOpenHandler((details) => {
+    shell.openExternal(details.url);
+    return { action: 'deny' };
+  });
   win.setMenuBarVisibility(false);
   await win.loadFile(join(__dirname, 'prompt.html'), { hash: message });
 }
