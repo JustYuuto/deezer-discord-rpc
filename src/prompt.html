@@ -46,23 +46,40 @@
     </style>
 </head>
 <body>
-    <form>
-        <div class="input">
-            <label for="input"></label>
-            <input type="text" id="input" autofocus />
-        </div>
-        <div class="submit">
-            <button type="submit"></button>
-        </div>
-    </form>
 <script>
+    function initElements(items, options) {
+        const form = document.createElement('form');
+        for (let [, item] of items.entries()) {
+            const labelInputDiv = document.createElement('div');
+            labelInputDiv.classList.add('input');
+            const label = document.createElement('label');
+            label.innerHTML = item.label;
+            label.setAttribute('for', item.id);
+            const input = document.createElement('input');
+            input.setAttribute('type', item.type || 'text');
+            input.setAttribute('autofocus', items[0].id === item.id);
+            input.setAttribute('id', item.id);
+
+            form.append(labelInputDiv);
+            labelInputDiv.append(label);
+            labelInputDiv.append(input);
+        }
+        const submitDiv = document.createElement('div');
+        submitDiv.classList.add('submit');
+        const button = document.createElement('button');
+        button.innerHTML = options.btnLabel;
+        button.setAttribute('type', 'submit');
+        button.addEventListener('click', options.onSubmit);
+        submitDiv.append(button);
+        form.append(submitDiv);
+        document.body.append(form);
+    }
+
     const intent = window.location.hash.replace('#', '');
-    const label = document.querySelector('label');
-    const input = document.querySelector('input');
-    const button = document.querySelector('button');
+
     if (intent === 'ws') {
         document.title = 'Enter your Discord token';
-        label.innerHTML = [
+        const discordTokenLabel = [
             'We can\'t display a "Listening to" status using the RPC. If you don\'t understand what is the "Listening to" ' +
             'status, that\'s like the Spotify integration (you\'ve probably seen <i>Listening to Spotify</i> on someone profile).',
             'Through using the Discord WebSocket server (which is used for real-time events, like sending messages, or setting ' +
@@ -74,26 +91,39 @@
             '(If you need to check the code we are using to communicate with the Discord WebSocket server, you can check it ' +
             'here: <a href="" target="_blank"></a>)'
         ].join('<br />');
-        input.setAttribute('type', 'password');
-        button.innerHTML = 'Submit';
-        button.addEventListener('click', async (e) => {
-            e.preventDefault();
-            const token = input.value;
-            let invalid = false;
-            if (token.startsWith('Bot') || token.startsWith('Bearer') || token.includes(' ')) invalid = true;
-            else {
-                const verifyToken = await fetch('https://discord.com/api/v10/users/@me', {
-                    headers: { Authorization: token }
-                });
-                if (verifyToken.status !== 200) invalid = true;
+        const spotifyOAuthParams = new URLSearchParams();
+        spotifyOAuthParams.append('response_type', 'code');
+        spotifyOAuthParams.append('client_id', '8745c583cc6b42b895d56276cdf391ad');
+        spotifyOAuthParams.append('redirect_uri', 'deezer-discord-rpc://spotify-callback/');
+        const spotifyOAuthURL = `https://accounts.spotify.com/authorize?${spotifyOAuthParams}`;
+        const spotifyLabel = [
+            'Because it\'s not possible to set albums covers with a URL when using the Discord WebSocket server, we use Spotify API ' +
+            'to get albums covers. This requires to be logged in a Spotify account. If you want to get albums covers on your profile, ' +
+            `then click <a href="${spotifyOAuthURL}" target="_blank">here</a>.`
+        ].join('<br />');
+        initElements([
+            { id: 'discord-token', label: discordTokenLabel, type: 'password' },
+            { id: 'spotify', label: spotifyLabel }
+        ], {
+            btnLabel: 'Submit', onSubmit: async (e) => {
+                e.preventDefault();
+                const token = document.querySelector('input#discord-token').value;
+                let invalid = false;
+                if (token.startsWith('Bot') || token.startsWith('Bearer') || token.includes(' ')) invalid = true;
                 else {
-                    window.promptSubmit.send('token-received', token);
-                    input.disabled = true;
-                    button.disabled = true;
+                    const verifyToken = await fetch('https://discord.com/api/v10/users/@me', {
+                        headers: { Authorization: token }
+                    });
+                    if (verifyToken.status !== 200) invalid = true;
+                    else {
+                        window.promptSubmit.send('token-received', token);
+                        document.querySelector('input#discord-token').disabled = true;
+                        document.querySelector('button').disabled = true;
+                    }
                 }
-            }
-            if (invalid) {
-                alert('The token you provided seems to be invalid!');
+                if (invalid) {
+                    alert('The token you provided seems to be invalid!');
+                }
             }
         });
     }
