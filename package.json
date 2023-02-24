@@ -2,32 +2,54 @@
   "name": "deezer-discord-rpc",
   "version": "1.0.9",
   "description": "A Discord RPC for Deezer",
-  "main": "./src/index.js",
+  "main": "./build/src/index.js",
   "scripts": {
-    "start": "electron ./dist/src/index.js",
-    "build": "yarn build:ts && yarn icon && yarn install --prod --non-interactive --cwd ./dist && yarn build:exe",
-    "build:ts": "tsc --resolveJsonModule && cpy ./src/prompt.html dist/",
-    "build:exe": "electron-packager dist/ DeezerDiscordRPC --platform=win32 --arch=x64",
+    "start": "electron ./build/src/index.js",
+    "build": "yarn build:ts && yarn icon && yarn build:exe",
+    "build:ts": "tsc --resolveJsonModule && cpy ./src/prompt.html build/",
+    "build:exe": "electron-builder",
     "run": "yarn build:ts && yarn start",
-    "icon": "png-to-ico src/img/icon.png > src/img/icon.ico && cd ./dist/src && mkdir img && png-to-ico ../../src/img/icon.png > img/icon.ico"
+    "icon": "png-to-ico src/img/icon.png > src/img/icon.ico && cd ./build/src && mkdir img && png-to-ico ../../src/img/icon.png > img/icon.ico"
   },
   "dependencies": {
     "axios": "^0.27.2",
+    "chalk": "4.1.2",
     "discord-rpc": "^4.0.1",
-    "websocket": "^1.0.34"
+    "ua-parser-js": "^1.0.33",
+    "ws": "^8.12.1"
   },
   "devDependencies": {
     "@types/discord-rpc": "^4.0.0",
     "@types/node": "^18.7.6",
-    "@types/websocket": "^1.0.5",
+    "@types/ua-parser-js": "^0.7.36",
+    "@types/ws": "^8.5.4",
     "cpy-cli": "^4.2.0",
     "electron": "^23.1.0",
-    "electron-packager": "^17.1.1",
+    "electron-builder": "^23.6.0",
     "png-to-ico": "^2.1.4",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.4"
   },
   "repository": "https://github.com/JustYuuto/deezer-discord-rpc.git",
   "author": "NetherMC",
-  "license": "MIT"
+  "license": "MIT",
+  "build": {
+    "appId": "com.github.yuuto.deezerdiscordrpc",
+    "productName": "Deezer Discord RPC",
+    "protocols": [
+      {
+        "name": "deezer-discord-rpc",
+        "schemes": [
+          "deezer-discord-rpc"
+        ]
+      }
+    ],
+    "files": [
+      "!src/*",
+      "!src/**/*",
+      "build/package.json",
+      "build/src/*",
+      "build/src/**/*"
+    ]
+  }
 }

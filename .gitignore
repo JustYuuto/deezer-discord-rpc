@@ -6,5 +6,5 @@
 /.idea/
 
 # Builds
-/DeezerDiscordRPC-win32-x64/
+/build/
 /dist/
