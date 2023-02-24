@@ -198,6 +198,30 @@ export async function initTrayIcon(app: Electron.App, client: RPC.Client) {
         enabled: true,
         click: () => client.connect(clientId).then(() => console.log('Reconnected to RPC'))
       },
+      {
+        label: 'Use "Listening to" instead of "Playing"', type: 'checkbox', checked: getConfig(app, 'use_listening_to'),
+        click: async (menuItem) => {
+          if (!menuItem.checked) {
+            menuItem.enabled = false;
+            menuItem.checked = true;
+            await dialog.showMessageBox(null, {
+              type: 'question',
+              buttons: ['No', 'Yes'],
+              title: 'Listening to status',
+              message: 'Do you want to disable the Listening to status and use the Playing status?',
+            }).then(({ response }) => {
+              menuItem.enabled = true;
+              if (response === 1) {
+                menuItem.checked = false;
+                saveConfigKey(app, 'use_listening_to', false);
+                rpcClient.login({ clientId }).catch(() => rpcClient.connect(clientId).catch(console.error));
+              }
+            });
+          } else {
+            await prompt('ws', app);
+          }
+        }
+      },
       { type: 'separator' },
       {
         label: 'Quit', type: 'normal', click: () => {
