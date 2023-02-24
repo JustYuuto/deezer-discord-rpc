@@ -63,11 +63,11 @@ export function getConfig(app: Electron.App, key?: string) {
 }
 
 export function updater(fromStartup: boolean = false) {
-  console.log('Checking for updates...');
+  console.log('[Updater] Checking for updates...');
   return getLatestRelease()
     .then(release => {
       if (release.tag_name !== version) {
-        console.log(`The version ${release.tag_name} is available to download!`);
+        console.log(`[Updater] The version ${release.tag_name} is available to download!`);
         dialog.showMessageBox({
           type: 'info',
           title: 'Update available',
@@ -80,7 +80,7 @@ export function updater(fromStartup: boolean = false) {
           }
         });
       } else {
-        console.log('No updates found.');
+        console.log('[Updater] No updates found.');
         if (!fromStartup)
           dialog.showMessageBox(null, {
             type: 'info',
