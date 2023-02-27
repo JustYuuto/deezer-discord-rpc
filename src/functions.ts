@@ -68,9 +68,11 @@ export async function loadWindow() {
             trackTitle: track.title,
             trackArtists: track.contributors?.map(c => c.name)?.join(artistsSeparator),
             trackLink: track.link,
-            albumCover: Config.get(app, 'use_listening_to') ? await Spotify.getCover({
-              title: track.title, artists: track.contributors?.map(c => c.name)?.join(', ')
-            }, app) : album.cover_medium,
+            albumCover: Config.get(app, 'use_listening_to') ?
+              await Spotify.getCover({
+                title: track.title, artists: track.contributors?.map(c => c.name)?.join(', ')
+              }, app).catch(() => Spotify.accessToken(Config.get(app, 'spotify_access_token'))) :
+              album.cover_medium,
             albumTitle: album.title,
           };
           await setActivity({

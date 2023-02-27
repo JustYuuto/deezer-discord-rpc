@@ -39,9 +39,10 @@ export async function getCover(track: {
   searchParams.append('limit', '1');
   searchParams.append('type', 'track');
   const accessToken = Config.get(app, 'spotify_access_token');
+  const tokenType = Config.get(app, 'spotify_token_type');
   const albumCoverReq = await axios.get(`${apiBase}/search?${searchParams}`, {
     headers: {
-      Accept: 'application/json', 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}`
+      Accept: 'application/json', 'Content-Type': 'application/json', Authorization: `${tokenType} ${accessToken}`
     }
   });
   let albumCover;

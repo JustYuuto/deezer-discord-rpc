@@ -59,9 +59,10 @@ function handleCall(url: string, app: Electron.App) {
   if (!code) return;
   Spotify.token(code).then((res) => {
     Spotify.accessToken(res.data.refresh_token).then(async () => {
-      const { access_token, expires_in } = res.data;
+      const { access_token, expires_in, token_type } = res.data;
       Config.set(app, 'spotify_access_token', access_token);
       Config.set(app, 'spotify_expires_at', Date.now() + expires_in);
+      Config.set(app, 'spotify_token_type', token_type);
       await dialog.showMessageBox(null, {
         type: 'info',
         buttons: ['Close'],
