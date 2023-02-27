@@ -182,7 +182,7 @@ export async function initTrayIcon(app: Electron.App, client: RPC.Client) {
         click: () => client.connect(clientId).then(() => console.log('Reconnected to RPC'))
       },
       {
-        label: 'Use "Listening to" instead of "Playing"', type: 'checkbox', checked: getConfig(app, 'use_listening_to'),
+        label: 'Use "Listening to" instead of "Playing"', type: 'checkbox', checked: Config.get(app, 'use_listening_to'),
         click: async (menuItem) => {
           if (!menuItem.checked) {
             menuItem.enabled = false;
@@ -280,6 +280,24 @@ export async function setActivity(options: {
       buttons
     }).catch(() => {});
   } else {
+    const searchParams = new URLSearchParams();
+    searchParams.append('q', `track:${trackTitle} artist:${trackArtists.split(',').shift()}`);
+    searchParams.append('limit', '1');
+    searchParams.append('type', 'album');
+    const albumCoverReq = await axios.get(`https://api.spotify.com/v1/search?${searchParams}`, {
+      headers: {
+        Accept: 'application/json', 'Content-Type': 'application/json',
+        Authorization: 'Bearer BQCSVnMywbNBjM_gUAnlQLqz4Yvqflu5WtW4gKtoOb7efu2sYXiE7QNvL4I2VB-moRTwL80Itd6sL2_BS-WFf-KESqqH93g-PMqqoOsZ8Fv2UZtCGZUSw07LeoPk66qyyw7s70e0-h79CQtSFHJkcO7zd3F84vcbRJhNMio83QDupW5sYbEnL-fd7e6p3mdMdWNa'
+      }
+    });
+    let albumCover;
+    if (albumCoverReq.status !== 200) {
+      log('Spotify Cover', `Error while fetching cover: ${albumCoverReq.statusText}`);
+      albumCover = null;
+    } else {
+      albumCover = albumCoverReq.data.items[0].images[0].url.split('/').pop();
+    }
+    console.log(albumCover);
     client.send(JSON.stringify({
       op: 3,
       d: {
@@ -301,7 +319,7 @@ export async function setActivity(options: {
             },
             application_id: parseInt(clientId),
             assets: {
-              large_image: albumCover,
+              large_image: `spotify:${albumCover}`,
               large_text: albumTitle,
               small_image_url: 'https://raw.githubusercontent.com/JustYuuto/deezer-discord-rpc/master/src/img/icon.png',
               small_text: `Deezer Discord RPC ${version}`
