@@ -3,6 +3,10 @@ import { clientId } from './variables';
 import { initTrayIcon, loadWindow, updater, getConfig, discordWebSocket, wsClient } from './functions';
 import { app, BrowserWindow } from 'electron';
 import { log } from './utils/Log';
+import * as Protocol from './utils/Protocol';
+
+Protocol.register(app);
+Protocol.handle(app);
 
 log('App', 'Deezer Discord RPC version', require('../package.json').version);
 
