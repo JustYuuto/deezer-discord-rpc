@@ -401,12 +401,12 @@ export function discordWebSocket(token: string) {
         await rpcClient.clearActivity(process.pid);
         await rpcClient.destroy();
       }
-      console.log('[WebSocket] Connected to Discord WebSocket server');
+      log('WebSocket', 'Connected to Discord WebSocket server');
       resolve();
       wsClient = socket;
 
       socket.send(JSON.stringify(payload), () => {
-        console.log('[WebSocket] Sent authentication payload');
+        log('WebSocket', 'Sent authentication payload');
       });
     });
 
@@ -425,8 +425,8 @@ export function discordWebSocket(token: string) {
     });
 
     socket.on('close', (code, desc) => {
-      console.log('[WebSocket]', code + ':', desc.toString());
-      console.log('[WebSocket] Connection closed; sending authentication payload');
+      log('WebSocket', code + ':', desc.toString());
+      log('WebSocket', 'Connection closed; sending authentication payload');
       socket.send(JSON.stringify(payload));
     });
 
