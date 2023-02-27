@@ -56,15 +56,7 @@ function handleCall(url: string, app: Electron.App) {
     });
     return;
   }
-  if (!code) {
-    dialog.showMessageBox(null, {
-      type: 'error',
-      title: 'Spotify Callback',
-      buttons: ['OK'],
-      message: 'The code provided is not valid',
-    });
-    return;
-  }
+  if (!code) return;
   Spotify.token(code).then((res) => {
     Spotify.accessToken(res.data.refresh_token).then(async () => {
       const { access_token, expires_in } = res.data;
