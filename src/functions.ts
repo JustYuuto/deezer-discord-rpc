@@ -182,7 +182,7 @@ export async function initTrayIcon(app: Electron.App, client: RPC.Client) {
         click: () => client.connect(clientId).then(() => console.log('Reconnected to RPC'))
       },
       {
-        label: 'Use "Listening to" instead of "Playing"', type: 'checkbox', checked: getConfig(app, 'use_listening_to'),
+        label: 'Use "Listening to" instead of "Playing"', type: 'checkbox', checked: Config.get(app, 'use_listening_to'),
         click: async (menuItem) => {
           if (!menuItem.checked) {
             menuItem.enabled = false;
