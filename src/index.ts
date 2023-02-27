@@ -1,9 +1,10 @@
 import * as RPC from 'discord-rpc';
 import { clientId } from './variables';
 import { initTrayIcon, loadWindow, updater, getConfig, discordWebSocket, wsClient } from './functions';
-import { app, BrowserWindow, dialog, protocol } from 'electron';
+import { app, BrowserWindow } from 'electron';
+import { log } from './utils/Log';
 
-console.log(`[App] Deezer Discord RPC version ${require('../package.json').version}`);
+log('App', `Deezer Discord RPC version ${require('../package.json').version}`);
 
 export const rpcClient = new RPC.Client({
   transport: 'ipc'
@@ -25,7 +26,7 @@ app.whenReady().then(async () => {
 });
 
 rpcClient.on('ready', () => {
-  console.log(`[RPC] Authed for user ${rpcClient.user?.username}#${rpcClient.user?.discriminator}`);
+  log('RPC', `Authed for user ${rpcClient.user?.username}#${rpcClient.user?.discriminator}`);
 });
 
 process.on('beforeExit', () => {
