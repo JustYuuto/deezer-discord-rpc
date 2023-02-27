@@ -46,7 +46,7 @@ export async function getCover(track: {
   });
   let albumCover;
   if (albumCoverReq.status !== 200) {
-    log('Spotify Cover', `Error while fetching cover: ${albumCoverReq.statusText}`);
+    log('Spotify Cover', 'Error while fetching cover:', albumCoverReq.statusText);
   } else {
     albumCover = albumCoverReq.data.tracks.items[0].album.images[0].url.split('/').pop();
   }
