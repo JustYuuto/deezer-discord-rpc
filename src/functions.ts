@@ -10,6 +10,7 @@ import { tray } from './utils/Tray';
 import * as DiscordWebSocket from './utils/WebSocket';
 import * as RPC from './utils/RPC';
 import * as Spotify from './utils/Spotify';
+import { log } from './utils/Log';
 
 export let win: BrowserWindow;
 export const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -57,27 +58,26 @@ export async function loadWindow() {
         result = JSON.parse(result);
         const songTime = Date.now() + (((+0) * 60 * 60 + (+result.songTime.minutes) * 60 + (+result.songTime.seconds)) * 1000);
         const timeLeft = songTime - (((+0) * 60 * 60 + (+result.timeLeft.minutes) * 60 + (+result.timeLeft.seconds)) * 1000);
-        if (currentTrack?.title !== result.trackName) {
-          if (!currentTrack) {
-            const trackId = await findTrackInAlbum(result.trackName, result.albumId);
-            const track = await getTrack(trackId);
-            const album = await getAlbum(result.albumId);
-            currentTrack = {
-              trackId,
-              trackTitle: track.title,
-              trackArtists: track.contributors?.map(c => c.name)?.join(artistsSeparator),
-              trackLink: track.link,
-              albumCover: Config.get(app, 'use_listening_to') ? await Spotify.getCover({
-                title: track.title, artists: track.contributors?.map(c => c.name)?.join(', ')
-              }, app) : album.cover_medium,
-              albumTitle: album.title,
-            };
-          }
+        if (currentTrack?.trackTitle !== result.trackName) {
+          log('Activity', 'Updating...');
+          const trackId = await findTrackInAlbum(result.trackName, result.albumId);
+          const track = await getTrack(trackId);
+          const album = await getAlbum(result.albumId);
+          currentTrack = {
+            trackId,
+            trackTitle: track.title,
+            trackArtists: track.contributors?.map(c => c.name)?.join(artistsSeparator),
+            trackLink: track.link,
+            albumCover: Config.get(app, 'use_listening_to') ? await Spotify.getCover({
+              title: track.title, artists: track.contributors?.map(c => c.name)?.join(', ')
+            }, app) : album.cover_medium,
+            albumTitle: album.title,
+          };
           await setActivity({
             client, albumId: result.albumId, playing: result.playing, timeLeft, app, ...currentTrack, songTime
-          });
+          }).then(() => log('Activity', 'Updated'));
         }
-        currentTrack.title = result.trackName;
+        currentTrack.trackTitle = result.trackName;
       });
     }, 1000);
   });
@@ -140,7 +140,6 @@ export async function setActivity(options: {
       buttons
     }).catch(() => {});
   } else {
-    console.log(songTime - Date.now());
     client.send(JSON.stringify({
       op: 3,
       d: {
@@ -157,9 +156,6 @@ export async function setActivity(options: {
               start: (useAsMainApp && playing) && songTime - Date.now(),
               end: (useAsMainApp && playing) && timeLeft
             },
-            // party: {
-            //   id: 'ae488379-351d-4a4f-ad32-2b9b01c91657'
-            // },
             application_id: parseInt(clientId),
             assets: {
               large_image: `spotify:${albumCover}`,
