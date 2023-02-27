@@ -6,6 +6,7 @@ import * as RPC from './RPC';
 import { prompt, win } from '../functions';
 import { dialog, Menu, Tray, shell } from 'electron';
 import { version } from '../../package.json';
+import { log } from './Log';
 
 const iconPath = join(__dirname, '..', 'img', 'icon.ico');
 
@@ -36,7 +37,7 @@ export async function init(app: Electron.App, client: import('discord-rpc').Clie
         click: (menuItem) => Config.set(app, 'only_show_if_playing', menuItem.checked)
       },
       {
-        label: 'Reconnect RPC', type: 'normal', click: () => client.connect(clientId).then(() => console.log('Reconnected to RPC'))
+        label: 'Reconnect RPC', type: 'normal', click: () => client.connect(clientId).then(() => log('RPC', 'Reconnected'))
       },
       {
         label: 'Use "Listening to" instead of "Playing"', type: 'checkbox', checked: Config.get(app, 'use_listening_to'),
