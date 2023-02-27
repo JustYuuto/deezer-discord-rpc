@@ -1,6 +1,4 @@
-import * as RPC from 'discord-rpc';
-import { clientId } from './variables';
-import { initTrayIcon, loadWindow, updater, discordWebSocket, wsClient } from './functions';
+import { loadWindow } from './functions';
 import { app, BrowserWindow } from 'electron';
 import { log } from './utils/Log';
 import * as Protocol from './utils/Protocol';
@@ -17,7 +15,7 @@ log('App', 'Deezer Discord RPC version', require('../package.json').version);
 
 app.whenReady().then(async () => {
   await loadWindow();
-  await initTrayIcon(app, rpcClient);
+  await Tray.init(app, RPC.client);
   await updater(true);
 
   Config.get(app, 'use_listening_to') ?

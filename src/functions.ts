@@ -1,4 +1,4 @@
-import { BrowserWindow, dialog, Menu, shell, Tray, ipcMain, app } from 'electron';
+import { BrowserWindow, dialog, shell, ipcMain, app } from 'electron';
 import { clientId, useAsMainApp, userAgent } from './variables';
 import { resolve, join } from 'path';
 import { version } from '../package.json';
@@ -14,7 +14,6 @@ import * as DiscordWebSocket from './utils/WebSocket';
 import * as RPC from './utils/RPC';
 
 export let win: BrowserWindow;
-export let tray: Tray | null = null;
 export const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function loadWindow() {
