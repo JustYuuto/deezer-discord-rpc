@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.0: WebSocket Update
+
+* We are now using Electron Builder for building the app; you can uninstall the old one
+* You can now use a "Listening to" status (like Spotify) on your profile!
+* Added tray tooltip options to change the text
+* Added a tray menu option to reconnect the RPC
+* Optimized the code **a lot** so now it is more readable
+
 ## 1.0.9
 
 * Added a tray menu submenu to select the tray icon tooltip text ([``ca6401b``](https://github.com/JustYuuto/deezer-discord-rpc/commit/ca6401b6fe28bdf7caabe9b01c0b2356b1d5e0fa))
