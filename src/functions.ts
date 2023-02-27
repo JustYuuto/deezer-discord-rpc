@@ -1,5 +1,5 @@
 import { BrowserWindow, dialog, shell, ipcMain, app } from 'electron';
-import { clientId, useAsMainApp, userAgent } from './variables';
+import { artistsSeparator, clientId, useAsMainApp, userAgent } from './variables';
 import { resolve, join } from 'path';
 import { version } from '../package.json';
 import { findTrackInAlbum, getAlbum } from './activity/album';
@@ -58,22 +58,6 @@ export async function loadWindow() {
         const songTime = Date.now() + (((+0) * 60 * 60 + (+result.songTime.minutes) * 60 + (+result.songTime.seconds)) * 1000);
         const timeLeft = songTime - (((+0) * 60 * 60 + (+result.timeLeft.minutes) * 60 + (+result.timeLeft.seconds)) * 1000);
         if (currentTrack?.title !== result.trackName) {
-          const trackId = await findTrackInAlbum(result.trackName, result.albumId);
-          const track = await getTrack(trackId);
-          const album = await getAlbum(result.albumId);
-          currentTrack = {
-            trackId,
-            trackTitle: track.title,
-            trackArtists: track.contributors?.map(c => c.name)?.join(', '),
-            trackLink: track.link,
-            albumCover: album.cover_medium,
-            albumTitle: album.title,
-            app
-          };
-          await setActivity({
-            client, albumId: result.albumId, playing: result.playing, timeLeft, app, ...currentTrack, songTime
-          });
-        } else {
           if (!currentTrack) {
             const trackId = await findTrackInAlbum(result.trackName, result.albumId);
             const track = await getTrack(trackId);
@@ -81,11 +65,12 @@ export async function loadWindow() {
             currentTrack = {
               trackId,
               trackTitle: track.title,
-              trackArtists: track.contributors?.map(c => c.name)?.join(', '),
+              trackArtists: track.contributors?.map(c => c.name)?.join(artistsSeparator),
               trackLink: track.link,
-              albumCover: album.cover_medium,
+              albumCover: Config.get(app, 'use_listening_to') ? await Spotify.getCover({
+                title: track.title, artists: track.contributors?.map(c => c.name)?.join(', ')
+              }, app) : album.cover_medium,
               albumTitle: album.title,
-              app
             };
           }
           await setActivity({
@@ -104,7 +89,7 @@ export async function setActivity(options: {
   songTime: number
 }) {
   const {
-    timeLeft, playing, client, albumTitle, trackArtists, trackLink, trackTitle, albumCover, app
+    timeLeft, playing, client, albumTitle, trackArtists, trackLink, trackTitle, albumCover, app, songTime
   } = options;
   const tooltipText = Config.get(app, 'tooltip_text');
   switch (tooltipText) {
@@ -155,7 +140,7 @@ export async function setActivity(options: {
       buttons
     }).catch(() => {});
   } else {
-    const albumCover = await Spotify.getCover({ title: trackTitle, artists: trackArtists }, app);
+    console.log(songTime - Date.now());
     client.send(JSON.stringify({
       op: 3,
       d: {
@@ -169,7 +154,7 @@ export async function setActivity(options: {
             details: trackTitle,
             state: trackArtists,
             timestamps: {
-              // start: (useAsMainApp && playing) && Date.now() - songTime,
+              start: (useAsMainApp && playing) && songTime - Date.now(),
               end: (useAsMainApp && playing) && timeLeft
             },
             // party: {
