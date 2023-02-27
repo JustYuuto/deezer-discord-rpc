@@ -4,7 +4,7 @@ import { initTrayIcon, loadWindow, updater, getConfig, discordWebSocket, wsClien
 import { app, BrowserWindow } from 'electron';
 import { log } from './utils/Log';
 
-log('App', `Deezer Discord RPC version ${require('../package.json').version}`);
+log('App', 'Deezer Discord RPC version', require('../package.json').version);
 
 export const rpcClient = new RPC.Client({
   transport: 'ipc'

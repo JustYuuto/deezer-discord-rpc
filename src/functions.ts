@@ -120,11 +120,11 @@ export function getConfig(app: Electron.App, key?: string) {
 }
 
 export function updater(fromStartup: boolean = false) {
-  console.log('[Updater] Checking for updates...');
+  log('Updater', 'Checking for updates...');
   return getLatestRelease()
     .then(release => {
       if (release.tag_name !== version) {
-        console.log(`[Updater] The version ${release.tag_name} is available to download!`);
+        log('Updater', 'The version', release.tag_name, 'is available to download!');
         dialog.showMessageBox({
           type: 'info',
           title: 'Update available',
@@ -137,7 +137,7 @@ export function updater(fromStartup: boolean = false) {
           }
         });
       } else {
-        console.log('[Updater] No updates found.');
+        log('Updater', 'No updates found.');
         if (!fromStartup)
           dialog.showMessageBox(null, {
             type: 'info',
@@ -147,7 +147,7 @@ export function updater(fromStartup: boolean = false) {
       }
     })
     .catch(reason => {
-      console.log(`[Updater] Cannot get the latest release: ${reason?.toString()}`);
+      log('Updater', 'Cannot get the latest release:', reason?.toString());
       dialog.showMessageBox(null, {
         type: 'error',
         buttons: ['Close', 'Retry'],
