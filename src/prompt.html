@@ -121,7 +121,7 @@
                     });
                     if (verifyToken.status !== 200) invalid = true;
                     else {
-                        window.promptSubmit.send('token-received', token);
+                        window.ipcRenderer.send('token-received', token);
                         document.querySelector('input#discord-token').disabled = true;
                         document.querySelector('button').disabled = true;
                     }
