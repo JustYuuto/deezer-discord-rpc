@@ -5,16 +5,15 @@ import { app, BrowserWindow } from 'electron';
 import { log } from './utils/Log';
 import * as Protocol from './utils/Protocol';
 import * as Config from './utils/Config';
+import * as Tray from './utils/Tray';
+import updater from './utils/Updater';
+import * as DiscordWebSocket from './utils/WebSocket';
+import * as RPC from './utils/RPC';
 
 Protocol.register(app);
 Protocol.handle(app);
 
 log('App', 'Deezer Discord RPC version', require('../package.json').version);
-
-export const rpcClient = new RPC.Client({
-  transport: 'ipc'
-});
-export const noRPC = Config.get(app, 'use_listening_to');
 
 app.whenReady().then(async () => {
   await loadWindow();
@@ -22,18 +21,14 @@ app.whenReady().then(async () => {
   await updater(true);
 
   Config.get(app, 'use_listening_to') ?
-    discordWebSocket(Config.get(app, 'discord_token')).catch(console.error) :
-    rpcClient.login({ clientId }).catch(console.error);
+    DiscordWebSocket.connect(Config.get(app, 'discord_token')).catch(console.error) :
+    RPC.connect();
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) loadWindow();
   });
 });
 
-rpcClient.on('ready', () => {
-  log('RPC', `Authed for user ${rpcClient.user?.username}#${rpcClient.user?.discriminator}`);
-});
-
 process.on('beforeExit', () => {
-  Config.get(app, 'use_listening_to') ? wsClient?.close() : rpcClient?.destroy();
+  (Config.get(app, 'use_listening_to') ? DiscordWebSocket : RPC).disconnect();
 });
