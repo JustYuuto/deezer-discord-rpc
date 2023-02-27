@@ -6,7 +6,6 @@ import axios from 'axios';
 import { findTrackInAlbum, getAlbum } from './activity/album';
 import { getTrack } from './activity/track';
 import WebSocket from 'ws';
-import UAParser from 'ua-parser-js';
 import { log } from './utils/Log';
 import * as Config from './utils/Config';
 import { tray } from './utils/Tray';
@@ -29,10 +28,8 @@ export async function loadWindow() {
     }
   });
 
-  win.menuBarVisible = false;
-
+  win.setMenuBarVisibility(false);
   await win.loadURL('https://www.deezer.com/login', {
-    // Windows 10 (x64) with Google Chrome 110.0.0.0
     // The default user agent does not work with Deezer (the player does not update by itself)
     userAgent
   });
