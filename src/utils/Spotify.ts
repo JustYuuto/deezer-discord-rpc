@@ -15,3 +15,15 @@ export async function token(code: string) {
     }
   });
 }
+
+export async function accessToken(refreshToken: string) {
+  const params = new URLSearchParams();
+  params.append('grant_type', 'refresh_token');
+  params.append('refresh_token', refreshToken);
+  return await axios.post(`${accountsApiBase}/token`, params.toString(), {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: 'Basic ODc0NWM1ODNjYzZiNDJiODk1ZDU2Mjc2Y2RmMzkxYWQ6MzQxNWFmOWJjZDQwNDc3N2JjZTk0MjVhMTI5MjJiZjY='
+    }
+  });
+}
