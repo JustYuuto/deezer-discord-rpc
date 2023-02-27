@@ -7,7 +7,10 @@ import * as RPC from './RPC';
 import { app } from 'electron';
 
 export let client: WebSocket;
-const wsURL = 'wss://gateway.discord.gg/?v=10&encoding=json';
+const wsURLParams = new URLSearchParams();
+wsURLParams.append('v', '10');
+wsURLParams.append('encoding', 'json');
+const wsURL = `wss://gateway.discord.gg/?${wsURLParams}`;
 
 export function connect(token: string) {
   return new Promise<void>((resolve, reject) => {
@@ -61,9 +64,11 @@ export function connect(token: string) {
 
     socket.on('error', reject);
 
+    let resumeURL;
+    let sessionId;
     socket.on('message', (data) => {
       const payload = JSON.parse(data.toString());
-      const { d, op } = payload;
+      const { t, d, op } = payload;
 
       switch (op) {
         case 10:
@@ -71,11 +76,17 @@ export function connect(token: string) {
           heartbeat(heartbeat_interval);
           break;
       }
+
+      switch (t) {
+        case 'READY':
+          resumeURL = d.resume_gateway_url;
+          sessionId = d.session_id;
+      }
     });
 
     socket.on('close', (code, desc) => {
       log('WebSocket', code + ':', desc.toString());
-      log('WebSocket', 'Connection closed; sending authentication payload');
+      log('WebSocket', 'Disconnected; resuming connection');
       socket.send(JSON.stringify(payload));
     });
 
@@ -85,6 +96,7 @@ export function connect(token: string) {
   });
 }
 
-export function disconnect() {
-  client.close();
+export function disconnect(code?: number) {
+  log('WebSocket', 'Disconnecting...');
+  client.close(code);
 }
