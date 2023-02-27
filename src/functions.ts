@@ -2,15 +2,14 @@ import { BrowserWindow, dialog, shell, ipcMain, app } from 'electron';
 import { clientId, useAsMainApp, userAgent } from './variables';
 import { resolve, join } from 'path';
 import { version } from '../package.json';
-import axios from 'axios';
 import { findTrackInAlbum, getAlbum } from './activity/album';
 import { getTrack } from './activity/track';
 import WebSocket from 'ws';
-import { log } from './utils/Log';
 import * as Config from './utils/Config';
 import { tray } from './utils/Tray';
 import * as DiscordWebSocket from './utils/WebSocket';
 import * as RPC from './utils/RPC';
+import * as Spotify from './utils/Spotify';
 
 export let win: BrowserWindow;
 export const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -156,6 +155,7 @@ export async function setActivity(options: {
       buttons
     }).catch(() => {});
   } else {
+    const albumCover = await Spotify.getCover({ title: trackTitle, artists: trackArtists }, app);
     client.send(JSON.stringify({
       op: 3,
       d: {
@@ -172,15 +172,15 @@ export async function setActivity(options: {
               // start: (useAsMainApp && playing) && Date.now() - songTime,
               end: (useAsMainApp && playing) && timeLeft
             },
-            party: {
-              id: 'ae488379-351d-4a4f-ad32-2b9b01c91657'
-            },
+            // party: {
+            //   id: 'ae488379-351d-4a4f-ad32-2b9b01c91657'
+            // },
             application_id: parseInt(clientId),
             assets: {
-              large_image: albumCover,
+              large_image: `spotify:${albumCover}`,
               large_text: albumTitle,
-              small_image_url: 'https://raw.githubusercontent.com/JustYuuto/deezer-discord-rpc/master/src/img/icon.png',
-              small_text: `Deezer Discord RPC ${version}`
+              // small_image_url: 'https://raw.githubusercontent.com/JustYuuto/deezer-discord-rpc/master/src/img/icon.png',
+              // small_text: `Deezer Discord RPC ${version}`
             }
           }
         ]
