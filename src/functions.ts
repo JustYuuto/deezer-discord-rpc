@@ -4,13 +4,13 @@ import * as RPC from 'discord-rpc';
 import { resolve, join } from 'path';
 import { version } from '../package.json';
 import axios from 'axios';
-import { existsSync, writeFileSync } from 'fs';
 import { noRPC, rpcClient } from './index';
 import { findTrackInAlbum, getAlbum } from './activity/album';
 import { getTrack } from './activity/track';
 import WebSocket from 'ws';
 import UAParser from 'ua-parser-js';
 import { log } from './utils/Log';
+import * as Config from './utils/Config';
 
 export let win: BrowserWindow;
 export let tray: Tray | null = null;
@@ -47,7 +47,7 @@ export async function loadWindow() {
   wait(5000).then(() => {
     let currentTrack;
     setInterval(() => {
-      const client = getConfig(app, 'use_listening_to') ? wsClient : rpcClient;
+      const client = Config.get(app, 'use_listening_to') ? wsClient : rpcClient;
       let code =
         `(() => {
           const albumId = document.querySelector('.track-link[href*="album"]')?.getAttribute('href').split('/')[3];
@@ -100,23 +100,6 @@ export async function loadWindow() {
       });
     }, 1000);
   });
-}
-
-export function saveConfigKey(app: Electron.App, key: string, value: any) {
-  const userDataPath = app.getPath('userData');
-  const path = join(userDataPath, 'config.json');
-  if (!existsSync(path)) writeFileSync(path, '{}');
-  const data = require(path);
-  data[key] = value;
-  writeFileSync(path, JSON.stringify(data));
-}
-
-export function getConfig(app: Electron.App, key?: string) {
-  const userDataPath = app.getPath('userData');
-  const path = join(userDataPath, 'config.json');
-  if (!existsSync(path)) writeFileSync(path, '{}');
-  const data = require(path);
-  return key ? data[key] : data;
 }
 
 export function updater(fromStartup: boolean = false) {
@@ -184,13 +167,13 @@ export async function initTrayIcon(app: Electron.App, client: RPC.Client) {
           ['Artists song - Song title', 'artists_and_title'],
           ['Song title - Artists song', 'title_and_artists'],
         ].map(v => ({
-          label: v[0], type: 'radio', id: v[1], checked: getConfig(app, 'tooltip_text') === v[1],
-          click: (menuItem) => saveConfigKey(app, 'tooltip_text', menuItem.id)
+          label: v[0], type: 'radio', id: v[1], checked: Config.get(app, 'tooltip_text') === v[1],
+          click: (menuItem) => Config.set(app, 'tooltip_text', menuItem.id)
         }))
       },
       {
-        label: 'Only show RPC if music is playing', type: 'checkbox', checked: getConfig(app, 'only_show_if_playing'),
-        click: (menuItem) => saveConfigKey(app, 'only_show_if_playing', menuItem.checked)
+        label: 'Only show RPC if music is playing', type: 'checkbox', checked: Config.get(app, 'only_show_if_playing'),
+        click: (menuItem) => Config.set(app, 'only_show_if_playing', menuItem.checked)
       },
       {
         label: 'Reconnect RPC',
@@ -213,7 +196,7 @@ export async function initTrayIcon(app: Electron.App, client: RPC.Client) {
               menuItem.enabled = true;
               if (response === 1) {
                 menuItem.checked = false;
-                saveConfigKey(app, 'use_listening_to', false);
+                Config.set(app, 'use_listening_to', false);
                 rpcClient.login({ clientId }).catch(() => rpcClient.connect(clientId).catch(console.error));
               }
             });
@@ -249,7 +232,7 @@ export async function setActivity(options: {
   const {
     timeLeft, playing, client, albumTitle, trackArtists, trackLink, trackTitle, albumCover, app
   } = options;
-  const tooltipText = getConfig(app, 'tooltip_text');
+  const tooltipText = Config.get(app, 'tooltip_text');
   switch (tooltipText) {
     case 'app_name':
       tray.setToolTip('Deezer Discord RPC');
@@ -269,7 +252,7 @@ export async function setActivity(options: {
   }
   if (!client) return;
 
-  if (getConfig(app, 'only_show_if_playing') && !playing) {
+  if (Config.get(app, 'only_show_if_playing') && !playing) {
     if (client instanceof RPC.Client) {
       await client.clearActivity(process.pid);
       return;
@@ -350,8 +333,8 @@ export async function prompt(message: string, app: Electron.App, options?: {
   });
 
   ipcMain.on('token-received', async (e, data) => {
-    saveConfigKey(app, 'discord_token', data);
-    saveConfigKey(app, 'use_listening_to', true);
+    Config.set(app, 'discord_token', data);
+    Config.set(app, 'use_listening_to', true);
     win.close();
     await dialog.showMessageBox(null, {
       type: 'info',
