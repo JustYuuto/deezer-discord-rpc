@@ -37,7 +37,8 @@ export async function init(app: Electron.App, client: import('discord-rpc').Clie
         click: (menuItem) => Config.set(app, 'only_show_if_playing', menuItem.checked)
       },
       {
-        label: 'Reconnect RPC', type: 'normal', click: () => client.connect(clientId).then(() => log('RPC', 'Reconnected'))
+        label: 'Reconnect RPC', type: 'normal', click: () => client.connect(clientId).then(() => log('RPC', 'Reconnected')),
+        enabled: !Config.get(app, 'use_listening_to')
       },
       {
         label: 'Use "Listening to" instead of "Playing"', type: 'checkbox', checked: Config.get(app, 'use_listening_to'),
