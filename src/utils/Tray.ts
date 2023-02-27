@@ -10,7 +10,7 @@ import { version } from '../../package.json';
 const iconPath = join(__dirname, '..', 'img', 'icon.ico');
 
 export let tray: Tray | null = null;
-export async function init(app: Electron.App, client: RPC.Client) {
+export async function init(app: Electron.App, client: import('discord-rpc').Client) {
   app?.whenReady().then(() => {
     tray = new Tray(iconPath);
     const contextMenu = Menu.buildFromTemplate([
