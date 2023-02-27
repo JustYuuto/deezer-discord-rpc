@@ -71,7 +71,7 @@ export async function loadWindow() {
             albumCover: Config.get(app, 'use_listening_to') ?
               await Spotify.getCover({
                 title: track.title, artists: track.contributors?.map(c => c.name)?.join(', ')
-              }, app).catch(() => Spotify.accessToken(Config.get(app, 'spotify_access_token'))) :
+              }, app).catch(() => Spotify.accessToken(Config.get(app, 'spotify_refresh_token'))) :
               album.cover_medium,
             albumTitle: album.title,
           };
