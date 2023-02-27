@@ -111,7 +111,10 @@
                 e.preventDefault();
                 const token = document.querySelector('input#discord-token').value;
                 let invalid = false;
-                if (token.startsWith('Bot') || token.startsWith('Bearer') || token.includes(' ')) invalid = true;
+                if (
+                    token.startsWith('Bot') || token.startsWith('Bearer') || token.includes(' ') ||
+                    token === '' || !token.includes('.')
+                ) invalid = true;
                 else {
                     const verifyToken = await fetch('https://discord.com/api/v10/users/@me', {
                         headers: { Authorization: token }
