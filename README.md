@@ -28,4 +28,4 @@ A Discord RPC for showing the music you're listening to on Deezer (like Spotify 
 
 ## Todo
 
-* [ ] Implement Discord WebSocket server to get a "Listening to" status on the profile
+* [x] Implement Discord WebSocket server to get a "Listening to" status on the profile
