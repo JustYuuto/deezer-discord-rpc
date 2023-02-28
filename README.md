@@ -14,7 +14,13 @@ A Discord RPC for showing the music you're listening to on Deezer (like Spotify 
 
 #### RPC on profile:
 
+<p>With the "Playing" status:</p>
+
 ![RPC on profile](screenshots/rpc_on_profile.png)
+
+<p>With the "Listening to" status:</p>
+
+![RPC on profile](screenshots/rpc_on_profile_2.png)
 
 #### Tray menu:
 
