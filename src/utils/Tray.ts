@@ -50,7 +50,7 @@ export async function init(app: Electron.App, client: import('discord-rpc').Clie
               type: 'question',
               buttons: ['No', 'Yes'],
               title: 'Listening to status',
-              message: 'Do you want to disable the Listening to status and use the Playing status?',
+              message: 'Do you want to disable the "Listening to" status and use the "Playing" status?',
             }).then(({ response }) => {
               menuItem.enabled = true;
               if (response === 1) {
