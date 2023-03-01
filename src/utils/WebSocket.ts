@@ -5,6 +5,7 @@ import { log } from './Log';
 import * as Config from './Config';
 import * as RPC from './RPC';
 import { app } from 'electron';
+import { wait } from '../functions';
 
 export let client: WebSocket;
 const wsURLParams = new URLSearchParams();
@@ -99,4 +100,5 @@ export function connect(token: string) {
 export function disconnect(code?: number) {
   log('WebSocket', 'Disconnecting...');
   client.close(code);
+  wait(1000);
 }
