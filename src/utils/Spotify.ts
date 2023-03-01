@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { spotifyRedirectUri } from '../variables';
-import { log } from './Log';
 import * as Config from './Config';
 
 const apiBase = 'https://api.spotify.com/v1';
@@ -33,7 +32,7 @@ export async function accessToken(refreshToken: string) {
 
 export async function getCover(track: {
   title: string, artists: string
-}, app: Electron.App): Promise<string|undefined> {
+}, app: Electron.App): Promise<string|null> {
   const searchParams = new URLSearchParams();
   searchParams.append('q', `track:${track.title} artist:${track.artists.split(',').shift()}`);
   searchParams.append('limit', '1');
@@ -47,7 +46,7 @@ export async function getCover(track: {
   });
   let albumCover;
   if (albumCoverReq.status !== 200) {
-    log('Spotify Cover', 'Error while fetching cover:', albumCoverReq.statusText);
+    return null;
   } else {
     albumCover = albumCoverReq.data.tracks.items[0].album.images[0].url.split('/').pop();
   }
