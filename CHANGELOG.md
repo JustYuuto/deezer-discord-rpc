@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.1
+
+* Automatically updating the Spotify access token
+
 ## 1.1.0: WebSocket Update
 
 * We are now using Electron Builder for building the app; you can uninstall the old one
