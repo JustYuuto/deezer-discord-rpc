@@ -1,0 +1,17 @@
+name: 'Build'
+on: ['push']
+
+jobs:
+  build:
+    runs-on: 'windows-latest'
+    name: 'Build'
+    steps:
+      - uses: actions/checkout@master
+      - name: Install packages
+        run: npm install
+      - name: Compile TypeScript
+        run: npm run build:ts
+      - name: Build icon
+        run: npm run icon
+      - name: Build EXE
+        run: npm run build:exe
