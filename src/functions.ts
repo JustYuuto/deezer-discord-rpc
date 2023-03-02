@@ -171,12 +171,12 @@ export async function setActivity(options: {
               start: (useAsMainApp && playing) && songTime - Date.now(),
               end: (useAsMainApp && playing) && timeLeft
             },
-            application_id: parseInt(clientId),
+            application_id: clientId,
             assets: {
               large_image: `spotify:${albumCover}`,
               large_text: albumTitle,
-              // small_image_url: 'https://raw.githubusercontent.com/JustYuuto/deezer-discord-rpc/master/src/img/icon.png',
-              // small_text: `Deezer Discord RPC ${version}`
+              small_image: '1080780582423892000', // Image ID seems to work better, idk that's the Discord API after all....
+              small_text: `Deezer Discord RPC ${version}`
             }
           }
         ]
