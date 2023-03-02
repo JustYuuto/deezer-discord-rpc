@@ -1,5 +1,5 @@
 import { BrowserWindow, dialog, shell, ipcMain, app } from 'electron';
-import { artistsSeparator, clientId, useAsMainApp, userAgent } from './variables';
+import { artistsSeparator, clientId, noWsActivity, useAsMainApp, userAgent } from './variables';
 import { resolve, join } from 'path';
 import { version } from '../package.json';
 import { findTrackInAlbum, getAlbum } from './activity/album';
@@ -132,7 +132,7 @@ export async function setActivity(options: {
       await client.clearActivity(process.pid);
       return;
     } else {
-      DiscordWebSocket.disconnect();
+      client.send(JSON.stringify(noWsActivity));
       return;
     }
   }
