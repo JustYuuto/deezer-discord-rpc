@@ -2,9 +2,9 @@
 
 ## 1.1.2
 
-* Fixed "Object has been destroyed" error when exiting the app and the window was open
-* Added a small image on the "Listening to" status
-* Now updates RPC if music is playing/paused
+* Fixed "Object has been destroyed" error when exiting the app and the window was open ([``3949012``](https://github.com/JustYuuto/deezer-discord-rpc/commit/39490125c850070dd080f06633de8e60acf44427))
+* Added a small image on the "Listening to" status ([``65089b9``](https://github.com/JustYuuto/deezer-discord-rpc/commit/65089b905569b04cd7bd195e39291df28d3b8345))
+* Now updates RPC if music is playing/paused ([``b9ecb67``](https://github.com/JustYuuto/deezer-discord-rpc/commit/b9ecb678235b92bb266647511bcd68292ba229ef))
 
 ## 1.1.1
 
