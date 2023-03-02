@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.2
+
+* Fixed "Object has been destroyed" error when exiting the app and the window was open
+* Added a small image on the "Listening to" status
+* Now updates RPC if music is playing/paused
+
 ## 1.1.1
 
 * Automatically updating the Spotify access token
