@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { spotifyRedirectUri } from '../variables';
 import * as Config from './Config';
+import { log } from './Log';
 
 const apiBase = 'https://api.spotify.com/v1';
 const accountsApiBase = 'https://accounts.spotify.com/api';
@@ -34,7 +35,7 @@ export async function getCover(track: {
   albumTitle: string, title: string, artists: string, track?: boolean
 }, app: Electron.App): Promise<string|null> {
   const searchParams = new URLSearchParams();
-  searchParams.append('q', `${track.track ? 'track' : 'album'}:${track.albumTitle} artist:${track.artists.split(',')[0]}`);
+  searchParams.append('q', `${track.track ? 'track' : 'album'}:${track[track.track ? 'title' : 'albumTitle']} artist:${track.artists.split(',')[0]}`);
   searchParams.append('limit', '1');
   searchParams.append('type', track.track ? 'track' : 'album');
   const accessToken = Config.get(app, 'spotify_access_token');
@@ -44,13 +45,18 @@ export async function getCover(track: {
       Accept: 'application/json', 'Content-Type': 'application/json', Authorization: `${tokenType} ${accessToken}`
     }
   });
-  if (albumCoverReq.status !== 200 && track.track === true) { // Retrying with track instead of album
+  if (albumCoverReq.status !== 200) {
+    return null;
+  } else if (!track.track && albumCoverReq.data.albums.items.length === 0) { // Retrying with track instead of album
+    log('Spotify Covers', 'Retrying with track instead of album...');
     return getCover({
       title: track.title, artists: track.artists, albumTitle: track.albumTitle, track: true
     }, app);
-  } else if (albumCoverReq.status !== 200 && !track.track) {
+  } else if (track.track === true && albumCoverReq.data[track.track ? 'tracks' : 'albums'].items.length === 0) {
     return null;
   } else {
-    return albumCoverReq.data.albums.items[0].images[0].url.split('/').pop() || null;
+    return track.track ?
+      albumCoverReq.data.tracks.items[0].album.images[0].url.split('/').pop() || null :
+      albumCoverReq.data.albums.items[0].images[0].url.split('/').pop() || null;
   }
 }
