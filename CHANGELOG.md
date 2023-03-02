@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.4
+
+* Retry with track instead of album ([``ba88160``](https://github.com/JustYuuto/deezer-discord-rpc/commit/ba881603405bb9117e98616d5ae021e85eef99e8) and [``c96f7ae``](https://github.com/JustYuuto/deezer-discord-rpc/commit/c96f7ae10d8963ddb9f57518082f904bdfb43ce5))
+
 ## 1.1.3
 
 * Use album title instead of track title ([``a3d6e2f``](https://github.com/JustYuuto/deezer-discord-rpc/commit/a3d6e2fe44e5185e7fa00fc5fcfa1a998eeeec79))
