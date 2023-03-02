@@ -58,8 +58,11 @@ export async function loadWindow() {
         result = JSON.parse(result);
         const songTime = Date.now() + (((+0) * 60 * 60 + (+result.songTime.minutes) * 60 + (+result.songTime.seconds)) * 1000);
         const timeLeft = songTime - (((+0) * 60 * 60 + (+result.timeLeft.minutes) * 60 + (+result.timeLeft.seconds)) * 1000);
-        if (currentTrack?.trackTitle !== result.trackName) {
-          log('Activity', 'Updating...');
+        if (currentTrack?.trackTitle !== result.trackName || currentTrack?.playing !== result.playing) {
+          let reason;
+          if (currentTrack?.trackTitle !== result.trackName) reason = `music got changed`;
+          else if (currentTrack?.playing !== result.playing) reason = `music got ${result.playing ? 'played' : 'paused'}`;
+          log('Activity', `Updating because ${reason}`);
           const trackId = await findTrackInAlbum(result.trackName, result.albumId);
           const track = await getTrack(trackId);
           const album = await getAlbum(result.albumId);
@@ -82,12 +85,14 @@ export async function loadWindow() {
               }) :
               album.cover_medium,
             albumTitle: album.title,
+            playing: result.playing
           };
           await setActivity({
-            client, albumId: result.albumId, playing: result.playing, timeLeft, app, ...currentTrack, songTime
+            client, albumId: result.albumId, timeLeft, app, ...currentTrack, songTime
           }).then(() => log('Activity', 'Updated'));
         }
         currentTrack.trackTitle = result.trackName;
+        currentTrack.playing = result.playing;
       });
     }, 1000);
   });
