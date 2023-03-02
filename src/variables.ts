@@ -6,3 +6,12 @@ export const userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/
 export const protocol = 'deezer-discord-rpc';
 export const spotifyRedirectUri = `${protocol}://spotify-callback/`;
 export const artistsSeparator = ', ';
+export const noWsActivity = {
+  op: 3,
+  d: {
+    status: 'online',
+    since: 0,
+    afk: false,
+    activities: []
+  }
+};
