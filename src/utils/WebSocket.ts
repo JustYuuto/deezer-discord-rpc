@@ -1,11 +1,10 @@
 import WebSocket from 'ws';
-import { userAgent } from '../variables';
+import { noWsActivity, userAgent } from '../variables';
 import UAParser from 'ua-parser-js';
 import { log } from './Log';
 import * as Config from './Config';
 import * as RPC from './RPC';
 import { app } from 'electron';
-import { wait } from '../functions';
 
 export let client: WebSocket;
 const wsURLParams = new URLSearchParams();
@@ -99,6 +98,7 @@ export function connect(token: string) {
 
 export function disconnect(code?: number) {
   log('WebSocket', 'Disconnecting...');
+  client.send(JSON.stringify(noWsActivity));
   client.close(code);
-  wait(1000);
+  log('WebSocket', 'Disconnected');
 }
