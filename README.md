@@ -30,7 +30,7 @@
 
 #### Tray menu:
 
-![Tray menu.png](screenshots/tray_menu.png)
+![Tray menu](screenshots/tray_menu.png)
 
 ## Todo
 
