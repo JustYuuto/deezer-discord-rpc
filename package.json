@@ -31,8 +31,8 @@
     "typescript": "^4.5.4"
   },
   "repository": "https://github.com/JustYuuto/deezer-discord-rpc.git",
-  "author": "NetherMC",
-  "license": "MIT",
+  "author": "Yuuto",
+  "license": "MPL-2.0",
   "build": {
     "appId": "com.github.yuuto.deezerdiscordrpc",
     "productName": "Deezer Discord RPC",

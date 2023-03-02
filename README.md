@@ -35,3 +35,7 @@
 ## Todo
 
 * [x] Implement Discord WebSocket server to get a "Listening to" status on the profile
+
+## License
+
+Mozilla Public License 2.0
