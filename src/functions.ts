@@ -73,7 +73,7 @@ export async function loadWindow() {
             trackLink: track.link,
             albumCover: Config.get(app, 'use_listening_to') ?
               await Spotify.getCover({
-                title: track.title, artists: track.contributors?.map(c => c.name)?.join(', ')
+                albumTitle: album.title, artists: track.contributors?.map(c => c.name)?.join(', ')
               }, app).catch(async () => {
                 log('Spotify Covers', 'Access token expired; refreshing it');
                 await Spotify.accessToken(Config.get(app, 'spotify_refresh_token')).then((res) => {

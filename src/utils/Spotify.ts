@@ -31,12 +31,12 @@ export async function accessToken(refreshToken: string) {
 }
 
 export async function getCover(track: {
-  title: string, artists: string
+  albumTitle: string, artists: string
 }, app: Electron.App): Promise<string|null> {
   const searchParams = new URLSearchParams();
-  searchParams.append('q', `track:${track.title} artist:${track.artists.split(',').shift()}`);
+  searchParams.append('q', `album:${track.albumTitle} artist:${track.artists.split(',')[0]}`);
   searchParams.append('limit', '1');
-  searchParams.append('type', 'track');
+  searchParams.append('type', 'album');
   const accessToken = Config.get(app, 'spotify_access_token');
   const tokenType = Config.get(app, 'spotify_token_type');
   const albumCoverReq = await axios.get(`${apiBase}/search?${searchParams}`, {
@@ -48,7 +48,7 @@ export async function getCover(track: {
   if (albumCoverReq.status !== 200) {
     return null;
   } else {
-    albumCover = albumCoverReq.data.tracks.items[0].album.images[0].url.split('/').pop();
+    albumCover = albumCoverReq.data.albums.items[0].images[0].url.split('/').pop();
   }
   return albumCover;
 }
