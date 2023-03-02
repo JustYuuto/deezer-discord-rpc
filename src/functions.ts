@@ -73,7 +73,7 @@ export async function loadWindow() {
             trackLink: track.link,
             albumCover: Config.get(app, 'use_listening_to') ?
               await Spotify.getCover({
-                albumTitle: album.title, artists: track.contributors?.map(c => c.name)?.join(', ')
+                albumTitle: album.title, title: track.title, artists: track.contributors?.map(c => c.name)?.join(', ')
               }, app).catch(async () => {
                 log('Spotify Covers', 'Access token expired; refreshing it');
                 await Spotify.accessToken(Config.get(app, 'spotify_refresh_token')).then((res) => {
@@ -173,7 +173,7 @@ export async function setActivity(options: {
             },
             application_id: clientId,
             assets: {
-              large_image: `spotify:${albumCover}`,
+              large_image: albumCover && `spotify:${albumCover}`,
               large_text: albumTitle,
               small_image: '1080780582423892000', // Image ID seems to work better, idk that's the Discord API after all....
               small_text: `Deezer Discord RPC ${version}`

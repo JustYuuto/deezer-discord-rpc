@@ -31,12 +31,12 @@ export async function accessToken(refreshToken: string) {
 }
 
 export async function getCover(track: {
-  albumTitle: string, artists: string
+  albumTitle: string, title: string, artists: string, track?: boolean
 }, app: Electron.App): Promise<string|null> {
   const searchParams = new URLSearchParams();
-  searchParams.append('q', `album:${track.albumTitle} artist:${track.artists.split(',')[0]}`);
+  searchParams.append('q', `${track.track ? 'track' : 'album'}:${track.albumTitle} artist:${track.artists.split(',')[0]}`);
   searchParams.append('limit', '1');
-  searchParams.append('type', 'album');
+  searchParams.append('type', track.track ? 'track' : 'album');
   const accessToken = Config.get(app, 'spotify_access_token');
   const tokenType = Config.get(app, 'spotify_token_type');
   const albumCoverReq = await axios.get(`${apiBase}/search?${searchParams}`, {
@@ -44,11 +44,13 @@ export async function getCover(track: {
       Accept: 'application/json', 'Content-Type': 'application/json', Authorization: `${tokenType} ${accessToken}`
     }
   });
-  let albumCover;
-  if (albumCoverReq.status !== 200) {
+  if (albumCoverReq.status !== 200 && track.track === true) { // Retrying with track instead of album
+    return getCover({
+      title: track.title, artists: track.artists, albumTitle: track.albumTitle, track: true
+    }, app);
+  } else if (albumCoverReq.status !== 200 && !track.track) {
     return null;
   } else {
-    albumCover = albumCoverReq.data.albums.items[0].images[0].url.split('/').pop();
+    return albumCoverReq.data.albums.items[0].images[0].url.split('/').pop() || null;
   }
-  return albumCover;
 }
