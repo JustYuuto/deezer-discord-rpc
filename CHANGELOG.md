@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.3
+
+* Use album title instead of track title ([``a3d6e2f``](https://github.com/JustYuuto/deezer-discord-rpc/commit/a3d6e2fe44e5185e7fa00fc5fcfa1a998eeeec79))
+
 ## 1.1.2
 
 * Fixed "Object has been destroyed" error when exiting the app and the window was open ([``3949012``](https://github.com/JustYuuto/deezer-discord-rpc/commit/39490125c850070dd080f06633de8e60acf44427))
