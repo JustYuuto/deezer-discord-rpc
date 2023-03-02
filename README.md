@@ -1,6 +1,12 @@
-# Deezer Discord RPC
-
-A Discord RPC for showing the music you're listening to on Deezer (like Spotify integration).
+<div align="center">
+    <h1>Deezer Discord RPC</h1>
+    <a href="https://github.com/JustYuuto/deezer-discord-rpc/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/justyuuto/deezer-discord-rpc?style=for-the-badge"></a>
+    <a href="https://github.com/JustYuuto/deezer-discord-rpc/releases/latest"><img alt="GitHub release (latest by date)" src="https://img.shields.io/github/downloads/justyuuto/deezer-discord-rpc/latest/total?style=for-the-badge"></a>
+    <a href="https://github.com/JustYuuto/deezer-discord-rpc/releases/latest"><img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/v/release/justyuuto/deezer-discord-rpc?include_prereleases&label=latest%20release&style=for-the-badge"></a>
+    <a href="https://github.com/JustYuuto/deezer-discord-rpc/commits"><img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/w/justyuuto/deezer-discord-rpc?style=for-the-badge"></a>
+    <hr />
+    <p>A Discord RPC for showing the music you're listening to on Deezer (like Spotify integration).</p>
+</div>
 
 ## Features
 
