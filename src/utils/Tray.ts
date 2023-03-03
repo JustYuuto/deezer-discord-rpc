@@ -16,7 +16,7 @@ export async function init(app: Electron.App, client: import('discord-rpc').Clie
     tray = new Tray(iconPath);
     const contextMenu = Menu.buildFromTemplate([
       { label: 'Deezer Discord RPC', type: 'normal', enabled: false },
-      { label: `Version: ${version}`, type: 'normal', enabled: false },
+      { label: `Version: ${version}${process.argv0.includes('node') ? ' (debug)' : ''}`, type: 'normal', enabled: false },
       { label: 'Check for updates', type: 'normal', click: () => updater() },
       { type: 'separator' },
       { label: 'Hide/show window', type: 'normal', click: () => win.isVisible() ? win.hide() : win.show(), visible: useAsMainApp },

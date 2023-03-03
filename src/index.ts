@@ -11,7 +11,7 @@ import * as RPC from './utils/RPC';
 Protocol.register(app);
 Protocol.handle(app);
 
-log('App', 'Deezer Discord RPC version', require('../package.json').version);
+log('App', 'Deezer Discord RPC version', require('../package.json').version, process.argv0.includes('node') ? '(debug)' : '');
 
 app.whenReady().then(async () => {
   await loadWindow();
