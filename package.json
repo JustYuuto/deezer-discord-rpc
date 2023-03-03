@@ -12,6 +12,7 @@
     "icon": "png-to-ico src/img/icon.png > src/img/icon.ico && cd ./build/src && mkdir img && png-to-ico ../../src/img/icon.png > img/icon.ico"
   },
   "dependencies": {
+    "@cliqz/adblocker-electron": "^1.26.2",
     "axios": "^0.27.2",
     "chalk": "4.1.2",
     "discord-rpc": "^4.0.1",

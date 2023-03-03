@@ -11,6 +11,7 @@ import * as DiscordWebSocket from './utils/WebSocket';
 import * as RPC from './utils/RPC';
 import * as Spotify from './utils/Spotify';
 import { log } from './utils/Log';
+import loadAdBlock from './utils/AdBlock';
 
 export let win: BrowserWindow;
 export const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -27,6 +28,8 @@ export async function loadWindow() {
       preload: !useAsMainApp && resolve(__dirname, 'preload.js')
     }
   });
+
+  await loadAdBlock(app, win);
 
   win.setMenuBarVisibility(false);
   await win.loadURL('https://www.deezer.com/login', {
