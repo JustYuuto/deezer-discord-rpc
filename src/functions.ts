@@ -1,5 +1,5 @@
 import { BrowserWindow, dialog, shell, ipcMain, app } from 'electron';
-import { artistsSeparator, clientId, noWsActivity, useAsMainApp, userAgent } from './variables';
+import { artistsSeparator, clientId, noWsActivity, useAsMainApp, userAgents } from './variables';
 import { resolve, join } from 'path';
 import { version } from '../package.json';
 import { findTrackInAlbum, getAlbum } from './activity/album';
@@ -34,7 +34,7 @@ export async function loadWindow() {
   win.setMenuBarVisibility(false);
   await win.loadURL('https://www.deezer.com/login', {
     // The default user agent does not work with Deezer (the player does not update by itself)
-    userAgent
+    userAgent: userAgents.deezerApp
   });
 
   win.on('close', (e) => {
