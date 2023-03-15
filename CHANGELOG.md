@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.5
+
+* Added an ad-blocker, this means you can listen to Deezer without ads if you have Deezer Free!
+* Added a debug indicator
+* Updated user agents
+
 ## 1.1.4
 
 * Retry with track instead of album ([``ba88160``](https://github.com/JustYuuto/deezer-discord-rpc/commit/ba881603405bb9117e98616d5ae021e85eef99e8) and [``c96f7ae``](https://github.com/JustYuuto/deezer-discord-rpc/commit/c96f7ae10d8963ddb9f57518082f904bdfb43ce5))
