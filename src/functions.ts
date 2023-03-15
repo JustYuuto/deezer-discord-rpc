@@ -180,7 +180,7 @@ export async function setActivity(options: {
             assets: {
               large_image: albumCover && `spotify:${albumCover}`,
               large_text: albumTitle,
-              small_image: '1080780582423892000', // Image ID seems to work better, idk that's the Discord API after all....
+              small_image: '1080779021731766313', // Image ID seems to work better, idk that's the Discord API after all....
               small_text: `Deezer Discord RPC ${version}`
             }
           }
