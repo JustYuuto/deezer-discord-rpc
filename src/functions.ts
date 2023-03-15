@@ -59,8 +59,9 @@ export async function loadWindow() {
         })();`;
       win.webContents.executeJavaScript(code, true).then(async (result) => {
         result = JSON.parse(result);
-        const songTime = Date.now() + (((+0) * 60 * 60 + (+result.songTime.minutes) * 60 + (+result.songTime.seconds)) * 1000);
-        const timeLeft = songTime - (((+0) * 60 * 60 + (+result.timeLeft.minutes) * 60 + (+result.timeLeft.seconds)) * 1000);
+        const lengthFormat = (minutes: string, seconds: string): number => parseInt(String(((+0) * 60 * 60 + (+minutes) * 60 + (+seconds)) * 1000));
+        const songTime = Date.now() + lengthFormat(result.songTime.minutes, result.songTime.seconds);
+        const timeLeft = songTime - lengthFormat(result.timeLeft.minutes, result.timeLeft.seconds);
         if (currentTrack?.trackTitle !== result.trackName || currentTrack?.playing !== result.playing) {
           let reason;
           if (currentTrack?.trackTitle !== result.trackName) reason = `music got changed`;
