@@ -1,5 +1,5 @@
 import WebSocket from 'ws';
-import { noWsActivity, userAgent } from '../variables';
+import { noWsActivity, userAgents } from '../variables';
 import UAParser from 'ua-parser-js';
 import { log } from './Log';
 import * as Config from './Config';
@@ -16,11 +16,11 @@ export function connect(token: string) {
   return new Promise<void>((resolve, reject) => {
     const socket = new WebSocket(wsURL, {
       headers: {
-        'User-Agent': userAgent,
+        'User-Agent': userAgents.discordApp,
         Origin: 'https://discord.com'
       }
     });
-    const ua = new UAParser(userAgent);
+    const ua = new UAParser(userAgents.discordApp);
     const payload = {
       op: 2,
       d: {
@@ -31,7 +31,7 @@ export function connect(token: string) {
           browser: ua.getBrowser().name,
           device: '',
           system_locale: 'en-US',
-          browser_user_agent: userAgent,
+          browser_user_agent: userAgents.discordApp,
           browser_version: ua.getBrowser().version,
           os_version: ua.getOS().version,
           referrer: 'https://discord.com/developers/docs/resources/invite',
