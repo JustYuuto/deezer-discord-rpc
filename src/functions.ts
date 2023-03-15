@@ -153,6 +153,7 @@ export async function setActivity(options: {
       largeImageKey: albumCover,
       largeImageText: albumTitle,
       instance: false,
+      // startTimestamp: (useAsMainApp && playing) && songTime,
       endTimestamp: (useAsMainApp && playing) && timeLeft,
       smallImageKey: 'https://raw.githubusercontent.com/JustYuuto/deezer-discord-rpc/master/src/img/icon.png',
       smallImageText: `Deezer Discord RPC ${version}`,
@@ -172,7 +173,7 @@ export async function setActivity(options: {
             details: trackTitle,
             state: trackArtists,
             timestamps: {
-              start: (useAsMainApp && playing) && songTime - Date.now(),
+              // start: (useAsMainApp && playing) && songTime,
               end: (useAsMainApp && playing) && timeLeft
             },
             application_id: clientId,
