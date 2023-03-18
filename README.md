@@ -6,6 +6,7 @@
     <a href="https://github.com/JustYuuto/deezer-discord-rpc/commits"><img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/w/justyuuto/deezer-discord-rpc?style=for-the-badge"></a>
     <hr />
     <p>A Discord RPC for showing the music you're listening to on Deezer (like Spotify integration).</p>
+    <p>If you want to use it on your phone, the app is available on Android: <a href="https://github.com/JustYuuto/deezer-discord-rpc-android/releases/latest">latest release</a></p>
 </div>
 
 ## Features
