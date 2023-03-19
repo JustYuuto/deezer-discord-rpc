@@ -5,9 +5,8 @@
   "main": "./build/src/index.js",
   "scripts": {
     "start": "electron ./build/src/index.js",
-    "build": "yarn build:ts && yarn icon && yarn build:exe",
+    "build": "node bin/build.js",
     "build:ts": "tsc --resolveJsonModule && cpy ./src/prompt.html build/",
-    "build:exe": "electron-builder",
     "run": "yarn build:ts && yarn start",
     "icon": "png-to-ico src/img/icon.png > src/img/icon.ico && cd ./build/src && mkdir img && png-to-ico ../../src/img/icon.png > img/icon.ico"
   },
