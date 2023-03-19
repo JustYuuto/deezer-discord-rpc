@@ -71,7 +71,7 @@ export async function init(app: Electron.App, client: import('discord-rpc').Clie
     tray.setToolTip('Deezer Discord RPC');
     tray.setContextMenu(contextMenu);
     useAsMainApp && tray.on('click', () => win.show());
-    win.webContents.setWindowOpenHandler((details) => {
+    win?.webContents.setWindowOpenHandler((details) => {
       shell.openExternal(details.url);
       return { action: 'deny' };
     });
