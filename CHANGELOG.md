@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.6
+
+* Tries to resume WebSocket connection if you got disconnected from it
+* Inits tray icon before the window (before it was the opposite)
+
 ## 1.1.5
 
 * Added an ad-blocker, this means you can listen to Deezer without ads if you have Deezer Free!
