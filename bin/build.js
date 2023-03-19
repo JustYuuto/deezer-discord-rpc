@@ -1,4 +1,4 @@
-#!/bin/env /usr/bin/bash
+#!/bin/env /usr/bin/node
 
 const { existsSync, rmSync, copyFileSync } = require('fs');
 const { resolve } = require('path');
