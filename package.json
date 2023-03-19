@@ -1,6 +1,6 @@
 {
   "name": "deezer-discord-rpc",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "A Discord RPC for Deezer",
   "main": "./build/src/index.js",
   "scripts": {
@@ -45,6 +45,7 @@
         ]
       }
     ],
+    "icon": "./src/img/icon.png",
     "files": [
       "!src/*",
       "!src/**/*",
