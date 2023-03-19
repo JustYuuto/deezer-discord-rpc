@@ -1,17 +1,7 @@
-import { BrowserWindow, dialog, shell, ipcMain, app } from 'electron';
-import { artistsSeparator, clientId, noWsActivity, useAsMainApp, userAgents } from './variables';
-import { resolve, join } from 'path';
-import { version } from '../package.json';
-import { findTrackInAlbum, getAlbum } from './activity/album';
-import { getTrack } from './activity/track';
-import WebSocket from 'ws';
+import { BrowserWindow, dialog, shell, ipcMain } from 'electron';
+import { join } from 'path';
 import * as Config from './utils/Config';
-import { tray } from './utils/Tray';
 import * as DiscordWebSocket from './utils/WebSocket';
-import * as RPC from './utils/RPC';
-import * as Spotify from './utils/Spotify';
-import { log } from './utils/Log';
-import loadAdBlock from './utils/AdBlock';
 
 export const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
