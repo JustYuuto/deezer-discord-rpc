@@ -45,7 +45,6 @@
         ]
       }
     ],
-    "icon": "./src/img/icon.png",
     "files": [
       "!src/*",
       "!src/**/*",
