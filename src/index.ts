@@ -14,8 +14,8 @@ Protocol.handle(app);
 log('App', 'Deezer Discord RPC version', require('../package.json').version, process.argv0.includes('node') ? '(debug)' : '');
 
 app.whenReady().then(async () => {
-  await loadWindow();
   await Tray.init(app, RPC.client);
+  await loadWindow();
   await updater(true);
 
   Config.get(app, 'use_listening_to') ?
