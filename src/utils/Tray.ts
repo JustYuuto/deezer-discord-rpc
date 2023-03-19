@@ -3,10 +3,11 @@ import updater from './Updater';
 import { clientId, useAsMainApp } from '../variables';
 import * as Config from './Config';
 import * as RPC from './RPC';
-import { prompt, win } from '../functions';
-import { dialog, Menu, Tray, shell } from 'electron';
+import { prompt } from '../functions';
+import { dialog, Menu, Tray } from 'electron';
 import { version } from '../../package.json';
 import { log } from './Log';
+import { win } from './Window';
 
 const iconPath = join(__dirname, '..', 'img', 'icon.ico');
 

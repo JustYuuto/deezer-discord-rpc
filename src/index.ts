@@ -1,4 +1,3 @@
-import { loadWindow } from './functions';
 import { app, BrowserWindow } from 'electron';
 import { log } from './utils/Log';
 import * as Protocol from './utils/Protocol';
@@ -7,6 +6,7 @@ import * as Tray from './utils/Tray';
 import updater from './utils/Updater';
 import * as DiscordWebSocket from './utils/WebSocket';
 import * as RPC from './utils/RPC';
+import * as Window from './utils/Window';
 
 Protocol.register(app);
 Protocol.handle(app);
@@ -15,7 +15,7 @@ log('App', 'Deezer Discord RPC version', require('../package.json').version, pro
 
 app.whenReady().then(async () => {
   await Tray.init(app, RPC.client);
-  await loadWindow();
+  await Window.load(app);
   await updater(true);
 
   Config.get(app, 'use_listening_to') ?
@@ -23,7 +23,7 @@ app.whenReady().then(async () => {
     RPC.connect();
 
   app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) loadWindow();
+    if (BrowserWindow.getAllWindows().length === 0) Window.load(app);
   });
 });
 
