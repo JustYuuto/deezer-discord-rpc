@@ -16,7 +16,7 @@ if (existsSync(resolve('dist'))) {
 
 console.log('Compiling TypeScript...');
 try {
-  execSync('tsc --resolveJsonModule', { stdio: 'inherit' });
+  execSync('npx tsc --resolveJsonModule', { stdio: 'inherit' });
   console.log('Compiled TypeScript');
 } catch (e) {
   throw e;
@@ -29,7 +29,7 @@ execSync('yarn run icon');
 console.log('Compiled icon to an ICO file');
 
 console.log('Building EXE...');
-execSync('electron-builder', { stdio: 'inherit' });
+execSync('npx electron-builder', { stdio: 'inherit' });
 
 console.log('');
 console.log(`EXE built! The file can be found at "${resolve('dist', `Deezer Discord RPC Setup ${require('../package.json').version}.exe`)}"`);
