@@ -9,7 +9,7 @@ import { version } from '../../package.json';
 import { log } from './Log';
 import { win } from './Window';
 
-const iconPath = join(__dirname, '..', 'img', 'icon.ico');
+const iconPath = join(__dirname, '..', 'img', 'IconTemplate@2x.png');
 
 export let tray: Tray | null = null;
 export async function init(app: Electron.App, client: import('discord-rpc').Client) {
