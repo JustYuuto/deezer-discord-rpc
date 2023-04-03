@@ -8,7 +8,8 @@
     "build": "node bin/build.js",
     "build:ts": "tsc --resolveJsonModule && cpy ./src/prompt.html build/",
     "run": "yarn build:ts && yarn start",
-    "icon": "png-to-ico src/img/icon.png > src/img/icon.ico && cd ./build/src && mkdir img && png-to-ico ../../src/img/icon.png > img/icon.ico"
+    "icon": "png-to-ico src/img/IconTemplate.png > src/img/IconTemplate.ico && cd ./build/src && mkdir img && png-to-ico ../../src/img/IconTemplate.png > img/IconTemplate.ico",
+    "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
     "@cliqz/adblocker-electron": "^1.26.2",
@@ -26,30 +27,12 @@
     "cpy-cli": "^4.2.0",
     "electron": "^23.1.0",
     "electron-builder": "^23.6.0",
+    "fs-extra": "^11.1.1",
     "png-to-ico": "^2.1.4",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.4"
   },
   "repository": "https://github.com/JustYuuto/deezer-discord-rpc.git",
   "author": "Yuuto",
-  "license": "MPL-2.0",
-  "build": {
-    "appId": "com.github.yuuto.deezerdiscordrpc",
-    "productName": "Deezer Discord RPC",
-    "protocols": [
-      {
-        "name": "deezer-discord-rpc",
-        "schemes": [
-          "deezer-discord-rpc"
-        ]
-      }
-    ],
-    "files": [
-      "!src/*",
-      "!src/**/*",
-      "build/package.json",
-      "build/src/*",
-      "build/src/**/*"
-    ]
-  }
+  "license": "MPL-2.0"
 }
