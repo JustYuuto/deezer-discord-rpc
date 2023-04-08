@@ -9,7 +9,7 @@ import { findTrackInAlbum, getAlbum } from '../activity/album';
 import { getTrack } from '../activity/track';
 import * as Spotify from './Spotify';
 import { wait } from '../functions';
-import { BrowserWindow, shell } from 'electron';
+import { BrowserWindow, Menu, shell } from 'electron';
 import { setActivity } from './Activity';
 
 export let win: BrowserWindow;
@@ -29,7 +29,37 @@ export async function load(app: Electron.App) {
 
   await loadAdBlock(app, win);
 
+  const trayMenu = Menu.buildFromTemplate([
+    { role: 'appMenu' },
+    {
+      label: 'Player',
+      type: 'submenu',
+      submenu: [
+        {
+          label: 'Play/Pause',
+          accelerator: 'Space'
+        },
+        {
+          label: 'Previous',
+          accelerator: 'Shift+Left'
+        },
+        {
+          label: 'Next',
+          accelerator: 'Shift+Right'
+        },
+        { type: 'separator' },
+        {
+          label: 'Repeat mode',
+          type: 'checkbox'
+        }
+      ]
+    }
+  ]);
+
+  Menu.setApplicationMenu(trayMenu);
+  win.setMenu(trayMenu);
   win.setMenuBarVisibility(false);
+
   await win.loadURL('https://www.deezer.com/login', {
     // The default user agent does not work with Deezer (the player does not update by itself)
     userAgent: userAgents.deezerApp
