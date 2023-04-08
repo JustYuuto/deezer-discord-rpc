@@ -45,6 +45,9 @@ const config = {
     target: 'dmg'
   },
   win: {},
+  linux: {
+    category: 'Audio'
+  },
   protocols: [
     {
       name: 'Deezer Discord RPC',
@@ -59,6 +62,10 @@ const config = {
     'build/src/**/*'
   ]
 };
-builder.build({ targets: builder.Platform.MAC.createTarget(), config }).then(() => {
-  console.log(`\nEXE built!`);
-});
+
+const build = (platform) => {
+  return builder.build({ targets: builder.Platform[platform].createTarget(), config }).then(() => {
+    console.log(`\nEXE built!`);
+  });
+}
+build('LINUX');
