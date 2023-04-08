@@ -44,9 +44,10 @@ const config = {
     category: 'public.app-category.music',
     target: 'dmg'
   },
+  win: {},
   protocols: [
     {
-      name: 'deezer-discord-rpc',
+      name: 'Deezer Discord RPC',
       schemes: ['deezer-discord-rpc']
     }
   ],
@@ -58,6 +59,6 @@ const config = {
     'build/src/**/*'
   ]
 };
-builder.build({ targets: builder.Platform.WINDOWS, config }).then(() => {
+builder.build({ targets: builder.Platform.MAC.createTarget(), config }).then(() => {
   console.log(`\nEXE built!`);
 });
