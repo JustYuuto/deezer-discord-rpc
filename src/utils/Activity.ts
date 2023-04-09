@@ -56,7 +56,7 @@ export async function setActivity(options: {
       largeImageText: albumTitle,
       instance: false,
       // startTimestamp: (useAsMainApp && playing) && songTime,
-      endTimestamp: (useAsMainApp && playing) && timeLeft,
+      endTimestamp: (useAsMainApp && playing) ? timeLeft : undefined,
       smallImageKey: 'https://raw.githubusercontent.com/JustYuuto/deezer-discord-rpc/master/src/img/icon.png',
       smallImageText: `Deezer Discord RPC ${version}`,
       buttons
