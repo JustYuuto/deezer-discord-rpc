@@ -51,7 +51,7 @@ const config = {
   protocols: [
     {
       name: 'Deezer Discord RPC',
-      schemes: ['deezer-discord-rpc']
+      schemes: [require('../build/src/variables').protocol]
     }
   ],
   files: [
@@ -68,4 +68,4 @@ const build = (platform) => {
     console.log(`\nEXE built!`);
   });
 }
-build('LINUX');
+build('MAC');
