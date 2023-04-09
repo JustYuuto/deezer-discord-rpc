@@ -38,7 +38,11 @@ export async function load(app: Electron.App) {
       submenu: [
         {
           label: 'Play/Pause',
-          accelerator: 'Space'
+          accelerator: 'Space',
+          click: () => {
+            const code = "document.querySelector('.player-controls > .svg-icon-group > .svg-icon-group-item:nth-child(3) > button')?.click()";
+            runJs(win, code);
+          }
         },
         {
           label: 'Previous',
@@ -50,11 +54,17 @@ export async function load(app: Electron.App) {
         },
         { type: 'separator' },
         {
-          label: 'Repeat mode',
-          type: 'checkbox'
+          id: 'shuffle_mode',
+          label: 'Shuffle mode',
+          type: 'checkbox',
+          click: async () => await runJs(win, "document.querySelector('.player-options .svg-icon-group > .svg-icon-group-item:nth-child(3) > button')?.click()"),
+          checked: false, enabled: false
         }
       ]
-    }
+    },
+    { role: 'editMenu' },
+    { role: 'viewMenu' },
+    { role: 'windowMenu' }
   ]);
 
   Menu.setApplicationMenu(trayMenu);
@@ -65,6 +75,19 @@ export async function load(app: Electron.App) {
     // The default user agent does not work with Deezer (the player does not update by itself)
     userAgent: userAgents.deezerApp
   });
+
+  const updateMenu = async () => {
+    log('Menu', 'Updating menu entries...');
+    Menu.getApplicationMenu().getMenuItemById('shuffle_mode').enabled = true;
+    const shuffleJs = "document.querySelector('.player-options .svg-icon-group > .svg-icon-group-item:nth-child(3) > button > svg')?.classList?.contains('css-1qsky21')";
+    Menu.getApplicationMenu().getMenuItemById('shuffle_mode').checked = await runJs(win, shuffleJs);
+
+    log('Menu', 'Updated menu entries');
+    win.removeListener('page-title-updated', () => {});
+  };
+
+  win.on('page-title-updated', updateMenu);
+  win.webContents.on('devtools-reload-page', updateMenu);
 
   win.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url);
