@@ -16,11 +16,10 @@ export async function init(app: Electron.App, client: import('discord-rpc').Clie
   app?.whenReady().then(() => {
     tray = new Tray(iconPath);
     const contextMenu = Menu.buildFromTemplate([
-      { label: 'Deezer Discord RPC', type: 'normal', enabled: false },
+      { label: 'Deezer Discord RPC', type: 'normal', click: () => win.show() },
       { label: `Version: ${version}${process.argv0.includes('node') ? ' (debug)' : ''}`, type: 'normal', enabled: false },
       { label: 'Check for updates', type: 'normal', click: () => updater() },
       { type: 'separator' },
-      { label: 'Hide/show window', type: 'normal', click: () => win.isVisible() ? win.hide() : win.show(), visible: useAsMainApp },
       {
         label: 'Tooltip text', type: 'submenu', submenu: [
           ['App name', 'app_name'],
@@ -35,7 +34,7 @@ export async function init(app: Electron.App, client: import('discord-rpc').Clie
       },
       {
         label: 'Only show RPC if music is playing', type: 'checkbox', checked: Config.get(app, 'only_show_if_playing'),
-        click: (menuItem) => Config.set(app, 'only_show_if_playing', menuItem.checked)
+        click: (menuItem) => Config.set(app, 'only_show_if_playing', menuItem.checked), enabled: useAsMainApp
       },
       {
         label: 'Reconnect RPC', type: 'normal', click: () => client.connect(clientId).then(() => log('RPC', 'Reconnected')),
