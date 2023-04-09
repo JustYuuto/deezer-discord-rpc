@@ -17,7 +17,14 @@ export default function updater(fromStartup: boolean = false) {
           defaultId: 0,
         }).then(({ response }) => {
           if (response === 1) {
-            shell.openExternal(release.assets.find(f => f.name.split('.').pop() === 'exe').browser_download_url);
+            const file = () => {
+              let extension;
+                   if (process.platform === 'win32')  extension = 'exe';
+              else if (process.platform === 'linux')  extension = 'AppImage';
+              else if (process.platform === 'darwin') extension = 'dmg';
+              return release.assets.find(f => f.name.split('.').pop() === extension);
+            };
+            shell.openExternal(file().browser_download_url);
           }
         });
       } else {
