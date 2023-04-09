@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.1.8
+
+* The RPC now updates when the song time changes
+* Added a preload script
+* Added a menu
+
+## 1.1.7
+
+* **Added support for macOS and Linux!!**
+* Added a build CLI
+* Added icons sizes
+* Updated updater to support new files
+
 ## 1.1.6
 
 * Tries to resume WebSocket connection if you got disconnected from it
