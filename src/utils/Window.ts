@@ -8,9 +8,9 @@ import { log } from './Log';
 import { findTrackInAlbum, getAlbum } from '../activity/album';
 import { getTrack } from '../activity/track';
 import * as Spotify from './Spotify';
-import { wait } from '../functions';
-import { BrowserWindow, Menu, shell } from 'electron';
-import { setActivity } from './Activity';
+import { runJs, wait }                         from '../functions';
+import { BrowserWindow, ipcMain, Menu, shell } from 'electron';
+import { setActivity }                         from './Activity';
 
 export let win: BrowserWindow;
 
