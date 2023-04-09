@@ -43,3 +43,7 @@ export async function prompt(message: string, app: Electron.App, options?: {
   win.setMenuBarVisibility(false);
   await win.loadFile(join(__dirname, 'prompt.html'), { hash: message });
 }
+
+export async function runJs(win: Electron.BrowserWindow, code: string, userGesture?: boolean) {
+  return win.webContents.executeJavaScript(code, userGesture);
+}
