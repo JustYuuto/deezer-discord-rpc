@@ -23,7 +23,7 @@ export async function load(app: Electron.App) {
     closable: true,
     resizable: true,
     webPreferences: {
-      preload: !useAsMainApp && resolve(__dirname, 'preload.js')
+      preload: resolve(__dirname, '..', 'preload.js')
     }
   });
 
