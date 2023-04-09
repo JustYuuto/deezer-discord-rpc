@@ -69,7 +69,7 @@ export async function load(app: Electron.App) {
 
   Menu.setApplicationMenu(trayMenu);
   win.setMenu(trayMenu);
-  win.setMenuBarVisibility(false);
+  win.setMenuBarVisibility(true);
 
   await win.loadURL('https://www.deezer.com/login', {
     // The default user agent does not work with Deezer (the player does not update by itself)
