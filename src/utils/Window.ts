@@ -8,9 +8,9 @@ import { log } from './Log';
 import { findTrackInAlbum, getAlbum } from '../activity/album';
 import { getTrack } from '../activity/track';
 import * as Spotify from './Spotify';
-import { runJs, wait }                         from '../functions';
+import { runJs, wait } from '../functions';
 import { BrowserWindow, ipcMain, Menu, shell } from 'electron';
-import { setActivity }                         from './Activity';
+import { setActivity } from './Activity';
 
 export let win: BrowserWindow;
 let currentTrack;
@@ -31,16 +31,16 @@ export async function load(app: Electron.App) {
   await loadAdBlock(app, win);
 
   const trayMenu = Menu.buildFromTemplate([
-    { role: 'appMenu' },
+    process.platform === 'darwin' && { role: 'appMenu' },
     {
       label: 'Player',
       type: 'submenu',
       submenu: [
         {
           label: 'Play/Pause',
-          accelerator: 'Space',
+          accelerator: 'Shift+Space',
           click: () => {
-            const code = "document.querySelector('.player-controls > .svg-icon-group > .svg-icon-group-item:nth-child(3) > button')?.click()";
+            const code = 'document.querySelector(\'.player-controls > .svg-icon-group > .svg-icon-group-item:nth-child(3) > button\')?.click()';
             runJs(win, code);
           }
         },
@@ -57,7 +57,7 @@ export async function load(app: Electron.App) {
           id: 'shuffle_mode',
           label: 'Shuffle mode',
           type: 'checkbox',
-          click: async () => await runJs(win, "document.querySelector('.player-options .svg-icon-group > .svg-icon-group-item:nth-child(3) > button')?.click()"),
+          click: async () => await runJs(win, 'document.querySelector(\'.player-options .svg-icon-group > .svg-icon-group-item:nth-child(3) > button\')?.click()'),
           checked: false, enabled: false
         }
       ]
@@ -79,7 +79,7 @@ export async function load(app: Electron.App) {
   const updateMenu = async () => {
     log('Menu', 'Updating menu entries...');
     Menu.getApplicationMenu().getMenuItemById('shuffle_mode').enabled = true;
-    const shuffleJs = "document.querySelector('.player-options .svg-icon-group > .svg-icon-group-item:nth-child(3) > button > svg')?.classList?.contains('css-1qsky21')";
+    const shuffleJs = 'document.querySelector(\'.player-options .svg-icon-group > .svg-icon-group-item:nth-child(3) > button > svg\')?.classList?.contains(\'css-1qsky21\')';
     Menu.getApplicationMenu().getMenuItemById('shuffle_mode').checked = await runJs(win, shuffleJs);
 
     log('Menu', 'Updated menu entries');
