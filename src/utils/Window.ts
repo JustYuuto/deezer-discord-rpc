@@ -124,13 +124,18 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
   runJs(win, code, true).then(async (result) => {
     result = JSON.parse(result);
     const lengthFormat = (minutes: string, seconds: string): number => ((+0) * 60 * 60 + (+minutes) * 60 + (+seconds)) * 1000;
-    const songTime = Date.now() + lengthFormat(result.songTime.minutes, result.songTime.seconds);
+    const realSongTime = lengthFormat(result.songTime.minutes, result.songTime.seconds);
+    const songTime = Date.now() + realSongTime;
     const timeLeft = songTime - lengthFormat(result.timeLeft.minutes, result.timeLeft.seconds);
-    if (currentTrack?.trackTitle !== result.trackName || currentTrack?.playing !== result.playing || currentTimeChanged === true) {
+    if (
+      currentTrack?.trackTitle !== result.trackName || currentTrack?.playing !== result.playing || currentTimeChanged === true ||
+      currentTrack?.songTime !== realSongTime
+    ) {
       let reason;
       if (currentTrack?.trackTitle !== result.trackName) reason = 'music got changed';
       else if (currentTrack?.playing !== result.playing) reason = `music got ${result.playing ? 'played' : 'paused'}`;
       else if (currentTimeChanged && currentTimeChanged === true) reason = 'current song time changed';
+      else if (currentTrack?.songTime !== realSongTime) reason = 'song time wasn\'t the right one';
       log('Activity', 'Updating because', reason);
       const trackId = await findTrackInAlbum(result.trackName, result.albumId);
       const track = await getTrack(trackId);
@@ -162,5 +167,6 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
     }
     currentTrack.trackTitle = result.trackName;
     currentTrack.playing = result.playing;
+    currentTrack.songTime = realSongTime;
   });
 }
