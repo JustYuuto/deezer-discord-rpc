@@ -23,6 +23,8 @@ export async function load(app: Electron.App) {
     maximizable: useAsMainApp,
     closable: true,
     resizable: true,
+    center: true,
+    title: 'Deezer Discord RPC',
     webPreferences: {
       preload: resolve(__dirname, '..', 'preload.js')
     }
