@@ -165,8 +165,8 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
         client, albumId: result.albumId, timeLeft, app, ...currentTrack, songTime
       }).then(() => log('Activity', 'Updated'));
     }
+    currentTrack.songTime = realSongTime;
     currentTrack.trackTitle = result.trackName;
     currentTrack.playing = result.playing;
-    currentTrack.songTime = realSongTime;
   });
 }
