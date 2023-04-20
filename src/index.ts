@@ -24,6 +24,7 @@ app.whenReady().then(async () => {
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) Window.load(app);
+    else BrowserWindow.getAllWindows()[0].show();
   });
 });
 
