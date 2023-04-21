@@ -32,42 +32,43 @@ export async function load(app: Electron.App) {
 
   await loadAdBlock(app, win);
 
-  const trayMenu = Menu.buildFromTemplate([
-    process.platform === 'darwin' && { role: 'appMenu' },
-    {
-      label: 'Player',
-      type: 'submenu',
-      submenu: [
-        {
-          label: 'Play/Pause',
-          accelerator: 'Shift+Space',
-          click: () => {
-            const code = 'document.querySelector(\'.player-controls > .svg-icon-group > .svg-icon-group-item:nth-child(3) > button\')?.click()';
-            runJs(win, code);
-          }
-        },
-        {
-          label: 'Previous',
-          accelerator: 'Shift+Left'
-        },
-        {
-          label: 'Next',
-          accelerator: 'Shift+Right'
-        },
-        { type: 'separator' },
-        {
-          id: 'shuffle_mode',
-          label: 'Shuffle mode',
-          type: 'checkbox',
-          click: async () => await runJs(win, 'document.querySelector(\'.player-options .svg-icon-group > .svg-icon-group-item:nth-child(3) > button\')?.click()'),
-          checked: false, enabled: false
+  const menu = [];
+  process.platform === 'darwin' &&
+  menu.push({ role: 'appMenu' });
+  menu.push({
+    label: 'Player',
+    type: 'submenu',
+    submenu: [
+      {
+        label: 'Play/Pause',
+        accelerator: 'Shift+Space',
+        click: () => {
+          const code = 'document.querySelector(\'.player-controls > .svg-icon-group > .svg-icon-group-item:nth-child(3) > button\')?.click()';
+          runJs(win, code);
         }
-      ]
-    },
-    { role: 'editMenu' },
-    { role: 'viewMenu' },
-    { role: 'windowMenu' }
-  ]);
+      },
+      {
+        label: 'Previous',
+        accelerator: 'Shift+Left'
+      },
+      {
+        label: 'Next',
+        accelerator: 'Shift+Right'
+      },
+      { type: 'separator' },
+      {
+        id: 'shuffle_mode',
+        label: 'Shuffle mode',
+        type: 'checkbox',
+        click: async () => await runJs(win, 'document.querySelector(\'.player-options .svg-icon-group > .svg-icon-group-item:nth-child(3) > button\')?.click()'),
+        checked: false, enabled: false
+      }
+    ]
+  });
+  menu.push({ role: 'editMenu' });
+  menu.push({ role: 'viewMenu' });
+  menu.push({ role: 'windowMenu' });
+  const trayMenu = Menu.buildFromTemplate(menu);
 
   Menu.setApplicationMenu(trayMenu);
   win.setMenu(trayMenu);
