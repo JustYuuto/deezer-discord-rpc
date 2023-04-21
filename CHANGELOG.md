@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.1.10
+
+* Fixed app not loading anything on Windows and Linux (I was on macOS when I ran the build, so I didn't have any problems, sorry)
+
+## 1.1.9
+
+* Fixed small icon not showing
+* Window will now show at the center of the screen at launch
+* FIxed song time not being the right one sometimes
+* You can re-open window if an instance is already launched
+* Updated "Player > Play/Pause" menu item shortcut to "Shift+Space"
+
 ## 1.1.8
 
 * The RPC now updates when the song time changes
