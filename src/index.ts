@@ -7,6 +7,7 @@ import updater from './utils/Updater';
 import * as DiscordWebSocket from './utils/WebSocket';
 import * as RPC from './utils/RPC';
 import * as Window from './utils/Window';
+import { noWsActivity } from './variables';
 
 Protocol.register(app);
 Protocol.handle(app);
@@ -18,9 +19,13 @@ app.whenReady().then(async () => {
   await Window.load(app);
   await updater(true);
 
-  Config.get(app, 'use_listening_to') ?
-    DiscordWebSocket.connect(Config.get(app, 'discord_token')).catch(console.error) :
+  if (Config.get(app, 'use_listening_to')) {
+    DiscordWebSocket.connect(Config.get(app, 'discord_token'))
+      .then(() => DiscordWebSocket.client.send(JSON.stringify(noWsActivity)))
+      .catch(console.error);
+  } else {
     RPC.connect();
+  }
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) Window.load(app);
