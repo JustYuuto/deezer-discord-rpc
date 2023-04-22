@@ -3,6 +3,7 @@ import * as Config from './Config';
 import { tray } from './Tray';
 import { clientId, noWsActivity, useAsMainApp } from '../variables';
 import { version } from '../../package.json';
+import { status } from './WebSocket';
 
 export async function setActivity(options: {
   client: import('discord-rpc').Client | WebSocket, albumId: number, trackId: number, playing: boolean, timeLeft: number,
@@ -65,7 +66,7 @@ export async function setActivity(options: {
     client.send(JSON.stringify({
       op: 3,
       d: {
-        status: 'online',
+        status,
         since: 0,
         afk: false,
         activities: [
