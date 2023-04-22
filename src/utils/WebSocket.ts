@@ -130,7 +130,6 @@ export function connect(token: string, resumeUrl?: string) {
 
 export function disconnect(code?: number) {
   log('WebSocket', 'Disconnecting...');
-  client.send(JSON.stringify(noWsActivity));
   client.close(code);
   log('WebSocket', 'Disconnected');
 }
