@@ -12,7 +12,7 @@ import axios from 'axios';
 export let client: WebSocket;
 export let status: string;
 const wsURLParams = new URLSearchParams();
-wsURLParams.append('v', '10');
+wsURLParams.append('v', '9');
 wsURLParams.append('encoding', 'json');
 const wsURL = `wss://gateway.discord.gg/?${wsURLParams}`;
 
