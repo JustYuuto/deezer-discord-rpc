@@ -10,6 +10,7 @@ import * as os from 'os';
 import axios from 'axios';
 
 export let client: WebSocket;
+export let status: string;
 const wsURLParams = new URLSearchParams();
 wsURLParams.append('v', '10');
 wsURLParams.append('encoding', 'json');
