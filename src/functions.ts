@@ -18,6 +18,12 @@ export async function prompt(message: string, app: Electron.App, options?: {
     }
   });
 
+  ipcMain.on('autocomplete-token', async () => {
+    if (Config.get(app, 'discord_token')) {
+      await runJs(win, `document.querySelector('input#discord-token').value = '${Config.get(app, 'discord_token')}'`);
+    }
+  });
+
   ipcMain.on('token-received', async (e, data) => {
     Config.set(app, 'discord_token', data);
     Config.set(app, 'use_listening_to', true);
