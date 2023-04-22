@@ -108,7 +108,6 @@ export function connect(token: string, resumeUrl?: string) {
             return;
           }
           log('WebSocket', 'Retrying connection...');
-          console.log(`${resumeURL}/?${wsURLParams}`);
           await connect(token, `${resumeURL}/?${wsURLParams}`)
             .then(() => clearInterval(interval))
             .catch(() => {
