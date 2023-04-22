@@ -43,6 +43,7 @@ export function connect(token: string, resumeUrl?: string) {
           system_locale: 'en',
         },
         presence: {
+          status: 'unknown',
           activities: []
         }
       }
