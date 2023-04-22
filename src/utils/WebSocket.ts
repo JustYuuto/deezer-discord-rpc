@@ -62,6 +62,10 @@ export function connect(token: string, resumeUrl?: string) {
       socket.send(JSON.stringify(payload), () => {
         log('WebSocket', 'Sent authentication payload');
       });
+
+      status = (await axios.get('https://discord.com/api/v10/users/@me/settings', {
+        headers: { Authorization: token, 'User-Agent': userAgents.discordApp }
+      })).data.status;
     });
 
     socket.on('error', reject);
