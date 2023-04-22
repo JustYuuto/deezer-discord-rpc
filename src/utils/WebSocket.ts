@@ -6,6 +6,8 @@ import * as Config from './Config';
 import * as RPC from './RPC';
 import { app, dialog } from 'electron';
 import { clearInterval } from 'timers';
+import * as os from 'os';
+import axios from 'axios';
 
 export let client: WebSocket;
 const wsURLParams = new URLSearchParams();
@@ -28,20 +30,17 @@ export function connect(token: string, resumeUrl?: string) {
         token,
         capabilities: 4093,
         properties: {
-          os: ua.getOS().name,
-          browser: ua.getBrowser().name,
-          device: '',
-          system_locale: 'en-US',
-          browser_user_agent: userAgents.discordApp,
-          browser_version: ua.getBrowser().version,
-          os_version: ua.getOS().version,
-          referrer: 'https://discord.com/developers/docs/resources/invite',
-          referring_domain: 'discord.com',
-          referrer_current: '',
-          referring_domain_current: '',
+          os: (() => {
+            if (process.platform === 'win32') return 'Windows';
+            else if (process.platform === 'darwin') return 'Mac OS';
+            else if (process.platform === 'linux') return 'Linux';
+          })(),
+          browser: 'Deezer Discord RPC',
           release_channel: 'stable',
-          client_build_number: 176471,
-          client_event_source: null
+          client_version: '1.0.60',
+          os_version: os.release(),
+          os_arch: os.arch(),
+          system_locale: 'en',
         },
         presence: {
           activities: []
