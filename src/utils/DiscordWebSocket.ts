@@ -16,13 +16,16 @@ wsURLParams.append('encoding', 'json');
 const wsURL = `wss://gateway.discord.gg/?${wsURLParams}`;
 
 export function connect(token: string, resumeUrl?: string) {
-  return new Promise<void>((resolve, reject) => {
+  return new Promise<void>(async (resolve, reject) => {
     const socket = new WebSocket(resumeUrl ? resumeUrl : wsURL, {
       headers: {
         'User-Agent': userAgents.discordApp,
         Origin: 'https://discord.com'
       }
     });
+    status = (await axios.get('https://discord.com/api/v10/users/@me/settings', {
+      headers: { Authorization: token, 'User-Agent': userAgents.discordApp }
+    })).data.status;
     const payload = {
       op: 2,
       d: {
@@ -42,8 +45,7 @@ export function connect(token: string, resumeUrl?: string) {
           system_locale: 'en',
         },
         presence: {
-          status: 'unknown',
-          activities: []
+          status, activities: []
         }
       }
     };
@@ -60,10 +62,6 @@ export function connect(token: string, resumeUrl?: string) {
       socket.send(JSON.stringify(payload), () => {
         log('WebSocket', 'Sent authentication payload');
       });
-
-      status = (await axios.get('https://discord.com/api/v10/users/@me/settings', {
-        headers: { Authorization: token, 'User-Agent': userAgents.discordApp }
-      })).data.status;
     });
 
     socket.on('error', reject);
@@ -72,11 +70,11 @@ export function connect(token: string, resumeUrl?: string) {
     let sessionId;
     socket.on('message', (data) => {
       const payload = JSON.parse(data.toString());
-      const { t, d, op } = payload;
+      const {t, d, op} = payload;
 
       switch (op) {
         case 10:
-          const { heartbeat_interval } = d;
+          const {heartbeat_interval} = d;
           heartbeat(heartbeat_interval);
           break;
       }
@@ -121,7 +119,7 @@ export function connect(token: string, resumeUrl?: string) {
     });
 
     function heartbeat(ms: number) {
-      return setInterval(() => socket.send(JSON.stringify({ op: 1, d: null })), ms);
+      return setInterval(() => socket.send(JSON.stringify({op: 1, d: null})), ms);
     }
   });
 }

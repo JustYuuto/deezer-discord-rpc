@@ -1,7 +1,7 @@
 import { BrowserWindow, dialog, shell, ipcMain } from 'electron';
 import { join } from 'path';
 import * as Config from './utils/Config';
-import * as DiscordWebSocket from './utils/WebSocket';
+import * as DiscordWebSocket from './utils/DiscordWebSocket';
 
 export const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 

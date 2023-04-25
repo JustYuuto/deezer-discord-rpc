@@ -3,7 +3,7 @@ import * as Config from './Config';
 import { tray } from './Tray';
 import { clientId, noWsActivity, useAsMainApp } from '../variables';
 import { version } from '../../package.json';
-import { status } from './WebSocket';
+import { status } from './DiscordWebSocket';
 
 export async function setActivity(options: {
   client: import('discord-rpc').Client | WebSocket, albumId: number, trackId: number, playing: boolean, timeLeft: number,

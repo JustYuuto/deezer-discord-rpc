@@ -2,7 +2,7 @@ import { artistsSeparator, useAsMainApp, userAgents } from '../variables';
 import { resolve } from 'path';
 import loadAdBlock from './AdBlock';
 import * as Config from './Config';
-import * as DiscordWebSocket from './WebSocket';
+import * as DiscordWebSocket from './DiscordWebSocket';
 import * as RPC from './RPC';
 import { log } from './Log';
 import { findTrackInAlbum, getAlbum } from '../activity/album';

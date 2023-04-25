@@ -4,7 +4,7 @@ import * as Protocol from './utils/Protocol';
 import * as Config from './utils/Config';
 import * as Tray from './utils/Tray';
 import updater from './utils/Updater';
-import * as DiscordWebSocket from './utils/WebSocket';
+import * as DiscordWebSocket from './utils/DiscordWebSocket';
 import * as RPC from './utils/RPC';
 import * as Window from './utils/Window';
 import { noWsActivity } from './variables';
