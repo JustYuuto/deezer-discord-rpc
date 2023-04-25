@@ -1,6 +1,5 @@
 import WebSocket from 'ws';
-import { noWsActivity, userAgents } from '../variables';
-import UAParser from 'ua-parser-js';
+import { userAgents } from '../variables';
 import { log } from './Log';
 import * as Config from './Config';
 import * as RPC from './RPC';
@@ -24,7 +23,6 @@ export function connect(token: string, resumeUrl?: string) {
         Origin: 'https://discord.com'
       }
     });
-    const ua = new UAParser(userAgents.discordApp);
     const payload = {
       op: 2,
       d: {
