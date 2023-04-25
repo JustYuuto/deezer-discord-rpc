@@ -70,11 +70,11 @@ export function connect(token: string, resumeUrl?: string) {
     let sessionId;
     socket.on('message', (data) => {
       const payload = JSON.parse(data.toString());
-      const {t, d, op} = payload;
+      const { t, d, op } = payload;
 
       switch (op) {
         case 10:
-          const {heartbeat_interval} = d;
+          const { heartbeat_interval } = d;
           heartbeat(heartbeat_interval);
           break;
       }

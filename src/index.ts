@@ -5,6 +5,7 @@ import * as Config from './utils/Config';
 import * as Tray from './utils/Tray';
 import updater from './utils/Updater';
 import * as DiscordWebSocket from './utils/DiscordWebSocket';
+import * as DeezerWebSocket from './utils/DeezerWebSocket';
 import * as RPC from './utils/RPC';
 import * as Window from './utils/Window';
 import { noWsActivity } from './variables';
@@ -18,6 +19,8 @@ app.whenReady().then(async () => {
   await Tray.init(app, RPC.client);
   await Window.load(app);
   await updater(true);
+
+  DeezerWebSocket.start();
 
   if (Config.get(app, 'use_listening_to')) {
     DiscordWebSocket.connect(Config.get(app, 'discord_token'))

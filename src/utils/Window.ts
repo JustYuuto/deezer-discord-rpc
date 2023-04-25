@@ -11,6 +11,7 @@ import * as Spotify from './Spotify';
 import { runJs, wait } from '../functions';
 import { BrowserWindow, ipcMain, Menu, shell } from 'electron';
 import { setActivity } from './Activity';
+import * as DeezerWebSocket from './DeezerWebSocket';
 
 export let win: BrowserWindow;
 let currentTrack;
@@ -111,6 +112,14 @@ export async function load(app: Electron.App) {
   });
 }
 
+const UpdateReason = {
+  MUSIC_CHANGED: 'music got changed',
+  MUSIC_PAUSED: 'music got paused',
+  MUSIC_PLAYED: 'music got played',
+  MUSIC_TIME_CHANGED: 'current song time changed',
+  MUSIC_NOT_RIGHT_TIME: 'song time wasn\'t the right one'
+};
+
 async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
   const client = (Config.get(app, 'use_listening_to') ? DiscordWebSocket : RPC).client;
   let code =
@@ -133,10 +142,14 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
       currentTrack?.songTime !== realSongTime
     ) {
       let reason;
-      if (currentTrack?.trackTitle !== result.trackName) reason = 'music got changed';
-      else if (currentTrack?.playing !== result.playing) reason = `music got ${result.playing ? 'played' : 'paused'}`;
-      else if (currentTimeChanged && currentTimeChanged === true) reason = 'current song time changed';
-      else if (currentTrack?.songTime !== realSongTime) reason = 'song time wasn\'t the right one';
+      if (currentTrack?.trackTitle !== result.trackName) {
+        reason = UpdateReason.MUSIC_CHANGED;
+      }
+      else if (currentTrack?.playing !== result.playing) {
+        reason = result.playing ? UpdateReason.MUSIC_PLAYED : UpdateReason.MUSIC_PAUSED;
+      }
+      else if (currentTimeChanged && currentTimeChanged === true) reason = UpdateReason.MUSIC_TIME_CHANGED;
+      else if (currentTrack?.songTime !== realSongTime) reason = UpdateReason.MUSIC_NOT_RIGHT_TIME;
       log('Activity', 'Updating because', reason);
       const trackId = await findTrackInAlbum(result.trackName, result.albumId);
       const track = await getTrack(trackId);
@@ -162,6 +175,23 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
         albumTitle: album.title,
         playing: result.playing
       };
+
+      DeezerWebSocket.server.send(JSON.stringify({
+        type: 'message',
+        event: DeezerWebSocket.events.PLAYER_STATE_CHANGED,
+        data: (() => {
+          switch (reason) {
+            case UpdateReason.MUSIC_PAUSED:
+              return { track, album, playing: false };
+            case UpdateReason.MUSIC_PLAYED:
+              return { track, album, playing: true };
+            case UpdateReason.MUSIC_TIME_CHANGED:
+              return { track, album, time: Math.floor(timeLeft / 1000) };
+            case UpdateReason.MUSIC_CHANGED:
+              return { old: {  }, new: { track, album } };
+          }
+        })()
+      }));
       await setActivity({
         client, albumId: result.albumId, timeLeft, app, ...currentTrack, songTime
       }).then(() => log('Activity', 'Updated'));
