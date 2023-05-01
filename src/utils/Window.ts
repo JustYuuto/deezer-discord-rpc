@@ -179,7 +179,16 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
 
       DeezerWebSocket.server?.send(JSON.stringify({
         type: 'message',
-        event: DeezerWebSocket.events.PLAYER_STATE_CHANGED,
+        event: DeezerWebSocket.events[(() => {
+          switch (reason) {
+            case UpdateReason.MUSIC_PAUSED:
+            case UpdateReason.MUSIC_PLAYED:
+            case UpdateReason.MUSIC_TIME_CHANGED:
+              return 'PLAYER_STATE_CHANGED';
+            case UpdateReason.MUSIC_CHANGED:
+              return 'PLAYER_TRACK_CHANGED';
+          }
+        })()],
         data: (() => {
           switch (reason) {
             case UpdateReason.MUSIC_PAUSED:
