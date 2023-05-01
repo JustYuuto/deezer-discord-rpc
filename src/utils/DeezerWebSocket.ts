@@ -27,7 +27,7 @@ export function start() {
 
     ws.on('message', (rawData) => {
       const payload = JSON.parse(rawData.toString());
-      const { type, event }: { type: 'ping' | 'message', event: Events } = payload;
+      const { type, event, data }: { type: 'ping' | 'message', event: Events, data: any } = payload;
 
       switch (type) {
         case 'ping':
