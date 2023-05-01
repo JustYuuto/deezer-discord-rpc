@@ -16,11 +16,11 @@ Protocol.handle(app);
 log('App', 'Deezer Discord RPC version', require('../package.json').version, process.argv0.includes('node') ? '(debug)' : '');
 
 app.whenReady().then(async () => {
+  DeezerWebSocket.start();
+
   await Tray.init(app, RPC.client);
   await Window.load(app);
   await updater(true);
-
-  DeezerWebSocket.start();
 
   if (Config.get(app, 'use_listening_to')) {
     DiscordWebSocket.connect(Config.get(app, 'discord_token'))
