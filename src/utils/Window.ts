@@ -14,7 +14,7 @@ import { setActivity } from './Activity';
 import * as DeezerWebSocket from './DeezerWebSocket';
 
 export let win: BrowserWindow;
-let currentTrack;
+let currentTrack: CurrentTrack;
 
 export async function load(app: Electron.App) {
   win = new BrowserWindow({
@@ -202,4 +202,23 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
     currentTrack.trackTitle = result.trackName;
     currentTrack.playing = result.playing;
   });
+}
+
+interface CurrentTrack {
+  songTime: number,
+  trackId: number,
+  trackTitle: string,
+  trackArtists: string,
+  trackLink: string,
+  albumTitle: string,
+  albumCover: string,
+  playing: boolean,
+}
+
+interface JSResult {
+  songTime: number,
+  timeLeft: number,
+  trackName: string,
+  albumId: number,
+  playing: boolean,
 }
