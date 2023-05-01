@@ -51,12 +51,12 @@ export function start() {
             const result: JSResult = JSON.parse(r);
             const trackId = await findTrackInAlbum(result.trackName, result.albumId);
             const track = await getTrack(trackId);
-            const album = await getAlbum(result.albumId);
             ws.send(JSON.stringify({
               type: 'message',
               event: 'CURRENT_TRACK',
               data: {
-                track, album, playing: result.playing, position: result.position
+                track, playing: result.playing, position: result.position, volume: result.volume,
+                repeat: result.repeat, shuffle: result.shuffle
               }
             }));
           });
