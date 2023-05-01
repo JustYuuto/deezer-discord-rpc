@@ -131,12 +131,14 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
       const timeLeft = document.querySelector('#page_player > div > div.player-track > div > div.track-seekbar > div > div.slider-counter-current')?.textContent?.split(':');
       return JSON.stringify({ albumId, trackName, playing, songTime: { minutes: songTime[0], seconds: songTime[1] }, timeLeft: { minutes: timeLeft[0], seconds: timeLeft[1] } });
     })();`;
-  runJs(win, code, true).then(async (result) => {
+  runJs(win, code).then(async (result) => {
     result = JSON.parse(result);
     const lengthFormat = (minutes: string, seconds: string): number => ((+0) * 60 * 60 + (+minutes) * 60 + (+seconds)) * 1000;
     const realSongTime = lengthFormat(result.songTime.minutes, result.songTime.seconds);
     const songTime = Date.now() + realSongTime;
     const timeLeft = songTime - lengthFormat(result.timeLeft.minutes, result.timeLeft.seconds);
+    // @ts-ignore
+    if (!currentTrack?.songTime) currentTrack?.songTime = realSongTime;
     if (
       currentTrack?.trackTitle !== result.trackName || currentTrack?.playing !== result.playing || currentTimeChanged === true ||
       currentTrack?.songTime !== realSongTime
@@ -176,19 +178,19 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
         playing: result.playing
       };
 
-      DeezerWebSocket.server.send(JSON.stringify({
+      DeezerWebSocket.server?.send(JSON.stringify({
         type: 'message',
         event: DeezerWebSocket.events.PLAYER_STATE_CHANGED,
         data: (() => {
           switch (reason) {
             case UpdateReason.MUSIC_PAUSED:
-              return { track, album, playing: false };
+              return { track, album, event: { playing: false } };
             case UpdateReason.MUSIC_PLAYED:
-              return { track, album, playing: true };
+              return { track, album, event: { playing: true } };
             case UpdateReason.MUSIC_TIME_CHANGED:
-              return { track, album, time: Math.floor(timeLeft / 1000) };
+              return { track, album, event: { time: Math.floor((timeLeft - Date.now()) / 1000) } };
             case UpdateReason.MUSIC_CHANGED:
-              return { old: {  }, new: { track, album } };
+              return { old: {}, new: { track, album } };
           }
         })()
       }));
