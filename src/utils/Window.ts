@@ -83,8 +83,7 @@ export async function load(app: Electron.App) {
   const updateMenu = async () => {
     log('Menu', 'Updating menu entries...');
     Menu.getApplicationMenu().getMenuItemById('shuffle_mode').enabled = true;
-    const shuffleJs = 'document.querySelector(\'.player-options .svg-icon-group > .svg-icon-group-item:nth-child(3) > button > svg\')?.classList?.contains(\'css-1qsky21\')';
-    Menu.getApplicationMenu().getMenuItemById('shuffle_mode').checked = await runJs(win, shuffleJs);
+    Menu.getApplicationMenu().getMenuItemById('shuffle_mode').checked = await runJs(win, 'dzPlayer.isShuffle()');
 
     log('Menu', 'Updated menu entries');
     win.removeListener('page-title-updated', () => {});
@@ -126,17 +125,16 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
     `(() => {
       const albumId = document.querySelector('.track-link[href*="album"]')?.getAttribute('href').split('/')[3];
       const trackName = document.querySelector('.track-link[href*="album"]')?.textContent;
-      const playing = !!document.querySelector('#page_player > div > div.player-controls > ul > li:nth-child(3) > button > svg[data-testid="PauseIcon"]');
-      const songTime = document.querySelector('#page_player > div > div.player-track > div > div.track-seekbar > div > div.slider-counter-max')?.textContent?.split(':');
-      const timeLeft = document.querySelector('#page_player > div > div.player-track > div > div.track-seekbar > div > div.slider-counter-current')?.textContent?.split(':');
-      return JSON.stringify({ albumId, trackName, playing, songTime: { minutes: songTime[0], seconds: songTime[1] }, timeLeft: { minutes: timeLeft[0], seconds: timeLeft[1] } });
-    })();`;
-  runJs(win, code).then(async (result) => {
-    result = JSON.parse(result);
-    const lengthFormat = (minutes: string, seconds: string): number => ((+0) * 60 * 60 + (+minutes) * 60 + (+seconds)) * 1000;
-    const realSongTime = lengthFormat(result.songTime.minutes, result.songTime.seconds);
+      const playing = dzPlayer.isPlaying();
+      const songTime = parseInt(dzPlayer.getDuration()) * 1000;
+      const timeLeft = Math.floor(dzPlayer.getRemainingTime() * 1000);
+      return JSON.stringify({ albumId, trackName, playing, songTime, timeLeft });
+    })()`;
+  runJs(win, code).then(async (r) => {
+    const result: JSResult = JSON.parse(r);
+    const realSongTime = result.songTime;
     const songTime = Date.now() + realSongTime;
-    const timeLeft = songTime - lengthFormat(result.timeLeft.minutes, result.timeLeft.seconds);
+    const timeLeft = songTime - result.timeLeft;
     // @ts-ignore
     if (!currentTrack?.songTime) currentTrack?.songTime = realSongTime;
     if (
@@ -161,6 +159,7 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
         trackTitle: track.title,
         trackArtists: track.contributors?.map(c => c.name)?.join(artistsSeparator),
         trackLink: track.link,
+        // @ts-ignore
         albumCover: Config.get(app, 'use_listening_to') ?
           await Spotify.getCover({
             albumTitle: album.title, title: track.title, artists: track.contributors?.map(c => c.name)?.join(', ')
