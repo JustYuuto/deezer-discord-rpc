@@ -81,4 +81,18 @@ export function start() {
   });
 }
 
-declare type Events = 'CURRENT_TRACK' | 'SET_PLAYING' | 'NEXT';
+declare type Events = 'CURRENT_TRACK' | 'SET_PLAYING' | 'PREVIOUS' | 'NEXT' | 'SET_VOLUME' | 'SEEK' | 'SET_SHUFFLE' | 'SET_REPEAT';
+
+interface JSResult {
+  trackName: string,
+  albumId: number,
+  playing: boolean,
+  position: number,
+  volume: number,
+  repeat: Repeat,
+  shuffle: boolean
+}
+
+export enum Repeat {
+  "off", "on", "track"
+}
