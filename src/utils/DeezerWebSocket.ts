@@ -8,6 +8,7 @@ import { getTrack } from "../activity/track";
 export let server: WebSocket;
 export const events = {
   PLAYER_STATE_CHANGED: 'PLAYER_STATE_CHANGED',
+  PLAYER_TRACK_CHANGED: 'PLAYER_TRACK_CHANGED'
 };
 
 export function start() {
