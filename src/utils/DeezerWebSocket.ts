@@ -1,9 +1,9 @@
 import { WebSocketServer, WebSocket } from 'ws';
 import { log } from './Log';
-import { runJs } from "../functions";
-import { win } from "./Window";
-import { findTrackInAlbum, getAlbum } from "../activity/album";
-import { getTrack } from "../activity/track";
+import { runJs } from '../functions';
+import { win } from './Window';
+import { findTrackInAlbum } from '../activity/album';
+import { getTrack } from '../activity/track';
 
 export let server: WebSocket;
 export const events = {
