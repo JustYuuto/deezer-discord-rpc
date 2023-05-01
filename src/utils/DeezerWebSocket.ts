@@ -21,7 +21,7 @@ export function start() {
   });
 
   socket.on('connection', (ws) => {
-    log('Local WS', `New connection detected`);
+    log('Local WS', 'New connection detected');
     server = ws;
     ws.on('error', console.error);
 
