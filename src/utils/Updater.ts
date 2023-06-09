@@ -14,7 +14,7 @@ export default function updater(fromStartup: boolean = false) {
           title: 'Update available',
           buttons: ['Cancel', 'Download'],
           message: `The version ${release.tag_name} is available to download!`,
-          defaultId: 0,
+          defaultId: 1,
         }).then(({ response }) => {
           if (response === 1) {
             const file = () => {
@@ -45,6 +45,7 @@ export default function updater(fromStartup: boolean = false) {
         title: 'Cannot get latest release',
         message: 'Cannot get the latest release.',
         detail: reason?.toString(),
+        defaultId: 1
       }).then(({ response }) => {
         if (response === 1) updater();
       });
