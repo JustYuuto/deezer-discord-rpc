@@ -34,6 +34,12 @@ app.whenReady().then(async () => {
     if (BrowserWindow.getAllWindows().length === 0) Window.load(app);
     else BrowserWindow.getAllWindows()[0].show();
   });
+
+  app.on('second-instance', (e) => {
+    e.preventDefault();
+
+    BrowserWindow.getAllWindows()[0].show();
+  });
 });
 
 process.on('beforeExit', async () => {
