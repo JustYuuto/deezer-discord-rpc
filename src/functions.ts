@@ -2,6 +2,7 @@ import { BrowserWindow, dialog, shell, ipcMain } from 'electron';
 import { join } from 'path';
 import * as Config from './utils/Config';
 import * as DiscordWebSocket from './utils/DiscordWebSocket';
+import { win } from './utils/Window';
 
 export const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -20,7 +21,7 @@ export async function prompt(message: string, app: Electron.App, options?: {
 
   ipcMain.on('autocomplete-token', async () => {
     if (Config.get(app, 'discord_token')) {
-      await runJs(win, `document.querySelector('input#discord-token').value = '${Config.get(app, 'discord_token')}'`);
+      await runJs(`document.querySelector('input#discord-token').value = '${Config.get(app, 'discord_token')}'`);
     }
   });
 
@@ -50,6 +51,6 @@ export async function prompt(message: string, app: Electron.App, options?: {
   await win.loadFile(join(__dirname, 'prompt.html'), { hash: message });
 }
 
-export async function runJs(win: Electron.BrowserWindow, code: string, userGesture?: boolean) {
+export async function runJs(code: string, userGesture?: boolean) {
   return win.webContents.executeJavaScript(code, userGesture);
 }

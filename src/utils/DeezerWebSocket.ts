@@ -1,7 +1,6 @@
 import { WebSocketServer, WebSocket } from 'ws';
 import { log } from './Log';
 import { runJs } from '../functions';
-import { win } from './Window';
 import { findTrackInAlbum } from '../activity/album';
 import { getTrack } from '../activity/track';
 
@@ -48,7 +47,7 @@ export function start() {
               const shuffle = dzPlayer.isShuffle();
               return JSON.stringify({ albumId, trackName, playing, position, volume, repeat, shuffle });
             })()`;
-          runJs(win, code).then(async (r) => {
+          runJs(code).then(async (r) => {
             const result: JSResult = JSON.parse(r);
             const trackId = await findTrackInAlbum(result.trackName, result.albumId);
             const track = await getTrack(trackId);
@@ -63,20 +62,20 @@ export function start() {
           });
           break;
         case 'SET_PLAYING':
-          runJs(win, `window.dzPlayer.control.${data.playing ? 'play' : 'pause'}()`); break;
+          runJs(`window.dzPlayer.control.${data.playing ? 'play' : 'pause'}()`); break;
         case 'PREVIOUS':
-          runJs(win, 'window.dzPlayer.control.prevSong()'); break;
+          runJs('window.dzPlayer.control.prevSong()'); break;
         case 'NEXT':
-          runJs(win, 'window.dzPlayer.control.nextSong()'); break;
+          runJs('window.dzPlayer.control.nextSong()'); break;
         case 'SET_VOLUME':
-          runJs(win, `window.dzPlayer.control.setVolume(${data.volume / 100})`); break;
+          runJs(`window.dzPlayer.control.setVolume(${data.volume / 100})`); break;
         case 'SET_REPEAT':
-          runJs(win, `window.dzPlayer.repeat = ${data.state}`); break;
+          runJs(`window.dzPlayer.repeat = ${data.state}`); break;
         case 'SET_SHUFFLE':
-          runJs(win, `window.dzPlayer.shuffle = ${data.state}`); break;
+          runJs(`window.dzPlayer.shuffle = ${data.state}`); break;
         case 'SEEK':
           // @ts-ignore
-          runJs(win, `window.dzPlayer.control.seek(${parseFloat(String((100 * data.position_ms) / data.track_duration)).toPrecision(3) / 100})`); break;
+          runJs(`window.dzPlayer.control.seek(${parseFloat(String((100 * data.position_ms) / data.track_duration)).toPrecision(3) / 100})`); break;
       }
     });
   });
