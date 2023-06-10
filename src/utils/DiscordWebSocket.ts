@@ -62,6 +62,16 @@ export function connect(token: string, resumeUrl?: string) {
       socket.send(JSON.stringify(payload), () => {
         log('WebSocket', 'Sent authentication payload');
       });
+      if (resumeUrl) {
+        socket.send(JSON.stringify({
+          op: 6,
+          d: {
+            token, session_id: sessionId
+          }
+        }), () => {
+          log('WebSocket', 'Sent resume payload');
+        });
+      }
     });
 
     socket.on('error', reject);
