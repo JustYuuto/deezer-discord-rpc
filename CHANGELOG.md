@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.1.13
+
+* Added start and end timestamps
+* If a second instance is launched, the main window will be showed
+* Added session resuming to the WebSocket
+* Updated capabilities bitfield (fixes the "Listening to" mode not working)
+* Updated the reconnect option in the tray menu, now there's the option for the RPC and the WebSocket
+
+## 1.1.12
+
+* Created a local WebSocket server (ws://localhost:5432)
+  > tip: you can use this to create Discord mods plugins for controlling Deezer player
+* Optimized code using ``window.dzPlayer`` property
+* Added some types
+## 1.1.11
+
+* The "Listening to" status works perfectly now
+
 ## 1.1.10
 
 * Fixed app not loading anything on Windows and Linux (I was on macOS when I ran the build, so I didn't have any problems, sorry)
