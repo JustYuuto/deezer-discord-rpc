@@ -12,12 +12,13 @@ export const events = {
 };
 
 export function start() {
+  const port = 5432;
   const socket = new WebSocketServer({
-    port: 5432,
+    port
   });
 
   socket.on('listening', () => {
-    log('Local WS', 'Started server');
+    log('Local WS', `Started server on ws://localhost:${port}`);
   });
 
   socket.on('connection', (ws) => {
