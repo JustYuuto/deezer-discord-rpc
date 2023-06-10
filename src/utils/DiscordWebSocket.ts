@@ -17,6 +17,7 @@ const wsURL = `wss://gateway.discord.gg/?${wsURLParams}`;
 
 export function connect(token: string, resumeUrl?: string) {
   return new Promise<void>(async (resolve, reject) => {
+    if (!await checkToken(token)) throw new Error('Invalid token provided');
     const socket = new WebSocket(resumeUrl ? resumeUrl : wsURL, {
       headers: {
         'User-Agent': userAgents.discordApp,
@@ -138,4 +139,10 @@ export function disconnect(code?: number) {
   log('WebSocket', 'Disconnecting...');
   client.close(code);
   log('WebSocket', 'Disconnected');
+}
+
+export async function checkToken(token: string) {
+  return (await axios.get('https://discord.com/api/v10/users/@me', {
+    headers: { Authorization: token }
+  })).status === 200;
 }
