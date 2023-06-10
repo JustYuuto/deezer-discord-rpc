@@ -29,7 +29,7 @@ export async function prompt(message: string, app: Electron.App, options?: {
     Config.set(app, 'discord_token', data);
     Config.set(app, 'use_listening_to', true);
     win.close();
-    await dialog.showMessageBox(null, {
+    /*await dialog.showMessageBox(null, {
       type: 'info',
       buttons: ['Restart later', 'Restart now'],
       title: 'App restart needed',
@@ -39,7 +39,7 @@ export async function prompt(message: string, app: Electron.App, options?: {
         app.relaunch();
         app.exit();
       }
-    });
+    });*/
     DiscordWebSocket.connect(data).catch(console.error);
   });
 
