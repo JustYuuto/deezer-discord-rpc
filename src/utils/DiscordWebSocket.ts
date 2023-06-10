@@ -123,9 +123,18 @@ export function connect(token: string, resumeUrl?: string) {
             });
         }, 5000);
       } else {
-        log('WebSocket', code + ':', desc.toString());
-        log('WebSocket', 'Disconnected; resuming connection');
-        socket.send(JSON.stringify(payload));
+        dialog.showMessageBox({
+          type: 'error',
+          buttons: ['Cancel', 'Retry'],
+          title: 'Disconnected from WebSocket',
+          message: 'Disconnected from WebSocket, this might be a problem with your Internet connection or the token you provided.',
+          defaultId: 1,
+        })
+          .then(async ({ response }) => {
+            if (response === 1) {
+              await connect(token);
+            }
+          });
       }
     });
 
