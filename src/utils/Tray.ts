@@ -1,6 +1,6 @@
 import { join } from 'path';
 import updater from './Updater';
-import { clientId, useAsMainApp } from '../variables';
+import { clientId, noWsActivity, useAsMainApp } from '../variables';
 import * as Config from './Config';
 import * as RPC from './RPC';
 import { prompt } from '../functions';
@@ -8,6 +8,7 @@ import { dialog, Menu, Tray } from 'electron';
 import { version } from '../../package.json';
 import { log } from './Log';
 import { win } from './Window';
+import * as DiscordWebSocket from './DiscordWebSocket';
 
 const iconPath = join(__dirname, '..', 'img', 'IconTemplate@2x.png');
 
@@ -37,8 +38,18 @@ export async function init(app: Electron.App, client: import('discord-rpc').Clie
         click: (menuItem) => Config.set(app, 'only_show_if_playing', menuItem.checked), enabled: useAsMainApp
       },
       {
-        label: 'Reconnect RPC', type: 'normal', click: () => client.connect(clientId).then(() => log('RPC', 'Reconnected')),
-        enabled: !Config.get(app, 'use_listening_to')
+        label: Config.get(app, 'use_listening_to') ? 'Reconnect to WebSocket' : 'Reconnect RPC', type: 'normal',
+        click: () => {
+          (
+            Config.get(app, 'use_listening_to') ?
+              DiscordWebSocket.connect(Config.get(app, 'discord_token'))
+                .then(() => DiscordWebSocket.client.send(JSON.stringify(noWsActivity)))
+                .catch(console.error) :
+              client.connect(clientId)
+          )
+            .then(() => log(Config.get(app, 'use_listening_to') ? 'WebSocket' : 'RPC', 'Reconnected'))
+            .catch(console.error)
+        }
       },
       {
         label: 'Use "Listening to" instead of "Playing"', type: 'checkbox', checked: Config.get(app, 'use_listening_to'),
