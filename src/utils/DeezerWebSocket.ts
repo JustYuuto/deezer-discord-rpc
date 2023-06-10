@@ -3,6 +3,7 @@ import { log } from './Log';
 import { runJs } from '../functions';
 import { findTrackInAlbum } from '../activity/album';
 import { getTrack } from '../activity/track';
+import * as os from 'os';
 
 export let server: WebSocket;
 export const events = {
@@ -13,11 +14,13 @@ export const events = {
 export function start() {
   const port = 5432;
   const socket = new WebSocketServer({
-    port
+    port, host: '0.0.0.0'
   });
 
   socket.on('listening', () => {
-    log('Local WS', `Started server on ws://localhost:${port}`);
+    const interfaces = os.networkInterfaces();
+    const ip = (interfaces['Wi-Fi'] || interfaces['Ethernet']).find(i => i.family === 'IPv4').address;
+    log('Local WS', `Started server on ws://${ip}:${port}`);
   });
 
   socket.on('connection', (ws) => {
