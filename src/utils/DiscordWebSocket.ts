@@ -31,7 +31,7 @@ export function connect(token: string, resumeUrl?: string) {
       op: 2,
       d: {
         token,
-        capabilities: 4093,
+        capabilities: 8189,
         properties: {
           os: (() => {
             if (process.platform === 'win32') return 'Windows';
