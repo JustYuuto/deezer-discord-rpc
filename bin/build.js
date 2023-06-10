@@ -47,7 +47,7 @@ const config = {
   win: {},
   linux: {
     category: 'Audio',
-    target: ['deb', 'rpm', 'AppImage'],
+    target: ['snap', 'deb', 'AppImage'],
   },
   protocols: [
     {
