@@ -36,7 +36,7 @@ console.log('Compiled icon to an ICO file');
 copySync(resolve('src', 'img'), resolve('build', 'src', 'img'));
 
 // App build
-console.log('Building EXE...');
+console.log('Building setup...');
 const config = {
   appId: 'com.github.yuuto.deezerdiscordrpc',
   productName: 'Deezer Discord RPC',
@@ -46,7 +46,8 @@ const config = {
   },
   win: {},
   linux: {
-    category: 'Audio'
+    category: 'Audio',
+    target: ['deb', 'rpm', 'AppImage'],
   },
   protocols: [
     {
@@ -63,9 +64,9 @@ const config = {
   ]
 };
 
-const build = (platform) => {
-  return builder.build({ targets: builder.Platform[platform].createTarget(), config }).then(() => {
-    console.log(`\nEXE built!`);
-  });
-}
-build('MAC');
+const platform = process.argv[2];
+if (!builder.Platform[platform.toUpperCase()]) throw new Error(`The platform "${platform}" is not supported for building. Supported: windows, linux, mac`);
+
+builder.build({ targets: builder.Platform[platform.toUpperCase()].createTarget(), config }).then(() => {
+  console.log(`\nSetup built in the "dist" folder.`);
+});
