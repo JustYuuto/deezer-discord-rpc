@@ -124,7 +124,7 @@ export async function connect(token: string, resumeUrl?: string) {
           type: 'error',
           buttons: ['Cancel', 'Retry'],
           title: 'Disconnected from WebSocket',
-          message: 'Disconnected from WebSocket, this might be a problem with your Internet connection or the token you provided.',
+          message: 'This might be a problem with your Internet connection, the token you provided, or just Discord.',
           defaultId: 1,
         })
           .then(async ({ response }) => {
