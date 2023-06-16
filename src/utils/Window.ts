@@ -43,25 +43,27 @@ export async function load(app: Electron.App) {
       {
         label: 'Play/Pause',
         accelerator: 'Shift+Space',
-        click: () => {
-          const code = 'document.querySelector(\'.player-controls > .svg-icon-group > .svg-icon-group-item:nth-child(3) > button\')?.click()';
-          runJs(win, code);
+        click: async () => {
+          const playing = await runJs('window.dzPlayer.playing');
+          await runJs(`window.dzPlayer.control.${!playing ? 'play' : 'pause'}()`);
         }
       },
       {
         label: 'Previous',
-        accelerator: 'Shift+Left'
+        accelerator: 'Shift+Left',
+        click: async () => await runJs(`window.dzPlayer.control.prevSong()`)
       },
       {
         label: 'Next',
-        accelerator: 'Shift+Right'
+        accelerator: 'Shift+Right',
+        click: async () => await runJs(`window.dzPlayer.control.nextSong()`)
       },
       { type: 'separator' },
       {
         id: 'shuffle_mode',
         label: 'Shuffle mode',
         type: 'checkbox',
-        click: async () => await runJs(win, 'document.querySelector(\'.player-options .svg-icon-group > .svg-icon-group-item:nth-child(3) > button\')?.click()'),
+        click: async () => await runJs('document.querySelector(\'.player-options .svg-icon-group > .svg-icon-group-item:nth-child(3) > button\')?.click()'),
         checked: false, enabled: false
       }
     ]
