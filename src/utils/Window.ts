@@ -85,7 +85,7 @@ export async function load(app: Electron.App) {
   const updateMenu = async () => {
     log('Menu', 'Updating menu entries...');
     Menu.getApplicationMenu().getMenuItemById('shuffle_mode').enabled = true;
-    Menu.getApplicationMenu().getMenuItemById('shuffle_mode').checked = await runJs(win, 'dzPlayer.isShuffle()');
+    Menu.getApplicationMenu().getMenuItemById('shuffle_mode').checked = await runJs('dzPlayer.isShuffle()');
 
     log('Menu', 'Updated menu entries');
     win.removeListener('page-title-updated', () => {});
@@ -107,7 +107,7 @@ export async function load(app: Electron.App) {
   });
 
   wait(5000).then(() => {
-    runJs(win, `document.querySelector('.slider-track-input.mousetrap').addEventListener('click', () => ipcRenderer.send('update_activity', 'update_activity'))`);
+    runJs(`document.querySelector('.slider-track-input.mousetrap').addEventListener('click', () => ipcRenderer.send('update_activity', 'update_activity'))`);
     ipcMain.on('update_activity', () => updateActivity(app, true));
     setInterval(() => updateActivity(app), 1000);
   });
@@ -132,7 +132,7 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
       const timeLeft = Math.floor(dzPlayer.getRemainingTime() * 1000);
       return JSON.stringify({ albumId, trackName, playing, songTime, timeLeft });
     })()`;
-  runJs(win, code).then(async (r) => {
+  runJs(code).then(async (r) => {
     const result: JSResult = JSON.parse(r);
     const realSongTime = result.songTime;
     const songTime = Date.now() + realSongTime;
