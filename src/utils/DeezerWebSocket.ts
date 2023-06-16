@@ -28,13 +28,14 @@ export function start() {
     server = ws;
     ws.on('error', console.error);
 
-    ws.on('message', (rawData) => {
+    ws.on('message', async (rawData) => {
       const payload = JSON.parse(rawData.toString());
       const { type, event, data }: { type: 'ping' | 'message', event: Events, data: any } = payload;
 
       switch (type) {
         case 'ping':
-          ws.send(JSON.stringify({ type: 'pong' })); break;
+          ws.send(JSON.stringify({ type: 'pong' }));
+          break;
       }
 
       switch (event) {
@@ -50,7 +51,7 @@ export function start() {
               const shuffle = dzPlayer.isShuffle();
               return JSON.stringify({ albumId, trackName, playing, position, volume, repeat, shuffle });
             })()`;
-          runJs(code).then(async (r) => {
+          await runJs(code).then(async (r) => {
             const result: JSResult = JSON.parse(r);
             const trackId = await findTrackInAlbum(result.trackName, result.albumId);
             const track = await getTrack(trackId);
@@ -65,20 +66,27 @@ export function start() {
           });
           break;
         case 'SET_PLAYING':
-          runJs(`window.dzPlayer.control.${data.playing ? 'play' : 'pause'}()`); break;
+          await runJs(`window.dzPlayer.control.${data.playing ? 'play' : 'pause'}()`);
+          break;
         case 'PREVIOUS':
-          runJs('window.dzPlayer.control.prevSong()'); break;
+          await runJs('window.dzPlayer.control.prevSong()');
+          break;
         case 'NEXT':
-          runJs('window.dzPlayer.control.nextSong()'); break;
+          await runJs('window.dzPlayer.control.nextSong()');
+          break;
         case 'SET_VOLUME':
-          runJs(`window.dzPlayer.control.setVolume(${data.volume / 100})`); break;
+          await runJs(`window.dzPlayer.control.setVolume(${data.volume / 100})`);
+          break;
         case 'SET_REPEAT':
-          runJs(`window.dzPlayer.repeat = ${data.state}`); break;
+          await runJs(`window.dzPlayer.repeat = ${data.state}`);
+          break;
         case 'SET_SHUFFLE':
-          runJs(`window.dzPlayer.shuffle = ${data.state}`); break;
+          await runJs(`window.dzPlayer.shuffle = ${data.state}`);
+          break;
         case 'SEEK':
           // @ts-ignore
-          runJs(`window.dzPlayer.control.seek(${parseFloat(String((100 * data.position_ms) / data.track_duration)).toPrecision(3) / 100})`); break;
+          await runJs(`window.dzPlayer.control.seek(${parseFloat(String((100 * data.position_ms) / data.track_duration)).toPrecision(3) / 100})`);
+          break;
       }
     });
   });
