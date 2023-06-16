@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.14
+
+* Fixed the "Listening to" mode not working
+* When you quit the app, the WebSocket connection will be stopped
+
 ## 1.1.13
 
 * Added start and end timestamps
