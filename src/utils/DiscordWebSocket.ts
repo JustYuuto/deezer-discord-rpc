@@ -15,18 +15,15 @@ wsURLParams.append('v', '10');
 wsURLParams.append('encoding', 'json');
 const wsURL = `wss://gateway.discord.gg/?${wsURLParams}`;
 
-export function connect(token: string, resumeUrl?: string) {
+export async function connect(token: string, resumeUrl?: string) {
+  status = (await axios.get('https://discord.com/api/v10/users/@me/settings', {
+    headers: { Authorization: token, 'User-Agent': userAgents.discordApp }
+  })).data.status;
+
   return new Promise<void>(async (resolve, reject) => {
     if (!await checkToken(token)) throw new Error('Invalid token provided');
-    const socket = new WebSocket(resumeUrl ? resumeUrl : wsURL, {
-      headers: {
-        'User-Agent': userAgents.discordApp,
-        Origin: 'https://discord.com'
-      }
-    });
-    status = (await axios.get('https://discord.com/api/v10/users/@me/settings', {
-      headers: { Authorization: token, 'User-Agent': userAgents.discordApp }
-    })).data.status;
+
+    const socket = new WebSocket(resumeUrl || wsURL);
     const payload = {
       op: 2,
       d: {
@@ -46,7 +43,7 @@ export function connect(token: string, resumeUrl?: string) {
           system_locale: 'en',
         },
         presence: {
-          status, activities: []
+          status: 'dnd', since: 0, afk: false, activities: []
         }
       }
     };
