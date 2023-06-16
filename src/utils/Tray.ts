@@ -76,12 +76,14 @@ export async function init(app: Electron.App, client: import('discord-rpc').Clie
         }
       },
       { type: 'separator' },
-      { label: 'Quit', type: 'normal', click: () => {
-        DiscordWebSocket.disconnect(1000);
-        win.hide();
-        app.quit();
-        process.exit();
-      } }
+      {
+        label: 'Quit', type: 'normal', click: () => {
+          Config.get(app, 'use_listening_to') && DiscordWebSocket?.disconnect(1000);
+          win.hide();
+          app.quit();
+          process.exit();
+        }
+      }
     ]);
 
     tray.setToolTip('Deezer Discord RPC');
