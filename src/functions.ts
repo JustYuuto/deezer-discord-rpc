@@ -51,6 +51,6 @@ export async function prompt(message: string, app: Electron.App, options?: {
   await win.loadFile(join(__dirname, 'prompt.html'), { hash: message });
 }
 
-export async function runJs(code: string, userGesture?: boolean) {
-  return win.webContents.executeJavaScript(code, userGesture);
+export async function runJs(code: string) {
+  return win.webContents.executeJavaScript(code);
 }
