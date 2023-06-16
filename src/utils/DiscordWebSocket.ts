@@ -128,15 +128,13 @@ export async function connect(token: string, resumeUrl?: string) {
           defaultId: 1,
         })
           .then(async ({ response }) => {
-            if (response === 1) {
-              await connect(token);
-            }
+            if (response === 1) await connect(token);
           });
       }
     });
 
     function heartbeat(ms: number) {
-      return setInterval(() => socket.send(JSON.stringify({op: 1, d: null})), ms);
+      return setInterval(() => socket.send(JSON.stringify({ op: 1, d: null })), ms);
     }
   });
 }
