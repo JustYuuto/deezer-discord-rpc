@@ -8,7 +8,6 @@ import * as DiscordWebSocket from './utils/DiscordWebSocket';
 import * as DeezerWebSocket from './utils/DeezerWebSocket';
 import * as RPC from './utils/RPC';
 import * as Window from './utils/Window';
-import { noWsActivity } from './variables';
 
 Protocol.register(app);
 Protocol.handle(app);
@@ -24,8 +23,7 @@ app.whenReady().then(async () => {
 
   if (Config.get(app, 'use_listening_to')) {
     DiscordWebSocket.connect(Config.get(app, 'discord_token'))
-      .then(() => DiscordWebSocket.client.send(JSON.stringify(noWsActivity)))
-      .catch(console.error);
+      .catch((e) => log('WebSocket', e.toString()));
   } else {
     RPC.connect();
   }
