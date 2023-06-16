@@ -14,7 +14,7 @@ export const events = {
 export function start() {
   const port = 5432;
   const socket = new WebSocketServer({
-    port, host: '0.0.0.0'
+    port
   });
 
   socket.on('listening', () => {
