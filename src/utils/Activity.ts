@@ -1,7 +1,7 @@
 import WebSocket from 'ws';
 import * as Config from './Config';
 import { tray } from './Tray';
-import { clientId, noWsActivity, useAsMainApp } from '../variables';
+import { useAsMainApp } from '../variables';
 import { version } from '../../package.json';
 import { status } from './DiscordWebSocket';
 
@@ -39,7 +39,12 @@ export async function setActivity(options: {
       await client.clearActivity(process.pid);
       return;
     } else {
-      client.send(JSON.stringify(noWsActivity));
+      client.send(JSON.stringify({
+        op: 3,
+        d: {
+          status, since: 0, afk: false, activities: []
+        }
+      }));
       return;
     }
   }
