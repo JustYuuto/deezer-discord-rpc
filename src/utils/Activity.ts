@@ -40,8 +40,7 @@ export async function setActivity(options: {
       return;
     } else {
       client.send(JSON.stringify({
-        op: 3,
-        d: {
+        op: 3, d: {
           status, since: 0, afk: false, activities: []
         }
       }));
