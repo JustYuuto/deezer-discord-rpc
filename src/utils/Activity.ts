@@ -1,7 +1,7 @@
 import WebSocket from 'ws';
 import * as Config from './Config';
 import { tray } from './Tray';
-import { useAsMainApp } from '../variables';
+import { clientId, useAsMainApp } from '../variables';
 import { version } from '../../package.json';
 import { status } from './DiscordWebSocket';
 
