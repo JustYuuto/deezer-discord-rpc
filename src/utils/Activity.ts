@@ -88,7 +88,7 @@ export async function setActivity(options: {
             },
             buttons: buttons.map(button => button.label),
             metadata: {
-              buttons_url: buttons.map(button => button.url)
+              button_urls: buttons.map(button => button.url)
             }
           }
         ]
