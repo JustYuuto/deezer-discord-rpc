@@ -47,32 +47,6 @@
   </style>
 </head>
 <body>
-<script>
-  document.querySelector('button').addEventListener('click', async (e) => {
-    e.preventDefault();
-    const token = document.querySelector('input#discord-token').value;
-    let invalid = false;
-    if (
-      token.startsWith('Bot') || token.startsWith('Bearer') || token.includes(' ') ||
-      token === '' || !token.includes('.')
-    ) invalid = true;
-    else {
-      const verifyToken = await fetch('https://discord.com/api/v10/users/@me', {
-        headers: { Authorization: token }
-      });
-      if (verifyToken.status !== 200) invalid = true;
-      else {
-        window.ipcRenderer.send('token-received', token);
-        document.querySelector('input#discord-token').disabled = true;
-        document.querySelector('button').disabled = true;
-      }
-    }
-    if (invalid) {
-      alert('The token you provided seems to be invalid!');
-    }
-  });
-  window.ipcRenderer.send('autocomplete-token', true);
-</script>
 <form>
   <div class="input">
     <label for="discord-token">
@@ -103,5 +77,31 @@
     <button type="submit">Submit</button>
   </div>
 </form>
+<script>
+  window.ipcRenderer.send('autocomplete-token', true);
+  document.querySelector('button').addEventListener('click', async (e) => {
+    e.preventDefault();
+    const token = document.querySelector('input#discord-token').value;
+    let invalid = false;
+    if (
+      token.startsWith('Bot') || token.startsWith('Bearer') || token.includes(' ') ||
+      token === '' || !token.includes('.')
+    ) invalid = true;
+    else {
+      const verifyToken = await fetch('https://discord.com/api/v10/users/@me', {
+        headers: { Authorization: token }
+      });
+      if (verifyToken.status !== 200) invalid = true;
+      else {
+        window.ipcRenderer.send('token-received', token);
+        document.querySelector('input#discord-token').disabled = true;
+        document.querySelector('button').disabled = true;
+      }
+    }
+    if (invalid) {
+      alert('The token you provided seems to be invalid!');
+    }
+  });
+</script>
 </body>
 </html>
