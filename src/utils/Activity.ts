@@ -85,6 +85,10 @@ export async function setActivity(options: {
               large_text: albumTitle,
               small_image: '1080779021731766313', // Image ID seems to work better, idk that's the Discord API after all....
               small_text: `Deezer Discord RPC ${version}`
+            },
+            buttons: buttons.map(button => button.label),
+            metadata: {
+              buttons_url: buttons.map(button => button.url)
             }
           }
         ]
