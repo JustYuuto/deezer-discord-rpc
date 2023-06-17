@@ -1,6 +1,6 @@
 import { join } from 'path';
 import updater from './Updater';
-import { clientId, noWsActivity, useAsMainApp } from '../variables';
+import { clientId, useAsMainApp } from '../variables';
 import * as Config from './Config';
 import * as RPC from './RPC';
 import { prompt } from '../functions';
@@ -42,9 +42,7 @@ export async function init(app: Electron.App, client: import('discord-rpc').Clie
         click: () => {
           (
             Config.get(app, 'use_listening_to') ?
-              DiscordWebSocket.connect(Config.get(app, 'discord_token'))
-                .then(() => DiscordWebSocket.client.send(JSON.stringify(noWsActivity)))
-                .catch(console.error) :
+              DiscordWebSocket.connect(Config.get(app, 'discord_token')).catch((e) => log('WebSocket', e.toString())) :
               client.connect(clientId)
           )
             .then(() => log(Config.get(app, 'use_listening_to') ? 'WebSocket' : 'RPC', 'Reconnected'))
