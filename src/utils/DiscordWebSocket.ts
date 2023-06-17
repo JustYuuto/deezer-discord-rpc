@@ -43,7 +43,7 @@ export async function connect(token: string, resumeUrl?: string) {
           system_locale: 'en',
         },
         presence: {
-          status: 'dnd', since: 0, afk: false, activities: []
+          status, since: 0, afk: false, activities: []
         }
       }
     };
