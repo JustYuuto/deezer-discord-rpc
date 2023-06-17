@@ -8,12 +8,3 @@ export const userAgents = {
 export const protocol = 'deezer-discord-rpc';
 export const spotifyRedirectUri = `${protocol}://spotify-callback/`;
 export const artistsSeparator = ', ';
-export const noWsActivity = {
-  op: 3,
-  d: {
-    status: 'unknown',
-    since: 0,
-    afk: false,
-    activities: []
-  }
-};
