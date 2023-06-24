@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, session } from 'electron';
 import { log } from './utils/Log';
 import * as Protocol from './utils/Protocol';
 import * as Config from './utils/Config';
@@ -8,6 +8,7 @@ import * as DiscordWebSocket from './utils/DiscordWebSocket';
 import * as DeezerWebSocket from './utils/DeezerWebSocket';
 import * as RPC from './utils/RPC';
 import * as Window from './utils/Window';
+import { join } from 'path';
 
 Protocol.register(app);
 Protocol.handle(app);
@@ -18,6 +19,7 @@ app.whenReady().then(async () => {
   DeezerWebSocket.start();
 
   await Tray.init(app, RPC.client);
+  await session.defaultSession.loadExtension(join(process.cwd(), 'src', 'react-devtools'));
   await Window.load(app);
   await updater(true);
 
