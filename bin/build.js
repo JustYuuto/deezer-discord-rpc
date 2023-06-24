@@ -1,10 +1,9 @@
-#!/bin/env /usr/bin/node
-
-const { existsSync, rmSync, copyFileSync } = require('fs');
+const { existsSync, rmSync, copyFileSync, readFileSync } = require('fs');
 const { copySync } = require('fs-extra');
 const { resolve } = require('path');
 const { execSync } = require('child_process');
 const builder = require('electron-builder');
+const packageJson = require('../package.json');
 
 // If the TypeScript build folder exists, we need to delete it
 if (existsSync(resolve('build'))) {
@@ -13,7 +12,7 @@ if (existsSync(resolve('build'))) {
 }
 
 // If the Electron app build folder exists, we need to delete it
-if (existsSync(resolve('dist'))) {
+if (existsSync(resolve('dist')) && !readFileSync(resolve('dist', 'latest.yml')).toString().includes(packageJson.version)) {
   rmSync(resolve('dist'), { recursive: true });
   console.log('Removed "dist" directory');
 }
