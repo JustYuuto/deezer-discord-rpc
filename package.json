@@ -7,7 +7,7 @@
     "start": "electron ./build/src/index.js",
     "build:ts": "tsc --resolveJsonModule && cpy ./src/prompt.html build/",
     "run": "yarn build:ts && yarn start",
-    "icon": "png-to-ico src/img/IconTemplate.png > src/img/IconTemplate.ico && cd ./build/src && mkdir img && png-to-ico ../../src/img/IconTemplate.png > img/IconTemplate.ico",
+    "icon": "node bin/icon.js",
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
