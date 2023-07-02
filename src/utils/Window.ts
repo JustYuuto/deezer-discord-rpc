@@ -153,7 +153,9 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
       else if (currentTimeChanged && currentTimeChanged === true) reason = UpdateReason.MUSIC_TIME_CHANGED;
       else if (currentTrack?.songTime !== realSongTime) reason = UpdateReason.MUSIC_NOT_RIGHT_TIME;
       log('Activity', 'Updating because', reason);
-      const trackId = await findTrackInAlbum(result.trackName, result.albumId);
+      const trackId =
+          await findTrackInAlbum(result.trackName, result.albumId) ||
+          await findTrackInAlbum(result.trackName, result.albumId, 25);
       const track = await getTrack(trackId);
       const album = await getAlbum(result.albumId);
       currentTrack = {

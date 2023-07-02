@@ -7,8 +7,8 @@ export async function getAlbum(albumId: number): Promise<Album> {
   return album.data || {};
 }
 
-export async function findTrackInAlbum(trackName: string, albumId: number) {
-  const req = await axios.get(`${deezerApiBase}/album/${albumId}/tracks`);
+export async function findTrackInAlbum(trackName: string, albumId: number, index?: number) {
+  const req = await axios.get(`${deezerApiBase}/album/${albumId}/tracks${index ? `?index=${index}` : ''}`);
   const tracks = req.data.data;
   const find = tracks?.find(elem => elem.title === trackName);
   return find && find.id;
