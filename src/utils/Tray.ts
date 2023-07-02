@@ -58,13 +58,14 @@ export async function init(app: Electron.App, client: import('discord-rpc').Clie
             await dialog.showMessageBox(null, {
               type: 'question',
               buttons: ['No', 'Yes'],
-              title: 'Listening to status',
+              title: '"Listening to" status',
               message: 'Do you want to disable the "Listening to" status and use the "Playing" status?',
             }).then(({ response }) => {
               menuItem.enabled = true;
               if (response === 1) {
                 menuItem.checked = false;
                 Config.set(app, 'use_listening_to', false);
+                DiscordWebSocket.disconnect(1000);
                 RPC.client.login({ clientId }).catch(() => RPC.client.connect(clientId).catch(console.error));
               }
             });
