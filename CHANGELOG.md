@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.15
+
+* Refactored the "Listening to" mode setup HTML
+* Added buttons to the "Listening to" mode
+* Fixed track info not showing on certain titles
+* Removed small image
+* Added React DevTools
+
 ## 1.1.14
 
 * Fixed the "Listening to" mode not working
