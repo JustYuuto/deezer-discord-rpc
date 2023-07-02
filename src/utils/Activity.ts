@@ -1,7 +1,7 @@
 import WebSocket from 'ws';
 import * as Config from './Config';
 import { tray } from './Tray';
-import { clientId, useAsMainApp } from '../variables';
+import { clientId } from '../variables';
 import { version } from '../../package.json';
 import { status } from './DiscordWebSocket';
 
@@ -60,10 +60,8 @@ export async function setActivity(options: {
       largeImageKey: albumCover,
       largeImageText: albumTitle,
       instance: false,
-      startTimestamp: (useAsMainApp && playing) && timeLeft,
-      endTimestamp: (useAsMainApp && playing) && songTime,
-      smallImageKey: 'https://raw.githubusercontent.com/JustYuuto/deezer-discord-rpc/master/src/img/IconTemplate.png',
-      smallImageText: `Deezer Discord RPC ${version}`,
+      startTimestamp: playing && timeLeft,
+      endTimestamp: playing && songTime,
       buttons
     }).catch(() => {});
   } else {
@@ -80,15 +78,13 @@ export async function setActivity(options: {
             details: trackTitle,
             state: trackArtists,
             timestamps: {
-              start: (useAsMainApp && playing) && timeLeft,
-              end: (useAsMainApp && playing) && songTime,
+              start: playing && timeLeft,
+              end: playing && songTime,
             },
             application_id: clientId,
             assets: {
               large_image: albumCover && `spotify:${albumCover}`,
-              large_text: albumTitle,
-              small_image: '1080779021731766313', // Image ID seems to work better, idk that's the Discord API after all....
-              small_text: `Deezer Discord RPC ${version}`
+              large_text: albumTitle
             },
             buttons: buttons.map(button => button.label),
             metadata: {

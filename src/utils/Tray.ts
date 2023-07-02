@@ -1,6 +1,6 @@
 import { join } from 'path';
 import updater from './Updater';
-import { clientId, useAsMainApp } from '../variables';
+import { clientId } from '../variables';
 import * as Config from './Config';
 import * as RPC from './RPC';
 import { prompt } from '../functions';
@@ -35,7 +35,7 @@ export async function init(app: Electron.App, client: import('discord-rpc').Clie
       },
       {
         label: 'Only show RPC if music is playing', type: 'checkbox', checked: Config.get(app, 'only_show_if_playing'),
-        click: (menuItem) => Config.set(app, 'only_show_if_playing', menuItem.checked), enabled: useAsMainApp
+        click: (menuItem) => Config.set(app, 'only_show_if_playing', menuItem.checked)
       },
       {
         label: Config.get(app, 'use_listening_to') ? 'Reconnect to WebSocket' : 'Reconnect RPC', type: 'normal',
@@ -86,6 +86,6 @@ export async function init(app: Electron.App, client: import('discord-rpc').Clie
 
     tray.setToolTip('Deezer Discord RPC');
     tray.setContextMenu(contextMenu);
-    useAsMainApp && tray.on('click', () => win.show());
+    tray.on('click', () => win.show());
   });
 }
