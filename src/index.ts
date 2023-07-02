@@ -19,7 +19,9 @@ app.whenReady().then(async () => {
   DeezerWebSocket.start();
 
   await Tray.init(app, RPC.client);
-  await session.defaultSession.loadExtension(join(process.cwd(), 'src', 'react-devtools'));
+  if (process.argv0.includes('node')) {
+    await session.defaultSession.loadExtension(join(process.cwd(), 'src', 'react-devtools'));
+  }
   await Window.load(app);
   await updater(true);
 
