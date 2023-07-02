@@ -1,4 +1,4 @@
-import { artistsSeparator, useAsMainApp, userAgents } from '../variables';
+import { artistsSeparator, userAgents } from '../variables';
 import { resolve } from 'path';
 import loadAdBlock from './AdBlock';
 import * as Config from './Config';
@@ -18,10 +18,10 @@ let currentTrack: CurrentTrack;
 
 export async function load(app: Electron.App) {
   win = new BrowserWindow({
-    width: useAsMainApp ? 1920 : 450,
-    height: useAsMainApp ? 1080 : 575,
-    minimizable: useAsMainApp,
-    maximizable: useAsMainApp,
+    width: 1920,
+    height: 1080,
+    minimizable: true,
+    maximizable: true,
     closable: true,
     resizable: true,
     center: true,
