@@ -20,7 +20,7 @@ export function start() {
   socket.on('listening', () => {
     const interfaces = os.networkInterfaces();
     const ip = (
-      interfaces['Wi-Fi'] || interfaces['Ethernet'] || interfaces['en1']
+      interfaces['Wi-Fi'] || interfaces['Ethernet'] || interfaces['en0'] || interfaces['en1'] 
     ).find(i => i.family === 'IPv4').address;
     log('Local WS', `Started server on ws://${ip}:${port}`);
   });
