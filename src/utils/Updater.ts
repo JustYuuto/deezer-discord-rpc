@@ -20,11 +20,10 @@ export default function updater(fromStartup: boolean = false) {
             const file = () => {
               let extension;
                    if (process.platform === 'win32')  extension = 'exe';
-              else if (process.platform === 'linux')  extension = 'AppImage';
               else if (process.platform === 'darwin') extension = 'dmg';
               return release.assets.find(f => f.name.split('.').pop() === extension);
             };
-            shell.openExternal(file().browser_download_url);
+            shell.openExternal(file() ? file()?.browser_download_url : release.html_url);
           }
         });
       } else {
