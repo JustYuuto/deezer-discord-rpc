@@ -30,6 +30,7 @@ export async function load(app: Electron.App) {
       preload: resolve(__dirname, '..', 'preload.js')
     }
   });
+  win.maximize();
 
   await loadAdBlock(app, win);
 
@@ -75,7 +76,7 @@ export async function load(app: Electron.App) {
 
   Menu.setApplicationMenu(trayMenu);
   win.setMenu(trayMenu);
-  win.setMenuBarVisibility(true);
+  win.setMenuBarVisibility(process.platform === 'darwin');
 
   await win.loadURL('https://www.deezer.com/login', {
     // The default user agent does not work with Deezer (the player does not update by itself)
