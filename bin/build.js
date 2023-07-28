@@ -48,12 +48,6 @@ const config = {
     category: 'Audio',
     target: ['snap', 'deb', 'AppImage'],
   },
-  protocols: [
-    {
-      name: 'Deezer Discord RPC',
-      schemes: [require('../build/src/variables').protocol]
-    }
-  ],
   files: [
     '!src/*',
     '!src/**/*',

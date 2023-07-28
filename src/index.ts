@@ -1,6 +1,5 @@
 import { app, BrowserWindow, session } from 'electron';
 import { log } from './utils/Log';
-import * as Protocol from './utils/Protocol';
 import * as Config from './utils/Config';
 import * as Tray from './utils/Tray';
 import updater from './utils/Updater';
@@ -9,9 +8,6 @@ import * as DeezerWebSocket from './utils/DeezerWebSocket';
 import * as RPC from './utils/RPC';
 import * as Window from './utils/Window';
 import { join } from 'path';
-
-Protocol.register(app);
-Protocol.handle(app);
 
 log('App', 'Deezer Discord RPC version', require('../package.json').version, process.argv0.includes('node') ? '(debug)' : '');
 
