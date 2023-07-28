@@ -11,7 +11,7 @@ export async function setActivity(options: {
   songTime: number
 }) {
   const {
-    timeLeft, playing, client, albumTitle, trackArtists, trackLink, trackTitle, albumCover, app, songTime
+    timeLeft, playing, client, albumTitle, trackArtists, trackLink, trackTitle, albumCover, app
   } = options;
   const tooltipText = Config.get(app, 'tooltip_text');
   switch (tooltipText) {
@@ -48,11 +48,7 @@ export async function setActivity(options: {
     }
   }
 
-  const buttons = [];
-  if (trackLink !== undefined) buttons.push({ label: 'Listen along', url: trackLink });
-  buttons.push({
-    label: 'View RPC on GitHub', url: 'https://github.com/JustYuuto/deezer-discord-rpc'
-  });
+  const button = trackLink ? { label: 'Play on Deezer', url: trackLink } : undefined;
   if (isRPC) {
     await client.setActivity({
       details: trackTitle,
@@ -60,9 +56,8 @@ export async function setActivity(options: {
       largeImageKey: albumCover,
       largeImageText: albumTitle,
       instance: false,
-      startTimestamp: playing && timeLeft,
-      endTimestamp: playing && songTime,
-      buttons
+      endTimestamp: playing && timeLeft,
+      buttons: [button]
     }).catch(() => {});
   } else {
     client.send(JSON.stringify({
@@ -78,17 +73,16 @@ export async function setActivity(options: {
             details: trackTitle,
             state: trackArtists,
             timestamps: {
-              start: playing && timeLeft,
-              end: playing && songTime,
+              end: playing && timeLeft,
             },
             application_id: clientId,
             assets: {
               large_image: albumCover && `spotify:${albumCover}`,
               large_text: albumTitle
             },
-            buttons: buttons.map(button => button.label),
+            buttons: [button.label],
             metadata: {
-              button_urls: buttons.map(button => button.url)
+              button_urls: [button.url]
             }
           }
         ]

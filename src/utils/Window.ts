@@ -136,7 +136,7 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
     const result: JSResult = JSON.parse(r);
     const realSongTime = result.songTime;
     const songTime = Date.now() + realSongTime;
-    const timeLeft = songTime - result.timeLeft;
+    const timeLeft = Date.now() + result.timeLeft;
     // @ts-ignore
     if (!currentTrack?.songTime) currentTrack?.songTime = realSongTime;
     if (
