@@ -167,15 +167,7 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
         albumCover: Config.get(app, 'use_listening_to') ?
           await Spotify.getCover({
             albumTitle: album.title, title: track.title, artists: track.contributors?.map(c => c.name)?.join(', ')
-          }, app).catch(async () => {
-            log('Spotify Covers', 'Access token expired; refreshing it');
-            await Spotify.accessToken(Config.get(app, 'spotify_refresh_token')).then((res) => {
-              const { access_token, expires_in, token_type } = res.data;
-              Config.set(app, 'spotify_access_token', access_token);
-              Config.set(app, 'spotify_expires_at', Date.now() + expires_in);
-              Config.set(app, 'spotify_token_type', token_type);
-            });
-          }) :
+          }, app).catch(() => {}) :
           album.cover_medium,
         albumTitle: album.title,
         playing: result.playing
