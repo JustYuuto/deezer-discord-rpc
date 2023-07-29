@@ -127,11 +127,16 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
   let code =
     `(() => {
       const albumId = document.querySelector('.track-link[href*="album"]')?.getAttribute('href').split('/')[3];
-      const trackName = document.querySelector('.track-link[href*="album"]')?.textContent;
+      const radioId = dzPlayer.radioId;
+      const playerType = dzPlayer.playerType;
+      const trackName = document.querySelector('.track-link[href*="album"]')?.textContent || // Song
+                        document.querySelector('.track-title .marquee-content')?.textContent // Radio
+        ;
       const playing = dzPlayer.isPlaying();
       const songTime = parseInt(dzPlayer.getDuration()) * 1000;
       const timeLeft = Math.floor(dzPlayer.getRemainingTime() * 1000);
-      return JSON.stringify({ albumId, trackName, playing, songTime, timeLeft });
+      const coverUrl = document.querySelector('.queuelist img.picture-img.css-1pp4m0x.e3mndjk0')?.getAttribute('src')?.replace('56x56', '256x256');
+      return JSON.stringify({ albumId, radioId, playerType, trackName, playing, songTime, timeLeft, coverUrl });
     })()`;
   runJs(code).then(async (r) => {
     const result: JSResult = JSON.parse(r);
@@ -161,7 +166,7 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
       const album = await getAlbum(result.albumId);
       currentTrack = {
         trackId,
-        trackTitle: track.title,
+        trackTitle: result.trackName,
         trackArtists: track.contributors?.map(c => c.name)?.join(artistsSeparator),
         trackLink: track.link,
         // @ts-ignore
@@ -170,8 +175,10 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
             albumTitle: album.title, title: track.title, artists: track.contributors?.map(c => c.name)?.join(', ')
           }, app).catch(() => {}) :
           album.cover_medium,
-        albumTitle: album.title,
-        playing: result.playing
+        albumTitle: album.title || result.trackName,
+        playing: result.playing,
+        type: result.playerType,
+        radioCover: result.coverUrl
       };
 
       DeezerWebSocket.server?.send(JSON.stringify({
@@ -200,7 +207,7 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
         })()
       }));
       await setActivity({
-        client, albumId: result.albumId, timeLeft, app, ...currentTrack, songTime
+        client, albumId: result.albumId, timeLeft, app, ...currentTrack, songTime, playerType: result.playerType
       }).then(() => log('Activity', 'Updated'));
     }
     currentTrack.songTime = realSongTime;
@@ -226,4 +233,6 @@ interface JSResult {
   trackName: string,
   albumId: number,
   playing: boolean,
+  coverUrl?: string,
+  playerType: 'track' | 'radio' | 'ad'
 }
