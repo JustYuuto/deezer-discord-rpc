@@ -164,20 +164,20 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
           await findTrackInAlbum(result.trackName, result.albumId, 25);
       const track = await getTrack(trackId);
       const album = await getAlbum(result.albumId);
+      // @ts-ignore
       currentTrack = {
         trackId,
         trackTitle: result.trackName,
         trackArtists: track.contributors?.map(c => c.name)?.join(artistsSeparator),
         trackLink: track.link,
-        // @ts-ignore
-        albumCover: Config.get(app, 'use_listening_to') ?
-          await Spotify.getCover({
+        albumCover:
+          (Config.get(app, 'use_listening_to') ? await Spotify.getCover({
             albumTitle: album.title, title: track.title, artists: track.contributors?.map(c => c.name)?.join(', ')
-          }, app).catch(() => {}) :
-          album.cover_medium,
+          }, app) : album.cover_medium) || result.coverUrl,
         albumTitle: album.title || result.trackName,
         playing: result.playing,
         type: result.playerType,
+        radioType: result.radioType,
         radioCover: result.coverUrl
       };
 
@@ -225,6 +225,9 @@ interface CurrentTrack {
   albumTitle: string,
   albumCover: string,
   playing: boolean,
+  type: JSResult['playerType'],
+  radioType: JSResult['radioType'],
+  radioCover: string,
 }
 
 interface JSResult {
@@ -234,5 +237,6 @@ interface JSResult {
   albumId: number,
   playing: boolean,
   coverUrl?: string,
-  playerType: 'track' | 'radio' | 'ad'
+  playerType: 'track' | 'radio' | 'ad',
+  radioType: 'livestream' | 'track_mix'
 }

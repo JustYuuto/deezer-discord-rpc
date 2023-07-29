@@ -9,11 +9,11 @@ import { runJs } from '../functions';
 export async function setActivity(options: {
   client: import('discord-rpc').Client | WebSocket, albumId: number, trackId: number, playing: boolean, timeLeft: number,
   trackTitle: string, trackArtists: any, trackLink: string, albumCover: string, albumTitle: string, app: Electron.App,
-  songTime: number, playerType: 'track' | 'radio' | 'ad', radioCover?: string
+  songTime: number, playerType: 'track' | 'radio' | 'ad', radioCover?: string, radioType?: string
 }) {
   const {
     timeLeft, playing, client, albumTitle, trackArtists, trackLink, trackTitle,
-    albumCover, app, playerType, radioCover
+    albumCover, app, playerType, radioCover, radioType
   } = options;
   const tooltipText = Config.get(app, 'tooltip_text');
   switch (tooltipText) {
@@ -57,7 +57,7 @@ export async function setActivity(options: {
       state: trackArtists,
       largeImageKey: albumCover,
       largeImageText: albumTitle,
-      ...(playerType === 'radio' && radioCover && await runJs('document.querySelector(\'.queuelist .queuelist-label\')?.textContent?.trim() !== \'\'')) && {
+      ...(playerType === 'radio' && radioType === 'livestream' && radioCover && await runJs('document.querySelector(\'.queuelist .queuelist-label\')?.textContent?.trim() !== \'\'')) && {
         smallImageKey: radioCover,
         smallImageText: await runJs('document.querySelector(\'.queuelist .queuelist-label\')?.textContent')
       },
