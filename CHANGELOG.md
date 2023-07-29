@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.16
+
+* No more need to authenticate with a Spotify account for showing covers on "Listening to" mode
+* Fixed startup error on macOS
+* Removed protocol
+* Edited RPC buttons
+* Added support for radios
+* Window will now be maximized
+* Menu bar is now visible only if you're on macOS
+
 ## 1.1.15
 
 * Refactored the "Listening to" mode setup HTML
