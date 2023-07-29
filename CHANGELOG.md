@@ -7,7 +7,7 @@
 * Removed protocol
 * Edited RPC buttons
 * Added support for radios
-* Window will now be maximized
+* Window will now be maximized on startup
 * Menu bar is now visible only if you're on macOS
 
 ## 1.1.15
