@@ -136,7 +136,8 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
       const songTime = parseInt(dzPlayer.getDuration()) * 1000;
       const timeLeft = Math.floor(dzPlayer.getRemainingTime() * 1000);
       const coverUrl = document.querySelector('.queuelist img.picture-img.css-1pp4m0x.e3mndjk0')?.getAttribute('src')?.replace('56x56', '256x256');
-      return JSON.stringify({ albumId, radioId, playerType, trackName, playing, songTime, timeLeft, coverUrl });
+      const radioType = dzPlayer.radioType;
+      return JSON.stringify({ albumId, radioId, playerType, trackName, playing, songTime, timeLeft, coverUrl, radioType });
     })()`;
   runJs(code).then(async (r) => {
     const result: JSResult = JSON.parse(r);
