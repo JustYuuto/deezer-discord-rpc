@@ -94,43 +94,33 @@ export async function connect(token: string, resumeUrl?: string) {
       }
     });
 
-    socket.on('close', (code, desc) => {
-      if (code === 1006) {
-        if (resumeUrl) return; // Can create multiple `setInterval`s
-        let retries = 0;
-        const interval = setInterval(async () => {
-          if (retries === 5) {
-            clearInterval(interval);
-            log('WebSocket', 'Connection failed, giving up');
-            await dialog.showMessageBox(null, {
-              type: 'error',
-              buttons: ['OK'],
-              title: 'Error',
-              message: 'Failed to connect to the Discord WebSocket server!',
-              detail: 'This means you can\'t use the "Listening to" status. Check your Internet connection.'
+    socket.on('close', () => {
+      if (resumeUrl) return; // Can create multiple `setInterval`s
+      let retries = 0;
+      const interval = setInterval(async () => {
+        if (retries === 5) {
+          clearInterval(interval);
+          log('WebSocket', 'Connection failed, giving up');
+          await dialog.showMessageBox(null, {
+            type: 'error',
+            buttons: ['Retry', 'Cancel'],
+            title: 'WebSocket error',
+            message: 'You were disconnected from Discord WebSocket, or it just failed to connect to it.',
+            detail: 'This means you can\'t use the "Listening to" status. Check your Internet connection.'
+          })
+            .then(async ({ response }) => {
+              if (response === 0) await connect(token);
             });
-            return;
-          }
-          log('WebSocket', 'Retrying connection...');
-          await connect(token, `${resumeURL}/?${wsURLParams}`)
-            .then(() => clearInterval(interval))
-            .catch(() => {
-              log('WebSocket', `Connection failed, retrying in 5 seconds (retries left: ${4 - retries})`);
-              retries++;
-            });
-        }, 5000);
-      } else {
-        dialog.showMessageBox({
-          type: 'error',
-          buttons: ['Cancel', 'Retry'],
-          title: 'Disconnected from WebSocket',
-          message: 'This might be a problem with your Internet connection, the token you provided, or just Discord.',
-          defaultId: 1,
-        })
-          .then(async ({ response }) => {
-            if (response === 1) await connect(token);
+          return;
+        }
+        log('WebSocket', 'Retrying connection...');
+        await connect(token, `${resumeURL}/?${wsURLParams}`)
+          .then(() => clearInterval(interval))
+          .catch(() => {
+            log('WebSocket', `Connection failed, retrying in 5 seconds (retries left: ${4 - retries})`);
+            retries++;
           });
-      }
+      }, 5000);
     });
 
     function heartbeat(ms: number) {
