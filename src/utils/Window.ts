@@ -1,4 +1,4 @@
-import { artistsSeparator, userAgents } from '../variables';
+import { userAgents } from '../variables';
 import { resolve } from 'path';
 import loadAdBlock from './AdBlock';
 import * as Config from './Config';
@@ -127,17 +127,20 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
   let code =
     `(() => {
       const albumId = document.querySelector('.track-link[href*="album"]')?.getAttribute('href').split('/')[3];
-      const radioId = dzPlayer.radioId;
-      const playerType = dzPlayer.playerType;
-      const trackName = document.querySelector('.track-link[href*="album"]')?.textContent || // Song
-                        document.querySelector('.track-title .marquee-content')?.textContent // Radio
-        ;
+      const radioId = dzPlayer.getRadioId();
+      const radioType = dzPlayer.getRadioType();
+      const playerType = dzPlayer.getPlayerType();
+      const isLivestreamRadio = playerType === 'radio' && radioType === 'livestream';
+      const playerInfo = document.querySelector('.track-title .marquee-content')?.textContent;
+      const trackName = dzPlayer.getSongTitle() || dzPlayer.getCurrentSong().LIVESTREAM_TITLE || playerInfo;
+      const albumName = (!isLivestreamRadio ? dzPlayer.getAlbumTitle() : dzPlayer.getCurrentSong().LIVESTREAM_TITLE) || playerInfo;
+      const artists = dzPlayer.getCurrentSong().ARTISTS?.map(art => art.ART_NAME)?.join(', ') || dzPlayer.getArtistName() || 
+                        playerInfo.split(' · ')[1];
       const playing = dzPlayer.isPlaying();
       const songTime = parseInt(dzPlayer.getDuration()) * 1000;
       const timeLeft = Math.floor(dzPlayer.getRemainingTime() * 1000);
       const coverUrl = document.querySelector('.queuelist img.picture-img.css-1pp4m0x.e3mndjk0')?.getAttribute('src')?.replace('56x56', '256x256');
-      const radioType = dzPlayer.radioType;
-      return JSON.stringify({ albumId, radioId, playerType, trackName, playing, songTime, timeLeft, coverUrl, radioType });
+      return JSON.stringify({ albumId, radioId, playerType, trackName, albumName, artists, playing, songTime, timeLeft, coverUrl, isLivestreamRadio });
     })()`;
   runJs(code).then(async (r) => {
     const result: JSResult = JSON.parse(r);
@@ -169,17 +172,14 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
       currentTrack = {
         trackId,
         trackTitle: result.trackName,
-        trackArtists: track.contributors?.map(c => c.name)?.join(artistsSeparator),
+        trackArtists: result.artists || result.playerType.replace(result.playerType[0], result.playerType[0].toUpperCase()),
         trackLink: track.link,
         albumCover:
-          (Config.get(app, 'use_listening_to') ? await Spotify.getCover({
-            albumTitle: album.title, title: track.title, artists: track.contributors?.map(c => c.name)?.join(', ')
-          }, app) : album.cover_medium) || result.coverUrl,
-        albumTitle: album.title || result.trackName,
+          Config.get(app, 'use_listening_to') ? await Spotify.getCover({
+            albumTitle: result.albumName, title: result.trackName, artists: result.artists
+          }, app) : result.coverUrl,
+        albumTitle: result.albumName || result.trackName,
         playing: result.playing,
-        type: result.playerType,
-        radioType: result.radioType,
-        radioCover: result.coverUrl
       };
 
       DeezerWebSocket.server?.send(JSON.stringify({
@@ -208,7 +208,7 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
         })()
       }));
       await setActivity({
-        client, albumId: result.albumId, timeLeft, app, ...currentTrack, songTime, playerType: result.playerType
+        client, albumId: result.albumId, timeLeft, app, ...currentTrack, songTime
       }).then(() => log('Activity', 'Updated'));
     }
     currentTrack.songTime = realSongTime;
@@ -226,8 +226,6 @@ interface CurrentTrack {
   albumTitle: string,
   albumCover: string,
   playing: boolean,
-  type: JSResult['playerType'],
-  radioType: JSResult['radioType'],
   radioCover: string,
 }
 
@@ -239,5 +237,7 @@ interface JSResult {
   playing: boolean,
   coverUrl?: string,
   playerType: 'track' | 'radio' | 'ad',
-  radioType: 'livestream' | 'track_mix'
+  artists: string,
+  albumName: string,
+  isLivestreamRadio: boolean
 }
