@@ -4,16 +4,15 @@ import { tray } from './Tray';
 import { clientId } from '../variables';
 import { version } from '../../package.json';
 import { status } from './DiscordWebSocket';
-import { runJs } from '../functions';
 
 export async function setActivity(options: {
   client: import('discord-rpc').Client | WebSocket, albumId: number, trackId: number, playing: boolean, timeLeft: number,
   trackTitle: string, trackArtists: any, trackLink: string, albumCover: string, albumTitle: string, app: Electron.App,
-  songTime: number, playerType: 'track' | 'radio' | 'ad', radioCover?: string, radioType?: string
+  songTime: number
 }) {
   const {
     timeLeft, playing, client, albumTitle, trackArtists, trackLink, trackTitle,
-    albumCover, app, playerType, radioCover, radioType
+    albumCover, app
   } = options;
   const tooltipText = Config.get(app, 'tooltip_text');
   switch (tooltipText) {
@@ -57,10 +56,6 @@ export async function setActivity(options: {
       state: trackArtists,
       largeImageKey: albumCover,
       largeImageText: albumTitle,
-      ...(playerType === 'radio' && radioType === 'livestream' && radioCover && await runJs('document.querySelector(\'.queuelist .queuelist-label\')?.textContent?.trim() !== \'\'')) && {
-        smallImageKey: radioCover,
-        smallImageText: await runJs('document.querySelector(\'.queuelist .queuelist-label\')?.textContent')
-      },
       instance: false,
       [timeLeft < Date.now() ? 'startTimestamp' : 'endTimestamp']: playing && timeLeft,
       buttons: button && [button]
