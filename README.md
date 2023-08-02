@@ -18,7 +18,7 @@
 * Can hide the activity if song is not playing
 * Can set a "Listening to" status (like Spotify)
 * Includes an ad-blocker, so it can block Deezer ads, Sentry requests...
-* Supports songs and radios (will soon support podcasts)
+* Supports songs, radios, personal songs, podcasts
 
 ## Screenshots
 
@@ -40,7 +40,7 @@
 
 * [x] Implement Discord WebSocket server to get a "Listening to" status on the profile
 * [x] Create a WebSocket server like the Spotify one (wss://dealer.spotify.com)
-* [ ] Support podcasts
+* [x] Support podcasts
 
 ## License
 

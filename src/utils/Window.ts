@@ -132,10 +132,12 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
       const playerType = dzPlayer.getPlayerType();
       const isLivestreamRadio = playerType === 'radio' && radioType === 'livestream';
       const playerInfo = document.querySelector('.track-title .marquee-content')?.textContent;
-      const trackName = dzPlayer.getSongTitle() || dzPlayer.getCurrentSong().LIVESTREAM_TITLE || playerInfo;
-      const albumName = (!isLivestreamRadio ? dzPlayer.getAlbumTitle() : dzPlayer.getCurrentSong().LIVESTREAM_TITLE) || playerInfo;
+      const trackName = dzPlayer.getSongTitle() || dzPlayer.getCurrentSong()?.LIVESTREAM_TITLE ||
+                        dzPlayer.getCurrentSong()?.EPISODE_TITLE || playerInfo;
+      const albumName = (!isLivestreamRadio ? dzPlayer.getAlbumTitle() : dzPlayer.getCurrentSong().LIVESTREAM_TITLE) ||
+                        dzPlayer.getCurrentSong()?.SHOW_NAME || playerInfo;
       const artists = dzPlayer.getCurrentSong().ARTISTS?.map(art => art.ART_NAME)?.join(', ') || dzPlayer.getArtistName() || 
-                        playerInfo.split(' · ')[1];
+                      dzPlayer.getCurrentSong()?.SHOW_NAME || playerInfo.split(' · ')[1];
       const playing = dzPlayer.isPlaying();
       const songTime = parseInt(dzPlayer.getDuration()) * 1000;
       const timeLeft = Math.floor(dzPlayer.getRemainingTime() * 1000);
