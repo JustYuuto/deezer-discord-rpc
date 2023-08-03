@@ -172,7 +172,6 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
         trackId: result.trackId,
         trackTitle: result.trackName,
         trackArtists: result.artists || result.playerType.replace(result.playerType[0], result.playerType[0].toUpperCase()),
-        trackLink: track.link,
         albumCover:
           Config.get(app, 'use_listening_to') ? await Spotify.getCover({
             albumTitle: result.albumName, title: result.trackName, artists: result.artists
@@ -221,7 +220,6 @@ interface CurrentTrack {
   trackId: string,
   trackTitle: string,
   trackArtists: string,
-  trackLink: string,
   albumTitle: string,
   albumCover: string,
   playing: boolean,

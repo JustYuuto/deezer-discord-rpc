@@ -49,7 +49,16 @@ export async function setActivity(options: {
     }
   }
 
-  const button = trackLink ? { label: 'Play on Deezer', url: trackLink } : undefined;
+  const getTrackLink = () => {
+    switch (type) {
+      case 'song':
+        return `https://www.deezer.com/track/${trackId}`;
+      case 'episode':
+        return `https://www.deezer.com/episode/${trackId}`;
+    }
+  }
+
+  const button = (getTrackLink() && parseInt(trackId) > 0) ? { label: 'Play on Deezer', url: getTrackLink() } : undefined;
   if (isRPC) {
     await client.setActivity({
       details: trackTitle,
