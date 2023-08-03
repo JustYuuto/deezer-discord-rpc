@@ -3,7 +3,7 @@ import { deezerApiBase } from '../variables';
 import { Artist } from './artist';
 import { Album } from './album';
 
-export async function getTrack(trackId: number): Promise<Track> {
+export async function getTrack(trackId: number | string): Promise<Track> {
   const track = await axios.get(`${deezerApiBase}/track/${trackId}`);
   return track.data;
 }
