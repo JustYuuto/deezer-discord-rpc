@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.17
+
+* Added support for radios, podcasts, and personal songs
+* Fixed WebSocket disconnection error message which pops every 30 minutes
+* Removed some Deezer API requests
+
 ## 1.1.16
 
 * No more need to authenticate with a Spotify account for showing covers on "Listening to" mode
