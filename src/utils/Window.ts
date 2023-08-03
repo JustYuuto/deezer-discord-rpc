@@ -171,8 +171,6 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
       else if (currentTimeChanged && currentTimeChanged === true) reason = UpdateReason.MUSIC_TIME_CHANGED;
       else if (currentTrack?.songTime !== realSongTime) reason = UpdateReason.MUSIC_NOT_RIGHT_TIME;
       log('Activity', 'Updating because', reason);
-      const track = await getTrack(result.trackId);
-      const album = await getAlbum(result.albumId);
       // @ts-ignore
       currentTrack = {
         trackId: result.trackId,
@@ -198,16 +196,18 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
               return 'PLAYER_TRACK_CHANGED';
           }
         })()],
-        data: (() => {
+        data: await (async () => {
+          const track = await getTrack(result.trackId);
+          const album = await getAlbum(result.albumId);
           switch (reason) {
             case UpdateReason.MUSIC_PAUSED:
-              return { track, album, event: { playing: false } };
+              return {track, album, event: {playing: false}};
             case UpdateReason.MUSIC_PLAYED:
-              return { track, album, event: { playing: true } };
+              return {track, album, event: {playing: true}};
             case UpdateReason.MUSIC_TIME_CHANGED:
-              return { track, album, event: { time: Math.floor((timeLeft - Date.now()) / 1000) } };
+              return {track, album, event: {time: Math.floor((timeLeft - Date.now()) / 1000)}};
             case UpdateReason.MUSIC_CHANGED:
-              return { old: {}, new: { track, album } };
+              return {old: {}, new: {track, album}};
           }
         })()
       }));
