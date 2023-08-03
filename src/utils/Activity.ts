@@ -6,13 +6,13 @@ import { version } from '../../package.json';
 import { status } from './DiscordWebSocket';
 
 export async function setActivity(options: {
-  client: import('discord-rpc').Client | WebSocket, albumId: number, trackId: number, playing: boolean, timeLeft: number,
-  trackTitle: string, trackArtists: any, trackLink: string, albumCover: string, albumTitle: string, app: Electron.App,
-  songTime: number
+  client: import('discord-rpc').Client | WebSocket, albumId: number, trackId: string, playing: boolean, timeLeft: number,
+  trackTitle: string, trackArtists: any, albumCover: string, albumTitle: string, app: Electron.App, songTime: number,
+  type: string
 }) {
   const {
-    timeLeft, playing, client, albumTitle, trackArtists, trackLink, trackTitle,
-    albumCover, app
+    timeLeft, playing, client, albumTitle, trackArtists, trackTitle,
+    albumCover, app, type, trackId
   } = options;
   const tooltipText = Config.get(app, 'tooltip_text');
   switch (tooltipText) {

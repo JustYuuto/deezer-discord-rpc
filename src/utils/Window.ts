@@ -130,6 +130,7 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
       const trackId = dzPlayer.getSongId() || dzPlayer.getRadioId();
       const radioType = dzPlayer.getRadioType();
       const playerType = dzPlayer.getPlayerType();
+      const mediaType = dzPlayer.getMediaType();
       const isLivestreamRadio = playerType === 'radio' && radioType === 'livestream';
       const playerInfo = document.querySelector('.track-title .marquee-content')?.textContent;
       const trackName = dzPlayer.getSongTitle() || dzPlayer.getCurrentSong()?.LIVESTREAM_TITLE ||
@@ -141,8 +142,13 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
       const playing = dzPlayer.isPlaying();
       const songTime = parseInt(dzPlayer.getDuration()) * 1000;
       const timeLeft = Math.floor(dzPlayer.getRemainingTime() * 1000);
-      const coverUrl = document.querySelector('.queuelist img.picture-img.css-1pp4m0x.e3mndjk0')?.getAttribute('src')?.replace('56x56', '256x256');
-      return JSON.stringify({ albumId, radioId, playerType, trackName, albumName, artists, playing, songTime, timeLeft, coverUrl, isLivestreamRadio });
+      const cover = dzPlayer.getCurrentSong()?.LIVESTREAM_IMAGE_MD5 || dzPlayer.getCurrentSong()?.EPISODE_IMAGE_MD5 ||
+                    dzPlayer.getCurrentSong()?.SHOW_ART_MD5 || dzPlayer.getCover();
+      let coverType;
+      if (mediaType === 'song') coverType = 'cover';
+      if (mediaType === 'episode') coverType = 'talk';
+      const coverUrl = \`https://e-cdns-images.dzcdn.net/images/\${coverType}/\${cover}/256x256-000000-80-0-0.jpg\`;
+      return JSON.stringify({ albumId, trackId, mediaType, playerType, trackName, albumName, artists, playing, songTime, timeLeft, coverUrl, isLivestreamRadio });
     })()`;
   runJs(code).then(async (r) => {
     const result: JSResult = JSON.parse(r);
@@ -206,7 +212,7 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
         })()
       }));
       await setActivity({
-        client, albumId: result.albumId, timeLeft, app, ...currentTrack, songTime
+        client, albumId: result.albumId, timeLeft, app, ...currentTrack, songTime, type: result.mediaType
       }).then(() => log('Activity', 'Updated'));
     }
     currentTrack.songTime = realSongTime;
@@ -236,5 +242,7 @@ interface JSResult {
   playerType: 'track' | 'radio' | 'ad',
   artists: string,
   albumName: string,
-  isLivestreamRadio: boolean
+  isLivestreamRadio: boolean,
+  mediaType: string,
+  trackId: string
 }
