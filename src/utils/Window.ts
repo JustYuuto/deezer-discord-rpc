@@ -5,7 +5,7 @@ import * as Config from './Config';
 import * as DiscordWebSocket from './DiscordWebSocket';
 import * as RPC from './RPC';
 import { log } from './Log';
-import { findTrackInAlbum, getAlbum } from '../activity/album';
+import { getAlbum } from '../activity/album';
 import { getTrack } from '../activity/track';
 import * as Spotify from './Spotify';
 import { runJs, wait } from '../functions';
@@ -127,7 +127,7 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
   let code =
     `(() => {
       const albumId = document.querySelector('.track-link[href*="album"]')?.getAttribute('href').split('/')[3];
-      const radioId = dzPlayer.getRadioId();
+      const trackId = dzPlayer.getSongId() || dzPlayer.getRadioId();
       const radioType = dzPlayer.getRadioType();
       const playerType = dzPlayer.getPlayerType();
       const isLivestreamRadio = playerType === 'radio' && radioType === 'livestream';
@@ -165,14 +165,11 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
       else if (currentTimeChanged && currentTimeChanged === true) reason = UpdateReason.MUSIC_TIME_CHANGED;
       else if (currentTrack?.songTime !== realSongTime) reason = UpdateReason.MUSIC_NOT_RIGHT_TIME;
       log('Activity', 'Updating because', reason);
-      const trackId =
-          await findTrackInAlbum(result.trackName, result.albumId) ||
-          await findTrackInAlbum(result.trackName, result.albumId, 25);
-      const track = await getTrack(trackId);
+      const track = await getTrack(result.trackId);
       const album = await getAlbum(result.albumId);
       // @ts-ignore
       currentTrack = {
-        trackId,
+        trackId: result.trackId,
         trackTitle: result.trackName,
         trackArtists: result.artists || result.playerType.replace(result.playerType[0], result.playerType[0].toUpperCase()),
         trackLink: track.link,
@@ -221,7 +218,7 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
 
 interface CurrentTrack {
   songTime: number,
-  trackId: number,
+  trackId: string,
   trackTitle: string,
   trackArtists: string,
   trackLink: string,
