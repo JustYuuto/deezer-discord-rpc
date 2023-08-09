@@ -6,7 +6,9 @@
     "outDir": "build/",
     "moduleResolution": "Node",
     "resolveJsonModule": true,
-    "allowJs": true
+    "allowJs": true,
+    "skipLibCheck": true
   },
   "include": ["src/*", "src/activity/*"],
+  "exclude": ["node_modules/*"]
 }
