@@ -133,18 +133,18 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
       const mediaType = dzPlayer.getMediaType();
       const isLivestreamRadio = playerType === 'radio' && radioType === 'livestream';
       const playerInfo = document.querySelector('.track-title .marquee-content')?.textContent;
-      const trackName = dzPlayer.getSongTitle() || dzPlayer.getCurrentSong()?.LIVESTREAM_TITLE ||
-                        dzPlayer.getCurrentSong()?.EPISODE_TITLE || playerInfo;
+      const trackName = dzPlayer.getSongTitle()?.concat(' ', dzPlayer.getCurrentSong()?.VERSION) || 
+                        dzPlayer.getCurrentSong()?.LIVESTREAM_TITLE || dzPlayer.getCurrentSong()?.EPISODE_TITLE || playerInfo;
       const albumName = (!isLivestreamRadio ? dzPlayer.getAlbumTitle() : dzPlayer.getCurrentSong().LIVESTREAM_TITLE) ||
                         dzPlayer.getCurrentSong()?.SHOW_NAME || playerInfo;
-      const artists = dzPlayer.getCurrentSong().ARTISTS?.map(art => art.ART_NAME)?.join(', ') || dzPlayer.getArtistName() || 
+      const artists = dzPlayer.getCurrentSong()?.ARTISTS?.map(art => art.ART_NAME)?.join(', ') || dzPlayer.getArtistName() || 
                       dzPlayer.getCurrentSong()?.SHOW_NAME || playerInfo.split(' · ')[1];
       const playing = dzPlayer.isPlaying();
       const songTime = parseInt(dzPlayer.getDuration()) * 1000;
       const timeLeft = Math.floor(dzPlayer.getRemainingTime() * 1000);
       const cover = dzPlayer.getCurrentSong()?.LIVESTREAM_IMAGE_MD5 || dzPlayer.getCurrentSong()?.EPISODE_IMAGE_MD5 ||
                     dzPlayer.getCurrentSong()?.SHOW_ART_MD5 || dzPlayer.getCover();
-      let coverType;
+      let coverType = 'misc';
       if (mediaType === 'song') coverType = 'cover';
       if (mediaType === 'episode') coverType = 'talk';
       const coverUrl = \`https://e-cdns-images.dzcdn.net/images/\${coverType}/\${cover}/256x256-000000-80-0-0.jpg\`;
