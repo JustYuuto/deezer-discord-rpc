@@ -39,7 +39,6 @@
 ## Todo
 
 * [x] Implement Discord WebSocket server to get a "Listening to" status on the profile
-* [x] Create a WebSocket server like the Spotify one (wss://dealer.spotify.com)
 * [x] Support podcasts
 
 ## License

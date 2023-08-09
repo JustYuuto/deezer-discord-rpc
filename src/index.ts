@@ -4,7 +4,6 @@ import * as Config from './utils/Config';
 import * as Tray from './utils/Tray';
 import updater from './utils/Updater';
 import * as DiscordWebSocket from './utils/DiscordWebSocket';
-import * as DeezerWebSocket from './utils/DeezerWebSocket';
 import * as RPC from './utils/RPC';
 import * as Window from './utils/Window';
 import { join } from 'path';
@@ -12,8 +11,6 @@ import { join } from 'path';
 log('App', 'Deezer Discord RPC version', require('../package.json').version, process.argv0.includes('node') ? '(debug)' : '');
 
 app.whenReady().then(async () => {
-  DeezerWebSocket.start();
-
   await Tray.init(app, RPC.client);
   if (process.argv0.includes('node')) {
     await session.defaultSession.loadExtension(join(process.cwd(), 'src', 'react-devtools'));
