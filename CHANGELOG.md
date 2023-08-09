@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.18
+
+* Removed local WS server
+* Now using a 3rd-party library for Discord WS
+* Spotify is now no longer used in the app for covers
+* Radios covers are now re-working
+* Optimized code and removed unused code
+
 ## 1.1.17
 
 * Added support for radios, podcasts, and personal songs
