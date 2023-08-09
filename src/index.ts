@@ -37,5 +37,5 @@ app.whenReady().then(async () => {
 });
 
 process.on('beforeExit', async () => {
-  Config.get(app, 'use_listening_to') ? DiscordWebSocket.disconnect(1000) : await RPC.disconnect();
+  Config.get(app, 'use_listening_to') ? DiscordWebSocket.disconnect() : await RPC.disconnect();
 });

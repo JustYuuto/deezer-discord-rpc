@@ -65,7 +65,7 @@ export async function init(app: Electron.App, client: import('discord-rpc').Clie
               if (response === 1) {
                 menuItem.checked = false;
                 Config.set(app, 'use_listening_to', false);
-                DiscordWebSocket.disconnect(1000);
+                DiscordWebSocket.disconnect();
                 RPC.client.login({ clientId }).catch(() => RPC.client.connect(clientId).catch(console.error));
               }
             });
@@ -77,7 +77,7 @@ export async function init(app: Electron.App, client: import('discord-rpc').Clie
       { type: 'separator' },
       {
         label: 'Quit', type: 'normal', click: () => {
-          Config.get(app, 'use_listening_to') && DiscordWebSocket?.disconnect(1000);
+          Config.get(app, 'use_listening_to') && DiscordWebSocket?.disconnect();
           win.hide();
           app.quit();
           process.exit();
