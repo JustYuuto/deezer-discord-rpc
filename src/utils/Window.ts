@@ -5,9 +5,6 @@ import * as Config from './Config';
 import * as DiscordWebSocket from './DiscordWebSocket';
 import * as RPC from './RPC';
 import { log } from './Log';
-import { getAlbum } from '../activity/album';
-import { getTrack } from '../activity/track';
-import * as Spotify from './Spotify';
 import { runJs, wait } from '../functions';
 import { BrowserWindow, ipcMain, Menu, shell } from 'electron';
 import { setActivity } from './Activity';
@@ -176,10 +173,7 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
         trackId: result.trackId,
         trackTitle: result.trackName,
         trackArtists: result.artists || result.playerType.replace(result.playerType[0], result.playerType[0].toUpperCase()),
-        albumCover:
-          Config.get(app, 'use_listening_to') ? await Spotify.getCover({
-            albumTitle: result.albumName, title: result.trackName, artists: result.artists
-          }, app) : result.coverUrl,
+        albumCover: result.coverUrl,
         albumTitle: result.albumName || result.trackName,
         playing: result.playing,
       };
