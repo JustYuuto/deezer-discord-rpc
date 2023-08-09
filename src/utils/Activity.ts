@@ -1,12 +1,11 @@
-import WebSocket from 'ws';
 import * as Config from './Config';
 import { tray } from './Tray';
 import { clientId } from '../variables';
 import { version } from '../../package.json';
-import { status } from './DiscordWebSocket';
+import { RichPresence } from 'discord.js-selfbot-v13';
 
 export async function setActivity(options: {
-  client: import('discord-rpc').Client | WebSocket, albumId: number, trackId: string, playing: boolean, timeLeft: number,
+  client: import('discord-rpc').Client | import('discord.js-selfbot-v13').Client, albumId: number, trackId: string, playing: boolean, timeLeft: number,
   trackTitle: string, trackArtists: any, albumCover: string, albumTitle: string, app: Electron.App, songTime: number,
   type: string
 }) {
@@ -33,18 +32,14 @@ export async function setActivity(options: {
       break;
   }
   if (!client) return;
-  const isRPC = 'destroy' in client;
+  const isRPC = client instanceof (await import('discord-rpc')).Client;
 
   if (Config.get(app, 'only_show_if_playing') && !playing) {
     if (isRPC) {
       await client.clearActivity(process.pid);
       return;
     } else {
-      client.send(JSON.stringify({
-        op: 3, d: {
-          status, since: 0, afk: false, activities: []
-        }
-      }));
+      client.user.setActivity(null);
       return;
     }
   }
@@ -58,7 +53,8 @@ export async function setActivity(options: {
     }
   }
 
-  const button = (getTrackLink() && parseInt(trackId) > 0) ? { label: 'Play on Deezer', url: getTrackLink() } : undefined;
+  const button = (getTrackLink() && parseInt(trackId) > 0) && { label: 'Play on Deezer', url: getTrackLink() };
+  const isLivestream = timeLeft < Date.now();
   if (isRPC) {
     await client.setActivity({
       details: trackTitle,
@@ -66,37 +62,22 @@ export async function setActivity(options: {
       largeImageKey: albumCover,
       largeImageText: albumTitle,
       instance: false,
-      [timeLeft < Date.now() ? 'startTimestamp' : 'endTimestamp']: playing && timeLeft,
+      [isLivestream ? 'startTimestamp' : 'endTimestamp']: playing && timeLeft,
       buttons: button && [button]
     }).catch(() => {});
   } else {
-    client.send(JSON.stringify({
-      op: 3,
-      d: {
-        status,
-        since: 0,
-        afk: false,
-        activities: [
-          {
-            type: 2,
-            name: 'Deezer',
-            details: trackTitle,
-            state: trackArtists,
-            timestamps: {
-              [timeLeft < Date.now() ? 'start' : 'end']: playing && timeLeft,
-            },
-            application_id: clientId,
-            assets: {
-              large_image: albumCover && `spotify:${albumCover}`,
-              large_text: albumTitle
-            },
-            buttons: button && [button.label],
-            metadata: {
-              button_urls: button && [button.url]
-            }
-          }
-        ]
-      }
-    }));
+    const presence = new RichPresence()
+      .setType('LISTENING')
+      .setName('Deezer')
+      .setDetails(trackTitle)
+      .setState(trackArtists)
+      // @ts-ignore
+      [isLivestream ? 'setStartTimestamp' : 'setEndTimestamp'](playing && timeLeft)
+      .setApplicationId(clientId)
+      .setAssetsLargeImage('mp:'.concat((await RichPresence.getExternal(client, clientId, albumCover, ''))[0].external_asset_path))
+      .setAssetsLargeText(albumTitle)
+    ;
+    if (button) presence.addButton(button.label, button.url);
+    client.user.setActivity(presence);
   }
 }
