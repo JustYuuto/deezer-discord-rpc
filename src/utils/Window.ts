@@ -136,7 +136,7 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
       const artists = dzPlayer.getCurrentSong()?.ARTISTS?.map(art => art.ART_NAME)?.join(', ') || dzPlayer.getArtistName() || 
                       dzPlayer.getCurrentSong()?.SHOW_NAME || playerInfo.split(' · ')[1];
       const playing = dzPlayer.isPlaying();
-      const songTime = parseInt(dzPlayer.getDuration()) * 1000;
+      const songTime = Math.floor(dzPlayer.getDuration() * 1000);
       const timeLeft = Math.floor(dzPlayer.getRemainingTime() * 1000);
       const cover = dzPlayer.getCurrentSong()?.LIVESTREAM_IMAGE_MD5 || dzPlayer.getCurrentSong()?.EPISODE_IMAGE_MD5 ||
                     dzPlayer.getCurrentSong()?.SHOW_ART_MD5 || dzPlayer.getCover();
@@ -149,8 +149,6 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
   runJs(code).then(async (r) => {
     const result: JSResult = JSON.parse(r);
     const realSongTime = result.songTime;
-    const songTime = Date.now() + realSongTime;
-    const timeLeft = Date.now() + result.timeLeft;
     // @ts-ignore
     if (!currentTrack?.songTime) currentTrack?.songTime = realSongTime;
     if (
@@ -178,7 +176,7 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
       };
 
       await setActivity({
-        client, albumId: result.albumId, timeLeft, app, ...currentTrack, songTime, type: result.mediaType
+        client, albumId: result.albumId, timeLeft: result.timeLeft, app, ...currentTrack, songTime: realSongTime, type: result.mediaType
       }).then(() => log('Activity', 'Updated'));
     }
     currentTrack.songTime = realSongTime;

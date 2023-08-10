@@ -11,7 +11,7 @@ export async function setActivity(options: {
 }) {
   const {
     timeLeft, playing, client, albumTitle, trackArtists, trackTitle,
-    albumCover, app, type, trackId
+    albumCover, app, type, trackId, songTime
   } = options;
   const tooltipText = Config.get(app, 'tooltip_text');
   switch (tooltipText) {
@@ -54,7 +54,7 @@ export async function setActivity(options: {
   }
 
   const button = (getTrackLink() && parseInt(trackId) > 0) && { label: 'Play on Deezer', url: getTrackLink() };
-  const isLivestream = timeLeft < Date.now();
+  const isLivestream = (Date.now() + timeLeft) < Date.now();
   if (isRPC) {
     await client.setActivity({
       details: trackTitle,
@@ -62,8 +62,9 @@ export async function setActivity(options: {
       largeImageKey: albumCover,
       largeImageText: albumTitle,
       instance: false,
-      [isLivestream ? 'startTimestamp' : 'endTimestamp']: playing && timeLeft,
-      buttons: button && [button]
+      startTimestamp: playing && Date.now(),
+      [isLivestream ? 'startTimestamp' : 'endTimestamp']: playing && Date.now() + timeLeft,
+      buttons: button ? [button] : undefined
     }).catch(() => {});
   } else {
     const presence = new RichPresence()
@@ -72,7 +73,9 @@ export async function setActivity(options: {
       .setDetails(trackTitle)
       .setState(trackArtists)
       // @ts-ignore
-      [isLivestream ? 'setStartTimestamp' : 'setEndTimestamp'](playing && timeLeft)
+      .setStartTimestamp(playing && Date.now())
+      // @ts-ignore
+      [isLivestream ? 'setStartTimestamp' : 'setEndTimestamp'](playing && Date.now() + timeLeft)
       .setApplicationId(clientId)
       .setAssetsLargeImage('mp:'.concat((await RichPresence.getExternal(client, clientId, albumCover, ''))[0].external_asset_path))
       .setAssetsLargeText(albumTitle)
