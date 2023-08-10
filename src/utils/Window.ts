@@ -129,7 +129,7 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
       const mediaType = dzPlayer.getMediaType();
       const isLivestreamRadio = playerType === 'radio' && radioType === 'livestream';
       const playerInfo = document.querySelector('.track-title .marquee-content')?.textContent;
-      const trackName = dzPlayer.getSongTitle()?.concat(' ', dzPlayer.getCurrentSong()?.VERSION) || 
+      const trackName = dzPlayer.getSongTitle()?.concat(' ', dzPlayer.getCurrentSong()?.VERSION || '') || 
                         dzPlayer.getCurrentSong()?.LIVESTREAM_TITLE || dzPlayer.getCurrentSong()?.EPISODE_TITLE || playerInfo;
       const albumName = (!isLivestreamRadio ? dzPlayer.getAlbumTitle() : dzPlayer.getCurrentSong().LIVESTREAM_TITLE) ||
                         dzPlayer.getCurrentSong()?.SHOW_NAME || playerInfo;
