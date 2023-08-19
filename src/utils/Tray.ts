@@ -10,7 +10,7 @@ import { log } from './Log';
 import { win } from './Window';
 import * as DiscordWebSocket from './DiscordWebSocket';
 
-const iconPath = join(__dirname, '..', 'img', 'IconTemplate@2x.png');
+const iconPath = join(__dirname, '..', 'img', 'tray.png');
 
 export let tray: Tray | null = null;
 export async function init(app: Electron.App, client: import('discord-rpc').Client) {

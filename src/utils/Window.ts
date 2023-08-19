@@ -1,5 +1,5 @@
 import { userAgents } from '../variables';
-import { resolve } from 'path';
+import { join, resolve } from 'path';
 import loadAdBlock from './AdBlock';
 import * as Config from './Config';
 import * as DiscordWebSocket from './DiscordWebSocket';
@@ -22,6 +22,7 @@ export async function load(app: Electron.App) {
     resizable: true,
     center: true,
     title: 'Deezer Discord RPC',
+    icon: join(__dirname, '..', 'img', 'app.ico'),
     webPreferences: {
       preload: resolve(__dirname, '..', 'preload.js')
     }

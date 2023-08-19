@@ -1,6 +1,6 @@
 const { existsSync, rmSync, copyFileSync, readFileSync } = require('fs');
 const { copySync } = require('fs-extra');
-const { resolve } = require('path');
+const { resolve, join } = require('path');
 const { execSync } = require('child_process');
 const builder = require('electron-builder');
 const packageJson = require('../package.json');
@@ -29,9 +29,6 @@ try {
 copyFileSync(resolve('src', 'prompt.html'), resolve('build', 'src', 'prompt.html'));
 
 // Icon
-console.log('Compiling icon to an ICO file...');
-execSync('yarn run icon');
-console.log('Compiled icon to an ICO file');
 copySync(resolve('src', 'img'), resolve('build', 'src', 'img'));
 
 // App build
@@ -39,6 +36,7 @@ console.log('Building setup...');
 const config = {
   appId: 'com.github.yuuto.deezerdiscordrpc',
   productName: 'Deezer Discord RPC',
+  icon: join(__dirname, '..', 'src', 'img', 'app.ico'),
   mac: {
     category: 'public.app-category.music',
     target: 'dmg'

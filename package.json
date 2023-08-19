@@ -7,7 +7,6 @@
     "start": "electron ./build/src/index.js",
     "build:ts": "tsc --resolveJsonModule && cpy ./src/prompt.html build/",
     "run": "yarn build:ts && yarn start",
-    "icon": "node bin/icon.js",
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
