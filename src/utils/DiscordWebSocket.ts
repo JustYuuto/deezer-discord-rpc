@@ -8,8 +8,10 @@ export const client = new Client({
 
 export async function connect(token: string) {
   client.on('ready', async () => {
-    await RPC.client.clearActivity(process.pid);
-    await RPC.client.destroy();
+    if (RPC.client && RPC.client.user) {
+      await RPC.client.clearActivity(process.pid);
+      await RPC.client.destroy();
+    }
 
     log('WebSocket', `Logged in as ${client.user.tag}`);
   });
