@@ -76,11 +76,11 @@ export async function init(app: Electron.App, client: import('discord-rpc').Clie
       },
       { type: 'separator' },
       {
-        label: 'Quit', type: 'normal', click: () => {
-          Config.get(app, 'use_listening_to') && DiscordWebSocket?.disconnect();
-          win.hide();
+        label: 'Quit', type: 'normal', click: async () => {
+          Config.get(app, 'use_listening_to') ? DiscordWebSocket.disconnect() : await RPC.disconnect();
+          win.close();
           app.quit();
-          process.exit();
+          process.exit(0);
         }
       }
     ]);
