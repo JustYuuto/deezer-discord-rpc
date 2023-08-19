@@ -1,6 +1,6 @@
 import { log } from './Log';
 import * as RPC from './RPC';
-import { Client } from 'discord.js-selfbot-v13';
+import { Client, RawUserSettingsData } from 'discord.js-selfbot-v13';
 
 export const client = new Client({
   checkUpdate: false
@@ -14,6 +14,13 @@ export async function connect(token: string) {
     }
 
     log('WebSocket', `Logged in as ${client.user.tag}`);
+
+    client.user.setStatus((<RawUserSettingsData>client.settings.rawSetting).status);
+  });
+
+  client.on('userSettingsUpdate', (settings) => {
+    if (!settings.status) return;
+    client.user.setStatus(settings.status);
   });
 
   await client.login(token);
