@@ -49,9 +49,12 @@ export async function load(app: Electron.App) {
   });
 
   wait(5000).then(() => {
-    runJs(`document.querySelector('.slider-track-input.mousetrap').addEventListener('click', () => ipcRenderer.send('update_activity', 'update_activity'))`);
-    ipcMain.on('update_activity', () => updateActivity(app, true));
-    setInterval(() => updateActivity(app), 1000);
+    runJs(`document.querySelector('.slider-track-input.mousetrap').addEventListener('click', () => ipcRenderer.send('update_activity', true))
+                const trackObserver = new MutationObserver(() => ipcRenderer.send('update_activity', false));
+                trackObserver.observe(document.querySelector('.track-heading .track-title'), { childList: true, subtree: true });
+                const playingObserver = new MutationObserver(() => ipcRenderer.send('update_activity', false));
+                playingObserver.observe(document.querySelector('.player-controls .svg-icon-group .svg-icon-group-item:nth-child(3)'), { childList: true, subtree: true });`);
+    ipcMain.on('update_activity', (e, currentTimeChanged) => updateActivity(app, currentTimeChanged));
   });
 }
 
@@ -74,7 +77,7 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
       const mediaType = dzPlayer.getMediaType();
       const isLivestreamRadio = playerType === 'radio' && radioType === 'livestream';
       const playerInfo = document.querySelector('.track-title .marquee-content')?.textContent;
-      const trackName = dzPlayer.getSongTitle()?.concat(' ', dzPlayer.getCurrentSong()?.VERSION || '') || 
+      const trackName = dzPlayer.getSongTitle() + (dzPlayer.getCurrentSong()?.VERSION || '') || 
                         dzPlayer.getCurrentSong()?.LIVESTREAM_TITLE || dzPlayer.getCurrentSong()?.EPISODE_TITLE || playerInfo;
       const albumName = (!isLivestreamRadio ? dzPlayer.getAlbumTitle() : dzPlayer.getCurrentSong().LIVESTREAM_TITLE) ||
                         dzPlayer.getCurrentSong()?.SHOW_NAME || playerInfo;
