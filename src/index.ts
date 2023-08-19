@@ -24,18 +24,21 @@ app.whenReady().then(async () => {
     RPC.connect();
   }
 
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) Window.load(app);
-    else BrowserWindow.getAllWindows()[0].show();
+  app.on('activate', async () => {
+    if (BrowserWindow.getAllWindows().length > 0) {
+      const window = BrowserWindow.getAllWindows()[0];
+      if (!window.isVisible()) window.show();
+      if (window.isMinimized()) window.maximize();
+    } else {
+      await Window.load(app);
+    }
   });
 
   app.on('second-instance', (e) => {
     e.preventDefault();
 
-    BrowserWindow.getAllWindows()[0].show();
+    const window = BrowserWindow.getAllWindows()[0];
+    if (!window.isVisible()) window.show();
+    if (window.isMinimized()) window.maximize();
   });
-});
-
-process.on('beforeExit', async () => {
-  Config.get(app, 'use_listening_to') ? DiscordWebSocket.disconnect() : await RPC.disconnect();
 });
