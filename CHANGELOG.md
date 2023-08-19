@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.19
+
+* Added start and end timestamp (your music will appear in the "Active Now" section)
+* Changed the actual logo by the Deezer one and finally added an icon for the app
+* Changed the way to check for music change
+* Removed menu bar
+
 ## 1.1.18
 
 * Removed local WS server
