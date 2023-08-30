@@ -87,6 +87,8 @@ export async function init(app: Electron.App, client: import('discord-rpc').Clie
 
     tray.setToolTip('Deezer Discord RPC');
     tray.setContextMenu(contextMenu);
-    tray.on('click', () => win.show());
+    tray.on('click', () => {
+      if (!win.isVisible()) win.show();
+    });
   });
 }
