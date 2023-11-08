@@ -78,12 +78,12 @@ export async function load(app: Electron.App) {
     return false;
   });
 
-  wait(5000).then(async () => {
-    await runJs(`document.querySelector('.slider-track-input.mousetrap').addEventListener('click', () => ipcRenderer.send('update_activity', true))
+  wait(5000).then(() => {
+    runJs(`document.querySelector('.slider-track-input.mousetrap').addEventListener('click', () => ipcRenderer.send('update_activity', true))
                  const trackObserver = new MutationObserver(() => ipcRenderer.send('update_activity', false));
-                 trackObserver.observe(document.querySelector('.track-heading .track-title'), { childList: true, subtree: true });
+                 trackObserver.observe(document.querySelector('[data-testid="item_title"] a'), { childList: true, subtree: true, characterData: true });
                  const playingObserver = new MutationObserver(() => ipcRenderer.send('update_activity', false));
-                 playingObserver.observe(document.querySelector('.player-controls .svg-icon-group .svg-icon-group-item:nth-child(3)'), { childList: true, subtree: true });`);
+                 playingObserver.observe(document.querySelector('.chakra-button__group > button[data-testid^="play_button_"]'), { childList: true, subtree: true });`);
     ipcMain.on('update_activity', (e, currentTimeChanged) => updateActivity(app, currentTimeChanged));
   });
 }
