@@ -37,6 +37,8 @@ export async function load(app: Electron.App) {
     userAgent: userAgents.deezerApp
   });
 
+  await setThumbarButtons();
+
   session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
     details.requestHeaders['User-Agent'] = userAgents.deezerApp;
     callback({ cancel: false, requestHeaders: details.requestHeaders });
@@ -85,7 +87,32 @@ export async function load(app: Electron.App) {
                  const playingObserver = new MutationObserver(() => ipcRenderer.send('update_activity', false));
                  playingObserver.observe(document.querySelector('.chakra-button__group > button[data-testid^="play_button_"]'), { childList: true, subtree: true });`);
     ipcMain.on('update_activity', (e, currentTimeChanged) => updateActivity(app, currentTimeChanged));
+    setThumbarButtons();
   });
+}
+
+export async function setThumbarButtons() {
+  const hasPreviousSong = await runJs('!!dzPlayer.getPrevSong()');
+  const hasNextSong = await runJs('!!dzPlayer.getNextSong()');
+  const isPlaying = await runJs('dzPlayer.isPlaying()');
+
+  const updated = win.setThumbarButtons([
+    {
+      icon: nativeImage.createFromPath(join(__dirname, '..', 'img', `previous${hasPreviousSong ? '' : '_inactive'}.png`)),
+      click(){ runJs(`dzPlayer.control.prevSong()`) }
+    }, {
+      icon: nativeImage.createFromPath(join(__dirname, '..', 'img', `${isPlaying ? 'pause' : 'play'}.png`)),
+      click(){ runJs('dzPlayer.control.togglePause()') }
+    }, {
+      icon: nativeImage.createFromPath(join(__dirname, '..', 'img', `next${hasNextSong ? '' : '_inactive'}.png`)),
+      click(){ runJs(`dzPlayer.control.nextSong()`) }
+    }
+  ]);
+  if (updated) {
+    log('Thumbnail Buttons', 'Updated buttons');
+  } else {
+    log('Thumbnail Buttons', 'Failed to update buttons');
+  }
 }
 
 const UpdateReason = {
@@ -97,6 +124,8 @@ const UpdateReason = {
 };
 
 async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
+  setThumbarButtons();
+
   const client = (Config.get(app, 'use_listening_to') ? DiscordWebSocket : RPC).client;
   let code =
     `(() => {
