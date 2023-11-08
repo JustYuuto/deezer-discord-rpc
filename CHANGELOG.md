@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.0
+
+* Added thumbar buttons
+* Fixed observers (new Deezer UI)
+* Fixed OAuth2 login (Google, Facebook and Apple login)
+* Updated Deezer logo
+
 ## 1.1.19
 
 * Added start and end timestamp (your music will appear in the "Active Now" section)

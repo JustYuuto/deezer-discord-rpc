@@ -1,11 +1,12 @@
 {
   "name": "deezer-discord-rpc",
-  "version": "1.1.19",
+  "version": "1.2.0",
   "description": "A Discord RPC for Deezer",
   "main": "./build/src/index.js",
   "scripts": {
     "start": "electron ./build/src/index.js",
     "build:ts": "tsc --resolveJsonModule && cpy ./src/prompt.html build/",
+    "build": "yarn build:ts && node bin/build.js",
     "run": "yarn build:ts && yarn start",
     "postinstall": "electron-builder install-app-deps"
   },
