@@ -6,7 +6,7 @@ import * as DiscordWebSocket from './DiscordWebSocket';
 import * as RPC from './RPC';
 import { log } from './Log';
 import { runJs, wait } from '../functions';
-import { BrowserWindow, ipcMain, Menu, shell } from 'electron';
+import { BrowserWindow, ipcMain, shell, nativeImage, session } from 'electron';
 import { setActivity } from './Activity';
 
 export let win: BrowserWindow;
@@ -37,9 +37,38 @@ export async function load(app: Electron.App) {
     userAgent: userAgents.deezerApp
   });
 
+  session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
+    details.requestHeaders['User-Agent'] = userAgents.deezerApp;
+    callback({ cancel: false, requestHeaders: details.requestHeaders });
+  });
+
+  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    delete details.responseHeaders['cross-origin-opener-policy'];
+    delete details.responseHeaders['cross-origin-opener-policy-report-only'];
+    callback({ cancel: false, responseHeaders: details.responseHeaders });
+  });
+
   win.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url);
-    return { action: 'deny' };
+    if (
+      details.url.includes('accounts.google.com') || details.url.includes('facebook.com') ||
+      details.url.includes('apple.com')
+    ) {
+      return {
+        action: 'allow',
+        overrideBrowserWindowOptions: {
+          center: true,
+          maximizable: true,
+          minimizable: true,
+          closable: true,
+          autoHideMenuBar: true,
+          fullscreenable: false,
+          resizable: true
+        }
+      };
+    } else {
+      shell.openExternal(details.url);
+      return { action: 'deny' };
+    }
   });
 
   win.on('close', (e) => {
@@ -49,12 +78,12 @@ export async function load(app: Electron.App) {
     return false;
   });
 
-  wait(5000).then(() => {
-    runJs(`document.querySelector('.slider-track-input.mousetrap').addEventListener('click', () => ipcRenderer.send('update_activity', true))
-                const trackObserver = new MutationObserver(() => ipcRenderer.send('update_activity', false));
-                trackObserver.observe(document.querySelector('.track-heading .track-title'), { childList: true, subtree: true });
-                const playingObserver = new MutationObserver(() => ipcRenderer.send('update_activity', false));
-                playingObserver.observe(document.querySelector('.player-controls .svg-icon-group .svg-icon-group-item:nth-child(3)'), { childList: true, subtree: true });`);
+  wait(5000).then(async () => {
+    await runJs(`document.querySelector('.slider-track-input.mousetrap').addEventListener('click', () => ipcRenderer.send('update_activity', true))
+                 const trackObserver = new MutationObserver(() => ipcRenderer.send('update_activity', false));
+                 trackObserver.observe(document.querySelector('.track-heading .track-title'), { childList: true, subtree: true });
+                 const playingObserver = new MutationObserver(() => ipcRenderer.send('update_activity', false));
+                 playingObserver.observe(document.querySelector('.player-controls .svg-icon-group .svg-icon-group-item:nth-child(3)'), { childList: true, subtree: true });`);
     ipcMain.on('update_activity', (e, currentTimeChanged) => updateActivity(app, currentTimeChanged));
   });
 }
