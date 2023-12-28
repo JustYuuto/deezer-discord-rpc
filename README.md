@@ -11,12 +11,12 @@
 
 ## Features
 
-* Updates every 1 second so the RPC updates almost instantly
-* Shows the song title, the song artist(s), the album cover (when the mouse is over the album cover the album title is shown), the song duration
+* Updates instantly
+* Shows the song title, the song artist(s), the album cover (when the mouse is over the album cover the album title is shown) and the song duration
 * On the RPC there's a "Listen along" button like on the Spotify integration. This is a link to the song
 * An in-app updater
 * Can hide the activity if song is not playing
-* Can set a "Listening to" status (like Spotify)
+* Can set a "Listening to" status (like Spotify) (**requires your Discord token**)
 * Includes an ad-blocker, so it can block Deezer ads, Sentry requests...
 * Supports songs, radios, personal songs, podcasts
 

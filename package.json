@@ -24,7 +24,7 @@
     "@typescript-eslint/eslint-plugin": "^6.16.0",
     "@typescript-eslint/parser": "^6.16.0",
     "cpy-cli": "^4.2.0",
-    "electron": "^25.4.0",
+    "electron": "^28.1.0",
     "electron-builder": "^24.6.3",
     "eslint": "^8.56.0",
     "fs-extra": "^11.1.1",

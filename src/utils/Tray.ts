@@ -70,6 +70,8 @@ export async function init(app: Electron.App, client: import('discord-rpc').Clie
               }
             });
           } else {
+            menuItem.enabled = false;
+            menuItem.checked = false;
             await prompt('ws', app);
           }
         }

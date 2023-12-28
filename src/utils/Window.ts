@@ -1,4 +1,4 @@
-import { userAgents } from '../variables';
+import { userAgent } from '../variables';
 import { join, resolve } from 'path';
 import loadAdBlock from './AdBlock';
 import * as Config from './Config';
@@ -6,7 +6,7 @@ import * as DiscordWebSocket from './DiscordWebSocket';
 import * as RPC from './RPC';
 import { log } from './Log';
 import { runJs, wait } from '../functions';
-import { BrowserWindow, ipcMain, shell, nativeImage, session } from 'electron';
+import { BrowserWindow, ipcMain, shell, nativeImage, session, dialog } from 'electron';
 import { setActivity } from './Activity';
 
 export let win: BrowserWindow;
@@ -34,27 +34,31 @@ export async function load(app: Electron.App) {
 
   await win.loadURL('https://www.deezer.com/login', {
     // The default user agent does not work with Deezer (the player does not update by itself)
-    userAgent: userAgents.deezerApp
+    userAgent
   });
 
   await setThumbarButtons();
 
   session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
-    details.requestHeaders['User-Agent'] = userAgents.deezerApp;
+    details.requestHeaders['User-Agent'] = userAgent;
     callback({ cancel: false, requestHeaders: details.requestHeaders });
   });
 
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
-    delete details.responseHeaders['cross-origin-opener-policy'];
-    delete details.responseHeaders['cross-origin-opener-policy-report-only'];
+    // delete details.responseHeaders['cross-origin-opener-policy'];
+    // delete details.responseHeaders['cross-origin-opener-policy-report-only'];
     callback({ cancel: false, responseHeaders: details.responseHeaders });
   });
 
   win.webContents.setWindowOpenHandler((details) => {
-    if (
-      details.url.includes('accounts.google.com') || details.url.includes('facebook.com') ||
-      details.url.includes('apple.com')
-    ) {
+    if (details.url.includes('accounts.google.com')) {
+      dialog.showMessageBox({
+        type: 'warning',
+        title: 'Google login',
+        message: 'Google login is broken, if someone knows how to fix it, please open an issue/PR on GitHub. Thanks!'
+      });
+      return { action: 'deny' };
+    } else if (details.url.includes('facebook.com') || details.url.includes('apple.com')) {
       return {
         action: 'allow',
         overrideBrowserWindowOptions: {
@@ -64,7 +68,9 @@ export async function load(app: Electron.App) {
           closable: true,
           autoHideMenuBar: true,
           fullscreenable: false,
-          resizable: true
+          resizable: true,
+          title: 'Deezer Discord RPC',
+          icon: join(__dirname, '..', 'img', 'app.ico'),
         }
       };
     } else {
@@ -183,7 +189,7 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
       };
 
       await setActivity({
-        client, albumId: result.albumId, timeLeft: result.timeLeft, app, ...currentTrack, /*songTime: realSongTime,*/ type: result.mediaType
+        client, albumId: result.albumId, timeLeft: result.timeLeft, app, ...currentTrack, type: result.mediaType
       }).then(() => log('Activity', 'Updated'));
     }
     currentTrack.songTime = realSongTime;
