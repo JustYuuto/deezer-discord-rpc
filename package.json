@@ -8,7 +8,8 @@
     "build:ts": "tsc --resolveJsonModule && cpy ./src/prompt.html build/",
     "build": "yarn build:ts && node bin/build.js",
     "run": "yarn build:ts && yarn start",
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "electron-builder install-app-deps",
+    "lint": "eslint --fix --ext .ts ./src"
   },
   "dependencies": {
     "@cliqz/adblocker-electron": "^1.26.2",
@@ -20,9 +21,12 @@
   "devDependencies": {
     "@types/discord-rpc": "^4.0.0",
     "@types/node": "^18.7.6",
+    "@typescript-eslint/eslint-plugin": "^6.16.0",
+    "@typescript-eslint/parser": "^6.16.0",
     "cpy-cli": "^4.2.0",
     "electron": "^25.4.0",
     "electron-builder": "^24.6.3",
+    "eslint": "^8.56.0",
     "fs-extra": "^11.1.1",
     "png-to-ico": "^2.1.4",
     "ts-node": "^10.4.0",

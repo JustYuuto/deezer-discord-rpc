@@ -14,7 +14,7 @@ export interface Album {
   md5_image: string;
   genre_id: number;
   genres: {
-    data: [{}]
+    data: [object]
   },
   duration: number;
   tracks: AlbumTrack[]

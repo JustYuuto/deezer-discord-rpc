@@ -6,12 +6,11 @@ import { RichPresence } from 'discord.js-selfbot-v13';
 
 export async function setActivity(options: {
   client: import('discord-rpc').Client | import('discord.js-selfbot-v13').Client, albumId: number, trackId: string, playing: boolean, timeLeft: number,
-  trackTitle: string, trackArtists: any, albumCover: string, albumTitle: string, app: Electron.App, songTime: number,
-  type: string
+  trackTitle: string, trackArtists: any, albumCover: string, albumTitle: string, app: Electron.App, type: string
 }) {
   const {
     timeLeft, playing, client, albumTitle, trackArtists, trackTitle,
-    albumCover, app, type, trackId, songTime
+    albumCover, app, type, trackId
   } = options;
   const tooltipText = Config.get(app, 'tooltip_text');
   switch (tooltipText) {
@@ -51,7 +50,7 @@ export async function setActivity(options: {
       case 'episode':
         return `https://www.deezer.com/episode/${trackId}`;
     }
-  }
+  };
 
   const button = (getTrackLink() && parseInt(trackId) > 0) && { label: 'Play on Deezer', url: getTrackLink() };
   const isLivestream = (Date.now() + timeLeft) < Date.now();

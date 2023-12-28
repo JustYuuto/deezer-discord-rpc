@@ -1,4 +1,4 @@
-import { BrowserWindow, dialog, shell, ipcMain } from 'electron';
+import { BrowserWindow, shell, ipcMain } from 'electron';
 import { join } from 'path';
 import * as Config from './utils/Config';
 import * as DiscordWebSocket from './utils/DiscordWebSocket';

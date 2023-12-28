@@ -7,8 +7,9 @@ import * as DiscordWebSocket from './utils/DiscordWebSocket';
 import * as RPC from './utils/RPC';
 import * as Window from './utils/Window';
 import { join } from 'path';
+import { version } from '../package.json';
 
-log('App', 'Deezer Discord RPC version', require('../package.json').version, process.argv0.includes('node') ? '(debug)' : '');
+log('App', 'Deezer Discord RPC version', version, process.argv0.includes('node') ? '(debug)' : '');
 
 app.whenReady().then(async () => {
   await Tray.init(app, RPC.client);

@@ -19,7 +19,7 @@ export default function updater(fromStartup: boolean = false) {
           if (response === 1) {
             const file = () => {
               let extension;
-                   if (process.platform === 'win32')  extension = 'exe';
+              if (process.platform === 'win32') extension = 'exe';
               else if (process.platform === 'darwin') extension = 'dmg';
               return release.assets.find(f => f.name.split('.').pop() === extension);
             };

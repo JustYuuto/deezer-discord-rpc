@@ -99,13 +99,13 @@ export async function setThumbarButtons() {
   const updated = win.setThumbarButtons([
     {
       icon: nativeImage.createFromPath(join(__dirname, '..', 'img', `previous${hasPreviousSong ? '' : '_inactive'}.png`)),
-      click(){ runJs(`dzPlayer.control.prevSong()`) }
+      click(){ runJs('dzPlayer.control.prevSong()'); }
     }, {
       icon: nativeImage.createFromPath(join(__dirname, '..', 'img', `${isPlaying ? 'pause' : 'play'}.png`)),
-      click(){ runJs('dzPlayer.control.togglePause()') }
+      click(){ runJs('dzPlayer.control.togglePause()'); }
     }, {
       icon: nativeImage.createFromPath(join(__dirname, '..', 'img', `next${hasNextSong ? '' : '_inactive'}.png`)),
-      click(){ runJs(`dzPlayer.control.nextSong()`) }
+      click(){ runJs('dzPlayer.control.nextSong()'); }
     }
   ]);
   if (updated) {
@@ -127,7 +127,7 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
   setThumbarButtons();
 
   const client = (Config.get(app, 'use_listening_to') ? DiscordWebSocket : RPC).client;
-  let code =
+  const code =
     `(() => {
       const albumId = document.querySelector('.track-link[href*="album"]')?.getAttribute('href').split('/')[3];
       const trackId = dzPlayer.getSongId() || dzPlayer.getRadioId();
@@ -183,7 +183,7 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
       };
 
       await setActivity({
-        client, albumId: result.albumId, timeLeft: result.timeLeft, app, ...currentTrack, songTime: realSongTime, type: result.mediaType
+        client, albumId: result.albumId, timeLeft: result.timeLeft, app, ...currentTrack, /*songTime: realSongTime,*/ type: result.mediaType
       }).then(() => log('Activity', 'Updated'));
     }
     currentTrack.songTime = realSongTime;

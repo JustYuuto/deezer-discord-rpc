@@ -2,9 +2,10 @@ import { join } from 'path';
 import { existsSync, writeFileSync } from 'fs';
 import { dialog } from 'electron';
 
-export function set(app: Electron.App, key: string, value: any) {
+export function set(app: Electron.App, key: string, value: unknown) {
   const path = getConfigPath(app);
   if (!existsSync(path)) writeFileSync(path, '{}');
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const data = require(path);
   data[key] = value;
   try {
