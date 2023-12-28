@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.1
+
+* Fixed some things
+* Updated Electron to version ``28.1.0``
+
 ## 1.2.0
 
 * Added thumbar buttons
