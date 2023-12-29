@@ -1,14 +1,6 @@
-const { existsSync, rmSync, copyFileSync } = require('fs');
-const { copySync } = require('fs-extra');
+const { existsSync, rmSync } = require('fs');
 const { resolve, join } = require('path');
-const { execSync } = require('child_process');
 const builder = require('electron-builder');
-
-// If the TypeScript build folder exists, we need to delete it
-if (existsSync(resolve('build'))) {
-  rmSync(resolve('build'), { recursive: true });
-  console.log('Removed "build" directory');
-}
 
 // If the Electron app build folder exists, we need to delete it
 if (existsSync(resolve('dist'))) {
@@ -16,34 +8,24 @@ if (existsSync(resolve('dist'))) {
   console.log('Removed "dist" directory');
 }
 
-// TypeScript Compilation
-console.log('Compiling TypeScript...');
-try {
-  execSync('npx tsc --resolveJsonModule', { stdio: 'inherit' });
-  console.log('Compiled TypeScript');
-} catch (e) {
-  throw e;
-}
-
-copyFileSync(resolve('src', 'prompt.html'), resolve('build', 'src', 'prompt.html'));
-
-// Icon
-copySync(resolve('src', 'img'), resolve('build', 'src', 'img'));
-
 // App build
 console.log('Building setup...');
 const config = {
   appId: 'com.github.yuuto.deezerdiscordrpc',
   productName: 'Deezer Discord RPC',
-  icon: join(__dirname, '..', 'src', 'img', `app.${process.platform === 'win32' ? 'ico' : 'icns'}`),
   mac: {
     category: 'public.app-category.music',
-    target: 'dmg'
+    target: 'dmg',
+    icon: join(__dirname, '..', 'src', 'img', 'app.icns'),
   },
-  win: {},
+  win: {
+    target: 'nsis',
+    icon: join(__dirname, '..', 'src', 'img', 'app.ico'),
+  },
   linux: {
     category: 'Audio',
     target: ['snap', 'deb', 'AppImage'],
+    icon: join(__dirname, '..', 'src', 'img', 'app.png'),
   },
   files: [
     '!src/*',
