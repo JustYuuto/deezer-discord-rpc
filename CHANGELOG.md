@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.2
+
+* Upgraded packages
+* Fixed macOS and Linux builds
+* Added window size saver (the window will be the same size as the last time you closed it) (#18)
+
 ## 1.2.1
 
 * Fixed some things
