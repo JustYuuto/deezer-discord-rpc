@@ -55,7 +55,7 @@ export async function setActivity(options: {
   const button = (getTrackLink() && parseInt(trackId) > 0) && { label: 'Play on Deezer', url: getTrackLink() };
   const isLivestream = (Date.now() + timeLeft) < Date.now();
   if (isRPC) {
-    await client.setActivity({
+    client.setActivity({
       details: trackTitle,
       state: trackArtists,
       largeImageKey: albumCover,

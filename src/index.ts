@@ -20,7 +20,7 @@ app.whenReady().then(async () => {
   await updater(true);
 
   if (Config.get(app, 'use_listening_to')) {
-    DiscordWebSocket.connect(Config.get(app, 'discord_token')).catch((e) => log('WebSocket', e.toString()));
+    DiscordWebSocket.connect(Config.get(app, 'discord_token'), app).catch((e) => log('WebSocket', e.toString()));
   } else {
     RPC.connect();
   }

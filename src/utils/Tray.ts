@@ -42,7 +42,7 @@ export async function init(app: Electron.App, client: import('discord-rpc').Clie
         click: () => {
           (
             Config.get(app, 'use_listening_to') ?
-              DiscordWebSocket.connect(Config.get(app, 'discord_token')).catch((e) => log('WebSocket', e.toString())) :
+              DiscordWebSocket.connect(Config.get(app, 'discord_token'), app).catch((e) => log('WebSocket', e.toString())) :
               client.connect(clientId)
           )
             .then(() => log(Config.get(app, 'use_listening_to') ? 'WebSocket' : 'RPC', 'Reconnected'))

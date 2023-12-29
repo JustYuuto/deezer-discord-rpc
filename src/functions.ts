@@ -29,18 +29,7 @@ export async function prompt(message: string, app: Electron.App, options?: {
     Config.set(app, 'discord_token', data);
     Config.set(app, 'use_listening_to', true);
     win.close();
-    /*await dialog.showMessageBox(null, {
-      type: 'info',
-      buttons: ['Restart later', 'Restart now'],
-      title: 'App restart needed',
-      message: 'The app needs to be restarted to apply the changes.',
-    }).then(({ response }) => {
-      if (response === 1) {
-        app.relaunch();
-        app.exit();
-      }
-    });*/
-    DiscordWebSocket.connect(data).catch(console.error);
+    DiscordWebSocket.connect(data, app).catch(console.error);
   });
 
   win.webContents.setWindowOpenHandler((details) => {
