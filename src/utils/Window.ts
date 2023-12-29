@@ -13,9 +13,10 @@ export let win: BrowserWindow;
 let currentTrack: CurrentTrack;
 
 export async function load(app: Electron.App) {
+  const width = parseInt(Config.get(app, 'window_width')) || 1920;
+  const height = parseInt(Config.get(app, 'window_height')) || 1080;
   win = new BrowserWindow({
-    width: 1920,
-    height: 1080,
+    width, height,
     minimizable: true,
     maximizable: true,
     closable: true,
@@ -27,7 +28,9 @@ export async function load(app: Electron.App) {
       preload: resolve(__dirname, '..', 'preload.js')
     }
   });
-  win.maximize();
+  if (width === 1920 && height === 1080) win.maximize();
+  win.focus();
+  win.show();
   win.setMenuBarVisibility(process.platform === 'darwin');
 
   await loadAdBlock(app, win);
@@ -48,6 +51,12 @@ export async function load(app: Electron.App) {
     // delete details.responseHeaders['cross-origin-opener-policy'];
     // delete details.responseHeaders['cross-origin-opener-policy-report-only'];
     callback({ cancel: false, responseHeaders: details.responseHeaders });
+  });
+
+  win.on('resized', () => {
+    const [w, h] = win.getSize();
+    Config.set(app, 'window_width', w);
+    Config.set(app, 'window_height', h);
   });
 
   win.webContents.setWindowOpenHandler((details) => {
