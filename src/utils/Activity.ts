@@ -6,6 +6,7 @@ import { RichPresence } from 'discord.js-selfbot-v13';
 
 export async function setActivity(options: {
   client: import('discord-rpc').Client | import('discord.js-selfbot-v13').Client, albumId: number, trackId: string, playing: boolean, timeLeft: number,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   trackTitle: string, trackArtists: any, albumCover: string, albumTitle: string, app: Electron.App, type: string
 }) {
   const {
@@ -71,9 +72,10 @@ export async function setActivity(options: {
       .setName('Deezer')
       .setDetails(trackTitle)
       .setState(trackArtists)
-      // @ts-ignore
+      // @ts-expect-error wrong type
       .setStartTimestamp(playing && Date.now())
-      // @ts-ignore
+      // @ts-expect-error wrong type too
+      // eslint-disable-next-line no-unexpected-multiline
       [isLivestream ? 'setStartTimestamp' : 'setEndTimestamp'](playing && Date.now() + timeLeft)
       .setApplicationId(clientId)
       .setAssetsLargeImage('mp:'.concat((await RichPresence.getExternal(client, clientId, albumCover, ''))[0].external_asset_path))

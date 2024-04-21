@@ -7,9 +7,7 @@ export default async function (app: Electron.App, win: Electron.BrowserWindow) {
     enableCompression: true
   }, {
     path: join(app.getPath('userData'), 'engine.bin'),
-    // @ts-ignore
     read: async (...args) => readFileSync(...args),
-    // @ts-ignore
     write: async (...args) => writeFileSync(...args),
   });
   blocker.enableBlockingInSession(win.webContents.session);

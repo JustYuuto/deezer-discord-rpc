@@ -156,7 +156,7 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
       const albumName = (!isLivestreamRadio ? dzPlayer.getAlbumTitle() : dzPlayer.getCurrentSong().LIVESTREAM_TITLE) ||
                         dzPlayer.getCurrentSong()?.SHOW_NAME || playerInfo;
       const artists = dzPlayer.getCurrentSong()?.ARTISTS?.map(art => art.ART_NAME)?.join(', ') || dzPlayer.getArtistName() || 
-                      dzPlayer.getCurrentSong()?.SHOW_NAME || playerInfo.split(' · ')[1];
+                      dzPlayer.getCurrentSong()?.SHOW_NAME || playerInfo?.split(' · ')?.[1];
       const playing = dzPlayer.isPlaying();
       const songTime = Math.floor(dzPlayer.getDuration() * 1000);
       const timeLeft = Math.floor(dzPlayer.getRemainingTime() * 1000);
@@ -171,8 +171,7 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
   runJs(code).then(async (r) => {
     const result: JSResult = JSON.parse(r);
     const realSongTime = result.songTime;
-    // @ts-ignore
-    if (!currentTrack?.songTime) currentTrack?.songTime = realSongTime;
+    if (!currentTrack?.songTime) currentTrack.songTime = realSongTime;
     if (
       currentTrack?.trackTitle !== result.trackName || currentTrack?.playing !== result.playing || currentTimeChanged === true ||
       currentTrack?.songTime !== realSongTime
@@ -187,11 +186,11 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
       else if (currentTimeChanged && currentTimeChanged === true) reason = UpdateReason.MUSIC_TIME_CHANGED;
       else if (currentTrack?.songTime !== realSongTime) reason = UpdateReason.MUSIC_NOT_RIGHT_TIME;
       log('Activity', 'Updating because', reason);
-      // @ts-ignore
+      // @ts-expect-error wrong type
       currentTrack = {
         trackId: result.trackId,
         trackTitle: result.trackName,
-        trackArtists: result.artists || result.playerType.replace(result.playerType[0], result.playerType[0].toUpperCase()),
+        trackArtists: result.playerType === 'mod' && !result.artists ? 'Unknown' : result.artists || result.playerType.replace(result.playerType[0], result.playerType[0].toUpperCase()),
         albumCover: result.coverUrl,
         albumTitle: result.albumName || result.trackName,
         playing: result.playing,
@@ -225,7 +224,7 @@ interface JSResult {
   albumId: number,
   playing: boolean,
   coverUrl?: string,
-  playerType: 'track' | 'radio' | 'ad',
+  playerType: 'track' | 'radio' | 'ad' | 'mod',
   artists: string,
   albumName: string,
   isLivestreamRadio: boolean,

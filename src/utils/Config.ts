@@ -25,6 +25,7 @@ export function set(app: Electron.App, key: string, value: unknown) {
 export function get(app: Electron.App, key?: string) {
   const path = getConfigPath(app);
   if (!existsSync(path)) writeFileSync(path, '{}');
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const data = require(path);
   return key ? data[key] : data;
 }

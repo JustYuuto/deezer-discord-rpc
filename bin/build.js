@@ -36,9 +36,12 @@ const config = {
   ]
 };
 
-const platform = process.argv[2];
-if (!builder.Platform[platform.toUpperCase()]) throw new Error(`The platform "${platform}" is not supported for building. Supported: windows, linux, mac`);
-
-builder.build({ targets: builder.Platform[platform.toUpperCase()].createTarget(), config }).then(() => {
+builder.build({
+  config,
+  // mac: ['dmg'],
+  win: ['nsis'],
+  // linux: ['snap', 'deb', 'AppImage'],
+  x64: true,
+}).then(() => {
   console.log('\nSetup built in the "dist" folder.');
 });

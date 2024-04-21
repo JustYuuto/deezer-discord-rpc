@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.3
+
+* Fixed the RPC not working
+* Upgraded packages
+
 ## 1.2.2
 
 * Upgraded packages
