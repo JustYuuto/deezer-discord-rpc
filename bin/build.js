@@ -38,8 +38,8 @@ const config = {
 
 builder.build({
   config,
-  mac: ['dmg'],
-  win: ['nsis'],
+  // mac: ['dmg'],
+  // win: ['nsis'],
   linux: ['snap', 'deb', 'AppImage'],
   x64: true,
   publish: 'never',

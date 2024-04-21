@@ -171,7 +171,7 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
   runJs(code).then(async (r) => {
     const result: JSResult = JSON.parse(r);
     const realSongTime = result.songTime;
-    if (!currentTrack?.songTime) currentTrack.songTime = realSongTime;
+    if (currentTrack && !currentTrack?.songTime) currentTrack.songTime = realSongTime;
     if (
       currentTrack?.trackTitle !== result.trackName || currentTrack?.playing !== result.playing || currentTimeChanged === true ||
       currentTrack?.songTime !== realSongTime
