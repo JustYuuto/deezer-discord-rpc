@@ -47,7 +47,12 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: build
-          path: dist/
+          path: |
+            dist/*.exe
+            dist/*.dmg
+            dist/*.AppImage
+            dist/*.deb
+            dist/*.snap
 
       - name: Extract release notes
         id: release-notes
