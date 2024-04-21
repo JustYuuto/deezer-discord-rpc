@@ -38,9 +38,9 @@ const config = {
 
 builder.build({
   config,
-  // mac: ['dmg'],
+  mac: ['dmg'],
   win: ['nsis'],
-  // linux: ['snap', 'deb', 'AppImage'],
+  linux: ['snap', 'deb', 'AppImage'],
   x64: true,
 }).then(() => {
   console.log('\nSetup built in the "dist" folder.');
