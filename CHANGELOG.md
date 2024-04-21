@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.4
+
+* Fixed the RPC not working (yes, again.)
+
 ## 1.2.3
 
 * Fixed the RPC not working
