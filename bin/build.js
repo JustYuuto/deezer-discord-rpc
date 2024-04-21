@@ -42,6 +42,7 @@ builder.build({
   win: ['nsis'],
   linux: ['snap', 'deb', 'AppImage'],
   x64: true,
+  publish: 'never',
 }).then(() => {
   console.log('\nSetup built in the "dist" folder.');
 });
