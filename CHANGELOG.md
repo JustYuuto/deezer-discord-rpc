@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.5
+
+* Fixed the tray icon not showing (#34)
+* Upgraded packages
+* Updated build script
+
 ## 1.2.4
 
 * Fixed the RPC not working (yes, again.)

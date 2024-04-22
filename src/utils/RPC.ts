@@ -3,12 +3,26 @@ import { log } from './Log';
 import { clientId } from '../variables';
 
 export const client = new RPC.Client({
-  transport: 'ipc'
+  transport: 'ipc',
 });
 
 export function connect() {
   client.on('ready', () => {
-    log('RPC', `Authed for user ${client.user?.username}#${client.user?.discriminator}`);
+    log('RPC', `Authed for user @${client.user?.username}`);
+  });
+
+  client.on('disconnected', () => {
+    log('RPC', 'Disconnected, trying to reconnect...');
+    const attempts = 0;
+    const attemptsInterval = setInterval(() => {
+      client.login({ clientId }).then(() => {
+        clearInterval(attemptsInterval);
+      }).catch(console.error);
+      log('RPC', `Reconnecting... Attempt ${attempts + 1}`);
+      if (attempts >= 5) {
+        clearInterval(attemptsInterval);
+      }
+    }, 8000);
   });
 
   client.login({ clientId }).catch(console.error);

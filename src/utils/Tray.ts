@@ -38,14 +38,20 @@ export async function init(app: Electron.App, client: import('discord-rpc').Clie
         click: (menuItem) => Config.set(app, 'only_show_if_playing', menuItem.checked)
       },
       {
-        label: Config.get(app, 'use_listening_to') ? 'Reconnect to WebSocket' : 'Reconnect RPC', type: 'normal',
-        click: () => {
+        id: 'reconnect',
+        label: Config.get(app, 'use_listening_to') ? 'Reconnect to WebSocket' : 'Reconnect RPC',
+        type: 'normal',
+        visible: false, // how tf do I reconnect to the fcking ipc
+        click: (menuItem) => {
           (
             Config.get(app, 'use_listening_to') ?
               DiscordWebSocket.connect(Config.get(app, 'discord_token'), app).catch((e) => log('WebSocket', e.toString())) :
-              client.connect(clientId)
+              client.login({ clientId })
           )
-            .then(() => log(Config.get(app, 'use_listening_to') ? 'WebSocket' : 'RPC', 'Reconnected'))
+            .then(() => {
+              log(Config.get(app, 'use_listening_to') ? 'WebSocket' : 'RPC', 'Reconnected');
+              menuItem.label = Config.get(app, 'use_listening_to') ? 'Reconnect to WebSocket' : 'Reconnect RPC';
+            })
             .catch(console.error);
         }
       },
@@ -79,7 +85,7 @@ export async function init(app: Electron.App, client: import('discord-rpc').Clie
       { type: 'separator' },
       {
         label: 'Quit', type: 'normal', click: async () => {
-          Config.get(app, 'use_listening_to') ? DiscordWebSocket.disconnect() : await RPC.disconnect();
+          Config.get(app, 'use_listening_to') ? DiscordWebSocket.disconnect() : RPC.disconnect().catch(console.error);
           win.close();
           app.quit();
           process.exit(0);

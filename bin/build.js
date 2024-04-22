@@ -36,13 +36,16 @@ const config = {
   ]
 };
 
-builder.build({
+const options = {
   config,
-  mac: ['dmg'],
   win: ['nsis'],
-  linux: ['snap', 'deb', 'AppImage'],
   x64: true,
   publish: 'never',
-}).then(() => {
+};
+if (process.platform === 'darwin') options.mac = ['dmg'];
+// Linux programs like chmod are not supported on Windows
+if (process.platform !== 'win32') options.linux = ['snap', 'deb', 'AppImage'];
+
+builder.build(options).then(() => {
   console.log('\nSetup built in the "dist" folder.');
 });
