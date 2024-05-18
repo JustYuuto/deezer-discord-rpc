@@ -59,21 +59,26 @@ export async function load(app: Electron.App) {
     Config.set(app, 'window_height', h);
   });
 
-  win.webContents.setWindowOpenHandler(() => {
-    return {
-      action: 'allow',
-      overrideBrowserWindowOptions: {
-        center: true,
-        maximizable: true,
-        minimizable: true,
-        closable: true,
-        autoHideMenuBar: true,
-        fullscreenable: false,
-        resizable: true,
-        title: 'Deezer Discord RPC',
-        icon: join(__dirname, '..', 'img', 'app.ico'),
-      }
-    };
+  win.webContents.setWindowOpenHandler((details) => {
+    if (details.url.includes('facebook.com') || details.url.includes('apple.com') || details.url.includes('accounts.google.com')) {
+      return {
+        action: 'allow',
+        overrideBrowserWindowOptions: {
+          center: true,
+          maximizable: true,
+          minimizable: true,
+          closable: true,
+          autoHideMenuBar: true,
+          fullscreenable: false,
+          resizable: true,
+          title: 'Deezer Discord RPC',
+          icon: join(__dirname, '..', 'img', 'app.ico'),
+        }
+      };
+    } else {
+      shell.openExternal(details.url);
+      return { action: 'deny' };
+    }
   });
 
   win.on('close', (e) => {
