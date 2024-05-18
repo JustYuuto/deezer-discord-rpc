@@ -6,7 +6,7 @@ import * as DiscordWebSocket from './DiscordWebSocket';
 import * as RPC from './RPC';
 import { log } from './Log';
 import { runJs, wait } from '../functions';
-import { BrowserWindow, ipcMain, shell, nativeImage, session, dialog } from 'electron';
+import { BrowserWindow, ipcMain, shell, nativeImage, session } from 'electron';
 import { setActivity } from './Activity';
 
 export let win: BrowserWindow;
