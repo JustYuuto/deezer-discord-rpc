@@ -43,7 +43,9 @@ export async function load(app: Electron.App) {
   await setThumbarButtons();
 
   session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
-    details.requestHeaders['User-Agent'] = userAgent;
+    if (details.url.includes('deezer.com')) {
+      details.requestHeaders['User-Agent'] = userAgent;
+    }
     callback({ cancel: false, requestHeaders: details.requestHeaders });
   });
 
