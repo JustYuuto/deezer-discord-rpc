@@ -1,4 +1,4 @@
-import { app, BrowserWindow, session } from 'electron';
+import { app, BrowserWindow, session, dialog } from 'electron';
 import { log } from './utils/Log';
 import * as Config from './utils/Config';
 import * as Tray from './utils/Tray';
@@ -12,6 +12,22 @@ import { version } from '../package.json';
 log('App', 'Deezer Discord RPC version', version, process.argv0.includes('node') ? '(debug)' : '');
 
 app.whenReady().then(async () => {
+
+  const gotTheLock = app.requestSingleInstanceLock();
+
+  if (!gotTheLock) {
+    app.quit();
+  } else {
+    app.on('second-instance', () => {
+      // If someone opens a second instance we let them know with a popup at the app is already open
+      dialog.showMessageBox({
+        type: 'warning',
+        title: 'Already Open',
+        message: 'An instance of Deezer Discord RPC version is already open!'
+      });
+    });
+  }
+
   await Tray.init(app, RPC.client);
   if (process.argv0.includes('node')) {
     await session.defaultSession.loadExtension(join(process.cwd(), 'src', 'react-devtools'));
