@@ -1,4 +1,4 @@
-import { app, BrowserWindow, session, dialog } from 'electron';
+import { app, BrowserWindow, session } from 'electron';
 import { log } from './utils/Log';
 import * as Config from './utils/Config';
 import * as Tray from './utils/Tray';
