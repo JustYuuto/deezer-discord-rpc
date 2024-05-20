@@ -23,7 +23,7 @@ app.whenReady().then(async () => {
       dialog.showMessageBox({
         type: 'warning',
         title: 'Already Open',
-        message: 'An instance of Deezer Discord RPC version is already open!'
+        message: 'An instance of Deezer Discord RPC is already open!'
       });
     });
   }
