@@ -6,7 +6,7 @@ import * as DiscordWebSocket from './DiscordWebSocket';
 import * as RPC from './RPC';
 import { log } from './Log';
 import { runJs, wait } from '../functions';
-import { BrowserWindow, ipcMain, shell, nativeImage, session, dialog } from 'electron';
+import { BrowserWindow, ipcMain, shell, nativeImage, session } from 'electron';
 import { setActivity } from './Activity';
 
 export let win: BrowserWindow;
@@ -43,7 +43,9 @@ export async function load(app: Electron.App) {
   await setThumbarButtons();
 
   session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
-    details.requestHeaders['User-Agent'] = userAgent;
+    if (details.url.includes('deezer.com')) {
+      details.requestHeaders['User-Agent'] = userAgent;
+    }
     callback({ cancel: false, requestHeaders: details.requestHeaders });
   });
 
@@ -60,14 +62,7 @@ export async function load(app: Electron.App) {
   });
 
   win.webContents.setWindowOpenHandler((details) => {
-    if (details.url.includes('accounts.google.com')) {
-      dialog.showMessageBox({
-        type: 'warning',
-        title: 'Google login',
-        message: 'Google login is broken, if someone knows how to fix it, please open an issue/PR on GitHub. Thanks!'
-      });
-      return { action: 'deny' };
-    } else if (details.url.includes('facebook.com') || details.url.includes('apple.com')) {
+    if (details.url.includes('facebook.com') || details.url.includes('apple.com') || details.url.includes('accounts.google.com')) {
       return {
         action: 'allow',
         overrideBrowserWindowOptions: {
