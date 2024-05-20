@@ -8,6 +8,7 @@ import * as RPC from './utils/RPC';
 import * as Window from './utils/Window';
 import { join } from 'path';
 import { version } from '../package.json';
+import {showWindow} from './utils/Window';
 
 log('App', 'Deezer Discord RPC version', version, process.argv0.includes('node') ? '(debug)' : '');
 
@@ -19,12 +20,8 @@ app.whenReady().then(async () => {
     app.quit();
   } else {
     app.on('second-instance', () => {
-      // If someone opens a second instance we let them know with a popup at the app is already open
-      dialog.showMessageBox({
-        type: 'warning',
-        title: 'Already Open',
-        message: 'An instance of Deezer Discord RPC is already open!'
-      });
+      // If someone opens a second instance we show our windows after the new instance closes
+      showWindow();
     });
   }
 
