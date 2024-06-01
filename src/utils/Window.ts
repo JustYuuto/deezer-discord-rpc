@@ -33,6 +33,8 @@ export async function load(app: Electron.App) {
   win.show();
   win.setMenuBarVisibility(process.platform === 'darwin');
 
+  win.webContents.openDevTools();
+
   await loadAdBlock(app, win);
 
   await win.loadURL('https://www.deezer.com/login', {
@@ -98,6 +100,12 @@ export async function load(app: Electron.App) {
                  playingObserver.observe(document.querySelector('.chakra-button__group > button[data-testid^="play_button_"]'), { childList: true, subtree: true });`);
     ipcMain.on('update_activity', (e, currentTimeChanged) => updateActivity(app, currentTimeChanged));
     setThumbarButtons();
+
+    const innerHTML = `<button>
+    <img src='${join(__dirname, '..', 'img', 'forward.png')}' alt='forwardpng' />
+</button>`;
+
+    runJs(`document.querySelector('#dzr-app > div > div.css-efpag6 > div.chakra-stack.css-w8kdg9 > a > div').innerHTML = \`${innerHTML}\`;`);
   });
 }
 
