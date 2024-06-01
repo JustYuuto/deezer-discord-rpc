@@ -101,6 +101,10 @@ export async function load(app: Electron.App) {
   });
 }
 
+export async function showWindow() {
+  win.show();
+}
+
 export async function setThumbarButtons() {
   const hasPreviousSong = await runJs('!!dzPlayer.getPrevSong()');
   const hasNextSong = await runJs('!!dzPlayer.getNextSong()');

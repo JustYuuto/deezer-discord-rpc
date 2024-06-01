@@ -8,10 +8,23 @@ import * as RPC from './utils/RPC';
 import * as Window from './utils/Window';
 import { join } from 'path';
 import { version } from '../package.json';
+import {showWindow} from './utils/Window';
 
 log('App', 'Deezer Discord RPC version', version, process.argv0.includes('node') ? '(debug)' : '');
 
 app.whenReady().then(async () => {
+
+  const gotTheLock = app.requestSingleInstanceLock();
+
+  if (!gotTheLock) {
+    app.quit();
+  } else {
+    app.on('second-instance', () => {
+      // If someone opens a second instance we show our windows after the new instance closes
+      showWindow();
+    });
+  }
+
   await Tray.init(app, RPC.client);
   if (process.argv0.includes('node')) {
     await session.defaultSession.loadExtension(join(process.cwd(), 'src', 'react-devtools'));
