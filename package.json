@@ -10,7 +10,7 @@
     "run": "yarn build:ts && yarn run copy-assets && yarn start",
     "postinstall": "electron-builder install-app-deps",
     "lint": "eslint --fix --ext .ts ./src",
-    "copy-assets": "cpy ./src/img/* ./build/src/img/ && cpy ./src/prompt.html ./build/"
+    "copy-assets": "cpy ./src/img/ ./build && cpy ./src/prompt.html ./build/"
   },
   "dependencies": {
     "@cliqz/adblocker-electron": "^1.27.1",
