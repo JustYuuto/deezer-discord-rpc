@@ -15,7 +15,7 @@
   "dependencies": {
     "@cliqz/adblocker-electron": "^1.27.1",
     "axios": "^1.6.8",
-    "chalk": "4.1.2",
+    "chalk": "5.3.0",
     "discord-rpc": "^4.0.1",
     "discord.js-selfbot-v13": "^2.14.9"
   },
