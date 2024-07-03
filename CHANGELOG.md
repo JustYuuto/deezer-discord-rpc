@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.6
+
+* Fixed Google login (#44)
+* Lock to single instance (#45)
+
 ## 1.2.5
 
 * Fixed the tray icon not showing (#34)
