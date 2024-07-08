@@ -100,6 +100,23 @@ export async function load(app: Electron.App) {
                  const playingObserver = new MutationObserver(() => ipcRenderer.send('update_activity', false));
                  playingObserver.observe(document.querySelector('.chakra-button__group > button[data-testid^="play_button_"]'), { childList: true, subtree: true });`);
     ipcMain.on('update_activity', (e, currentTimeChanged) => updateActivity(app, currentTimeChanged));
+    runJs(`const chakraStack = document.querySelector('#dzr-app > div > div.css-efpag6 > div.chakra-stack.css-w8kdg9');
+                 const navContainer = document.createElement('div');
+                 navContainer.style.display = 'flex';
+                 navContainer.style.justifyContent = 'space-around';
+                 const backButton = document.createElement('button');
+                 backButton.addEventListener('click', () => ipcRenderer.send('nav_back'));
+                 backButton.textContent = '<';
+                 backButton.style.transform = 'scale(2, 4)';
+                 const forwardButton = document.createElement('button');
+                 forwardButton.addEventListener('click', () => ipcRenderer.send('nav_forward'));
+                 forwardButton.textContent = '>';
+                 forwardButton.style.transform = 'scale(2, 4)';
+                 navContainer.appendChild(backButton);
+                 navContainer.appendChild(forwardButton);
+                 chakraStack.children[0].replaceWith(navContainer);`);
+    ipcMain.on('nav_back', () => win.webContents.goBack());
+    ipcMain.on('nav_forward', () => win.webContents.goForward());
     setThumbarButtons();
   });
 }
