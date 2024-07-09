@@ -108,15 +108,29 @@ export async function load(app: Electron.App) {
                  backButton.addEventListener('click', () => ipcRenderer.send('nav_back'));
                  backButton.textContent = '<';
                  backButton.style.transform = 'scale(2, 4)';
+                 backButton.style.opacity = '30%';
                  const forwardButton = document.createElement('button');
                  forwardButton.addEventListener('click', () => ipcRenderer.send('nav_forward'));
                  forwardButton.textContent = '>';
                  forwardButton.style.transform = 'scale(2, 4)';
+                 forwardButton.style.opacity = '30%';
                  navContainer.appendChild(backButton);
                  navContainer.appendChild(forwardButton);
                  chakraStack.children[0].replaceWith(navContainer);`);
     ipcMain.on('nav_back', () => win.webContents.goBack());
     ipcMain.on('nav_forward', () => win.webContents.goForward());
+    win.webContents.on('did-stop-loading', () => {
+      if (win.webContents.canGoBack()) {
+        runJs('backButton.style.opacity = \'100%\';');
+      } else {
+        runJs('backButton.style.opacity = \'30%\';');
+      }
+      if (win.webContents.canGoForward()) {
+        runJs('forwardButton.style.opacity = \'100%\';');
+      } else {
+        runJs('forwardButton.style.opacity = \'30%\';');
+      }
+    });
     setThumbarButtons();
   });
 }
