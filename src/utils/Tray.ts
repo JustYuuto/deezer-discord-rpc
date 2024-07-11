@@ -38,6 +38,10 @@ export async function init(app: Electron.App, client: import('discord-rpc').Clie
         click: (menuItem) => Config.set(app, 'only_show_if_playing', menuItem.checked)
       },
       {
+        label: 'Don\'t close to tray', type: 'checkbox', checked: Config.get(app, 'dont_close_to_tray'),
+        click: (menuItem) => Config.set(app, 'dont_close_to_tray', menuItem.checked)
+      },
+      {
         id: 'reconnect',
         label: Config.get(app, 'use_listening_to') ? 'Reconnect to WebSocket' : 'Reconnect RPC',
         type: 'normal',

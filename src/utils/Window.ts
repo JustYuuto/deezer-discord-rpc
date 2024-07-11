@@ -84,6 +84,9 @@ export async function load(app: Electron.App) {
   });
 
   win.on('close', (e) => {
+    if (Config.get(app, 'dont_close_to_tray')) {
+      return true;
+    }
     e.preventDefault();
     win.hide();
 
