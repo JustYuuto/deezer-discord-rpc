@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.7
+
+* Added back and forward buttons (#53)
+* Added option to not close to tray (#52)
+
 ## 1.2.6
 
 * Fixed Google login (#44)
