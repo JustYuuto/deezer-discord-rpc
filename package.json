@@ -13,7 +13,7 @@
     "copy-assets": "cpy ./src/img/* ./build/src/img/ && cpy ./src/prompt.html ./build/"
   },
   "dependencies": {
-    "@cliqz/adblocker-electron": "^1.27.1",
+    "@cliqz/adblocker-electron": "^1.31.0",
     "axios": "^1.6.8",
     "chalk": "4.1.2",
     "discord-rpc": "^4.0.1",
