@@ -2,7 +2,6 @@ import { userAgent } from '../variables';
 import { join, resolve } from 'path';
 import loadAdBlock from './AdBlock';
 import * as Config from './Config';
-import * as DiscordWebSocket from './DiscordWebSocket';
 import * as RPC from './RPC';
 import { log } from './Log';
 import { runJs, wait } from '../functions';
@@ -39,8 +38,6 @@ export async function load(app: Electron.App) {
     // The default user agent does not work with Deezer (the player does not update by itself)
     userAgent
   });
-
-  await setThumbarButtons();
 
   session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
     if (details.url.includes('deezer.com')) {
@@ -83,8 +80,9 @@ export async function load(app: Electron.App) {
     }
   });
 
-  win.on('close', (e) => {
+  win.on('close', async (e) => {
     if (Config.get(app, 'dont_close_to_tray')) {
+      await RPC.disconnect();
       return true;
     }
     e.preventDefault();
@@ -140,9 +138,9 @@ export async function showWindow() {
 }
 
 export async function setThumbarButtons() {
-  const hasPreviousSong = await runJs('!!dzPlayer.getPrevSong()');
-  const hasNextSong = await runJs('!!dzPlayer.getNextSong()');
-  const isPlaying = await runJs('dzPlayer.isPlaying()');
+  const hasPreviousSong = await runJs('dzPlayer && !!dzPlayer.getPrevSong()');
+  const hasNextSong = await runJs('dzPlayer && !!dzPlayer.getNextSong()');
+  const isPlaying = await runJs('dzPlayer && dzPlayer.isPlaying()');
 
   const updated = win.setThumbarButtons([
     {
@@ -174,7 +172,7 @@ const UpdateReason = {
 async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
   setThumbarButtons();
 
-  const client = (Config.get(app, 'use_listening_to') ? DiscordWebSocket : RPC).client;
+  const client = RPC.client;
   const code =
     `(() => {
       const albumId = document.querySelector('.track-link[href*="album"]')?.getAttribute('href').split('/')[3];
@@ -183,12 +181,12 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
       const playerType = dzPlayer.getPlayerType();
       const mediaType = dzPlayer.getMediaType();
       const isLivestreamRadio = playerType === 'radio' && radioType === 'livestream';
-      const playerInfo = document.querySelector('.track-title .marquee-content')?.textContent;
-      const trackName = dzPlayer.getSongTitle() + (dzPlayer.getCurrentSong()?.VERSION ? ' ' + dzPlayer.getCurrentSong()?.VERSION : '') || 
+      const playerInfo = document.querySelector('[data-testid="miniplayer_container"] .marquee-content')?.textContent;
+      const trackName = dzPlayer.getSongTitle() + (dzPlayer.getCurrentSong()?.VERSION ? ' ' + dzPlayer.getCurrentSong()?.VERSION : '') ||
                         dzPlayer.getCurrentSong()?.LIVESTREAM_TITLE || dzPlayer.getCurrentSong()?.EPISODE_TITLE || playerInfo;
       const albumName = (!isLivestreamRadio ? dzPlayer.getAlbumTitle() : dzPlayer.getCurrentSong().LIVESTREAM_TITLE) ||
                         dzPlayer.getCurrentSong()?.SHOW_NAME || playerInfo;
-      const artists = dzPlayer.getCurrentSong()?.ARTISTS?.map(art => art.ART_NAME)?.join(', ') || dzPlayer.getArtistName() || 
+      const artists = dzPlayer.getCurrentSong()?.ARTISTS?.map(art => art.ART_NAME)?.join(', ') || dzPlayer.getArtistName() ||
                       dzPlayer.getCurrentSong()?.SHOW_NAME || playerInfo?.split(' · ')?.[1];
       const playing = dzPlayer.isPlaying();
       const songTime = Math.floor(dzPlayer.getDuration() * 1000);

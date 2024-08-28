@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.8
+
+* Fixed the app not working because of Deezer and Discord changes
+* Made the "Listening to" mode not needing your token anymore
+* Fixed the "Don't close to tray" option not making the RPC disconnect when closing the app
+
 ## 1.2.7
 
 * Added back and forward buttons (#53)

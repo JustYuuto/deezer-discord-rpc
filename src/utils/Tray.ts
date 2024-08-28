@@ -1,19 +1,16 @@
 import { join } from 'path';
 import updater from './Updater';
-import { clientId } from '../variables';
 import * as Config from './Config';
 import * as RPC from './RPC';
-import { prompt } from '../functions';
-import { dialog, Menu, Tray } from 'electron';
+import { Menu, Tray } from 'electron';
 import { version } from '../../package.json';
 import { log } from './Log';
 import { win } from './Window';
-import * as DiscordWebSocket from './DiscordWebSocket';
 
 const iconPath = join(__dirname, '..', 'img', 'tray.png');
 
 export let tray: Tray | null = null;
-export async function init(app: Electron.App, client: import('discord-rpc').Client) {
+export async function init(app: Electron.App, client: import('@xhayper/discord-rpc').Client) {
   app?.whenReady().then(() => {
     tray = new Tray(iconPath);
     const contextMenu = Menu.buildFromTemplate([
@@ -43,18 +40,13 @@ export async function init(app: Electron.App, client: import('discord-rpc').Clie
       },
       {
         id: 'reconnect',
-        label: Config.get(app, 'use_listening_to') ? 'Reconnect to WebSocket' : 'Reconnect RPC',
+        label: 'Reconnect RPC',
         type: 'normal',
-        visible: false, // how tf do I reconnect to the fcking ipc
-        click: (menuItem) => {
-          (
-            Config.get(app, 'use_listening_to') ?
-              DiscordWebSocket.connect(Config.get(app, 'discord_token'), app).catch((e) => log('WebSocket', e.toString())) :
-              client.login({ clientId })
-          )
+        visible: false,
+        click: () => {
+          client.login()
             .then(() => {
-              log(Config.get(app, 'use_listening_to') ? 'WebSocket' : 'RPC', 'Reconnected');
-              menuItem.label = Config.get(app, 'use_listening_to') ? 'Reconnect to WebSocket' : 'Reconnect RPC';
+              log('RPC', 'Reconnected');
             })
             .catch(console.error);
         }
@@ -62,34 +54,17 @@ export async function init(app: Electron.App, client: import('discord-rpc').Clie
       {
         label: 'Use "Listening to" instead of "Playing"', type: 'checkbox', checked: Config.get(app, 'use_listening_to'),
         click: async (menuItem) => {
-          if (!menuItem.checked) {
-            menuItem.enabled = false;
-            menuItem.checked = true;
-            await dialog.showMessageBox(null, {
-              type: 'question',
-              buttons: ['No', 'Yes'],
-              title: '"Listening to" status',
-              message: 'Do you want to disable the "Listening to" status and use the "Playing" status?',
-            }).then(({ response }) => {
-              menuItem.enabled = true;
-              if (response === 1) {
-                menuItem.checked = false;
-                Config.set(app, 'use_listening_to', false);
-                DiscordWebSocket.disconnect();
-                RPC.client.login({ clientId }).catch(() => RPC.client.connect(clientId).catch(console.error));
-              }
-            });
-          } else {
-            menuItem.enabled = false;
-            menuItem.checked = false;
-            await prompt('ws', app);
+          Config.set(app, 'use_listening_to', menuItem.checked);
+          if (menuItem.checked) {
+            await RPC.disconnect();
+            await RPC.connect();
           }
         }
       },
       { type: 'separator' },
       {
         label: 'Quit', type: 'normal', click: async () => {
-          Config.get(app, 'use_listening_to') ? DiscordWebSocket.disconnect() : RPC.disconnect().catch(console.error);
+          RPC.disconnect().catch(console.error);
           win.close();
           app.quit();
           process.exit(0);

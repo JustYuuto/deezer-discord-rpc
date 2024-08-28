@@ -1,9 +1,12 @@
-import * as RPC from 'discord-rpc';
+import * as RPC from '@xhayper/discord-rpc';
 import { log } from './Log';
 import { clientId } from '../variables';
 
 export const client = new RPC.Client({
-  transport: 'ipc',
+  transport: {
+    type: 'ipc',
+  },
+  clientId
 });
 
 export function connect() {
@@ -15,7 +18,7 @@ export function connect() {
     log('RPC', 'Disconnected, trying to reconnect...');
     const attempts = 0;
     const attemptsInterval = setInterval(() => {
-      client.login({ clientId }).then(() => {
+      client.login().then(() => {
         clearInterval(attemptsInterval);
       }).catch(console.error);
       log('RPC', `Reconnecting... Attempt ${attempts + 1}`);
@@ -25,11 +28,11 @@ export function connect() {
     }, 8000);
   });
 
-  client.login({ clientId }).catch(console.error);
+  client.login().catch(console.error);
 }
 
 export async function disconnect() {
   log('RPC', 'Disconnecting...');
-  await client.clearActivity(process.pid);
+  await client.user.clearActivity(process.pid);
   await client.destroy().then(() => log('RPC', 'Disconnected'));
 }
