@@ -23,9 +23,9 @@ const config = {
     icon: join(__dirname, '..', 'src', 'img', 'app.ico'),
   },
   linux: {
-    category: 'Audio',
+    category: 'Audio;AudioVideo',
     target: ['snap', 'deb', 'AppImage'],
-    icon: join(__dirname, '..', 'src', 'img', 'app.png'),
+    icon: join(__dirname, '..', 'src', 'img', 'app.icns'),
   },
   files: [
     '!src/*',
