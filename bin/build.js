@@ -24,7 +24,7 @@ const config = {
   },
   linux: {
     category: 'Audio;AudioVideo',
-    target: ['snap', 'deb', 'AppImage'],
+    target: ['snap', 'deb', 'AppImage', 'rpm'], // Added 'rpm' here for Fedora packaging
     icon: join(__dirname, '..', 'src', 'img', 'app.icns'),
   },
   files: [
@@ -44,7 +44,7 @@ const options = {
 };
 if (process.platform === 'darwin') options.mac = ['dmg'];
 // Linux programs like chmod are not supported on Windows
-if (process.platform !== 'win32') options.linux = ['snap', 'deb', 'AppImage'];
+if (process.platform !== 'win32') options.linux = ['snap', 'deb', 'AppImage, rpm'];
 
 builder.build(options).then(() => {
   console.log('\nSetup built in the "dist" folder.');
