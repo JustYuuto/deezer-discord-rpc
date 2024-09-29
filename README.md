@@ -35,6 +35,53 @@
 
 ![Tray menu](screenshots/tray_menu.png)
 
+## How To build yourself (on linux)
+If your not using a red-hat system make sure you have the build tools for rmp package
+
+#### Install the rpm-build package
+```
+sudo apt install rpm-build
+or
+sudo dnf install rpm-build
+```
+
+#### Clone the repo
+
+```
+git clone https://github.com/JustYuuto/deezer-discord-rpc
+cd ./deezer-discord-rpc
+```
+
+#### Build the app with docker
+
+> [!NOTE]  
+> OFC, You have to install docker!  
+
+```
+docker run --rm -ti \
+ --env-file <(env | grep -iE 'DEBUG|NODE_|ELECTRON_|YARN_|NPM_|CI|CIRCLE|TRAVIS_TAG|TRAVIS|TRAVIS_REPO_|TRAVIS_BUILD_|TRAVIS_BRANCH|TRAVIS_PULL_REQUEST_|APPVEYOR_|CSC_|GH_|GITHUB_|BT_|AWS_|STRIP|BUILD_') \
+ --env ELECTRON_CACHE="/root/.cache/electron" \
+ --env ELECTRON_BUILDER_CACHE="/root/.cache/electron-builder" \
+ -v ${PWD}:/project \
+ -v ${PWD##*/}-node-modules:/project/node_modules \
+ -v ~/.cache/electron:/root/.cache/electron \
+ -v ~/.cache/electron-builder:/root/.cache/electron-builder \
+ electronuserland/builder:wine
+```
+
+##### Build the app
+
+```
+# npm install
+# npm run build
+```
+
+#### Get the builded package
+
+You can get the builded package directly in the ```dist``` folder
+
+<br>
+
 ## Todo
 
 * [x] Implement Discord WebSocket server to get a "Listening to" status on the profile
