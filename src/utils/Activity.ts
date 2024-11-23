@@ -6,11 +6,12 @@ import { ActivityType } from 'discord-api-types/v10';
 export async function setActivity(options: {
   client: import('@xhayper/discord-rpc').Client, albumId: number, trackId: string, playing: boolean, timeLeft: number,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  trackTitle: string, trackArtists: any, albumCover: string, albumTitle: string, app: Electron.App, type: string
+  trackTitle: string, trackArtists: any, albumCover: string, albumTitle: string, app: Electron.App, type: string,
+  songTime: number
 }) {
   const {
     timeLeft, playing, client, albumTitle, trackArtists, trackTitle,
-    albumCover, app, type, trackId
+    albumCover, app, type, trackId, songTime
   } = options;
   const tooltipText = Config.get(app, 'tooltip_text');
   switch (tooltipText) {
@@ -32,10 +33,8 @@ export async function setActivity(options: {
   }
   if (!client) return;
 
-  if (Config.get(app, 'only_show_if_playing') && !playing) {
-    await client.user.clearActivity();
-    return;
-  }
+  if (!playing)
+    return await client.user.clearActivity();
 
   const getTrackLink = () => {
     switch (type) {
@@ -48,16 +47,16 @@ export async function setActivity(options: {
 
   const button = (getTrackLink() && parseInt(trackId) > 0) && { label: 'Play on Deezer', url: getTrackLink() };
   const isLivestream = (Date.now() + timeLeft) < Date.now();
-  const useListening = Config.get(app, 'use_listening_to');
+  const playedTime = Date.now() - songTime + timeLeft;
   client.user.setActivity({
-    type: useListening ? ActivityType.Listening : ActivityType.Playing,
+    type: ActivityType.Listening,
     details: trackTitle,
     state: trackArtists,
     largeImageKey: albumCover,
     largeImageText: albumTitle,
     instance: false,
-    startTimestamp: playing && Date.now(),
-    [isLivestream ? 'startTimestamp' : 'endTimestamp']: playing && Date.now() + timeLeft,
+    startTimestamp: playedTime,
+    [isLivestream ? 'startTimestamp' : 'endTimestamp']: Date.now() + timeLeft,
     buttons: button ? [button] : undefined,
   }).catch(() => {});
 }

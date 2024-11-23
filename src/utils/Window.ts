@@ -40,16 +40,11 @@ export async function load(app: Electron.App) {
   });
 
   session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
-    if (details.url.includes('deezer.com')) {
+    if (details.url.includes('deezer.com'))
       details.requestHeaders['User-Agent'] = userAgent;
-    }
+    if (details.url.startsWith('https://www.deezer.com/ajax/gw-light.php?method=deezer.adConfig')) // Remove ads
+      return callback({ cancel: true });
     callback({ cancel: false, requestHeaders: details.requestHeaders });
-  });
-
-  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
-    // delete details.responseHeaders['cross-origin-opener-policy'];
-    // delete details.responseHeaders['cross-origin-opener-policy-report-only'];
-    callback({ cancel: false, responseHeaders: details.responseHeaders });
   });
 
   win.on('resized', () => {
@@ -98,7 +93,7 @@ export async function load(app: Electron.App) {
                  const playingObserver = new MutationObserver(() => ipcRenderer.send('update_activity', false));
                  playingObserver.observe(document.querySelector('.chakra-button__group > button[data-testid^="play_button_"]'), { childList: true, subtree: true });`);
     ipcMain.on('update_activity', (e, currentTimeChanged) => updateActivity(app, currentTimeChanged));
-    runJs(`const chakraStack = document.querySelector('#dzr-app > div > div.css-efpag6 > div.chakra-stack.css-w8kdg9');
+    runJs(`const chakraStack = document.querySelector('#dzr-app > .naboo > div > div > a.chakra-link');
                  const navContainer = document.createElement('div');
                  navContainer.style.display = 'flex';
                  navContainer.style.justifyContent = 'space-around';
@@ -114,16 +109,16 @@ export async function load(app: Electron.App) {
                  forwardButton.style.opacity = '30%';
                  navContainer.appendChild(backButton);
                  navContainer.appendChild(forwardButton);
-                 chakraStack.children[0].replaceWith(navContainer);`);
-    ipcMain.on('nav_back', () => win.webContents.goBack());
-    ipcMain.on('nav_forward', () => win.webContents.goForward());
+                 chakraStack.replaceWith(navContainer);`);
+    ipcMain.on('nav_back', () => win.webContents.navigationHistory.goBack());
+    ipcMain.on('nav_forward', () => win.webContents.navigationHistory.goForward());
     win.webContents.on('did-stop-loading', () => {
-      if (win.webContents.canGoBack()) {
+      if (win.webContents.navigationHistory.canGoBack()) {
         runJs('backButton.style.opacity = \'100%\';');
       } else {
         runJs('backButton.style.opacity = \'30%\';');
       }
-      if (win.webContents.canGoForward()) {
+      if (win.webContents.navigationHistory.canGoForward()) {
         runJs('forwardButton.style.opacity = \'100%\';');
       } else {
         runJs('forwardButton.style.opacity = \'30%\';');
@@ -207,13 +202,11 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
       currentTrack?.trackTitle !== result.trackName || currentTrack?.playing !== result.playing || currentTimeChanged === true ||
       currentTrack?.songTime !== realSongTime
     ) {
-      let reason;
-      if (currentTrack?.trackTitle !== result.trackName) {
+      let reason = '';
+      if (currentTrack?.trackTitle !== result.trackName)
         reason = UpdateReason.MUSIC_CHANGED;
-      }
-      else if (currentTrack?.playing !== result.playing) {
+      else if (currentTrack?.playing !== result.playing)
         reason = result.playing ? UpdateReason.MUSIC_PLAYED : UpdateReason.MUSIC_PAUSED;
-      }
       else if (currentTimeChanged && currentTimeChanged === true) reason = UpdateReason.MUSIC_TIME_CHANGED;
       else if (currentTrack?.songTime !== realSongTime) reason = UpdateReason.MUSIC_NOT_RIGHT_TIME;
       log('Activity', 'Updating because', reason);
@@ -228,7 +221,8 @@ async function updateActivity(app: Electron.App, currentTimeChanged?: boolean) {
       };
 
       await setActivity({
-        client, albumId: result.albumId, timeLeft: result.timeLeft, app, ...currentTrack, type: result.mediaType
+        client, albumId: result.albumId, timeLeft: result.timeLeft, app, ...currentTrack, type: result.mediaType,
+        songTime: realSongTime
       }).then(() => log('Activity', 'Updated'));
     }
     currentTrack.songTime = realSongTime;

@@ -31,10 +31,6 @@ export async function init(app: Electron.App, client: import('@xhayper/discord-r
         }))
       },
       {
-        label: 'Only show RPC if music is playing', type: 'checkbox', checked: Config.get(app, 'only_show_if_playing'),
-        click: (menuItem) => Config.set(app, 'only_show_if_playing', menuItem.checked)
-      },
-      {
         label: 'Don\'t close to tray', type: 'checkbox', checked: Config.get(app, 'dont_close_to_tray'),
         click: (menuItem) => Config.set(app, 'dont_close_to_tray', menuItem.checked)
       },
@@ -49,16 +45,6 @@ export async function init(app: Electron.App, client: import('@xhayper/discord-r
               log('RPC', 'Reconnected');
             })
             .catch(console.error);
-        }
-      },
-      {
-        label: 'Use "Listening to" instead of "Playing"', type: 'checkbox', checked: Config.get(app, 'use_listening_to'),
-        click: async (menuItem) => {
-          Config.set(app, 'use_listening_to', menuItem.checked);
-          if (menuItem.checked) {
-            await RPC.disconnect();
-            await RPC.connect();
-          }
         }
       },
       { type: 'separator' },

@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.3.0
+
+* Removed the "Playing" status, now it will always show "Listening to"
+* Removed the "Only show if playing" option
+* Updated Chrome user agent to version 133
+* Updated packages
+* Fixed some things
+
 ## 1.2.8
 
 * Fixed the app not working because of Deezer and Discord changes
