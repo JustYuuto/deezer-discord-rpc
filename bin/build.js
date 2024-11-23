@@ -42,9 +42,26 @@ const options = {
   x64: true,
   publish: 'never',
 };
-if (process.platform === 'darwin') options.mac = config.mac.target;
-// Linux programs like chmod are not supported on Windows
-if (process.platform !== 'win32') options.linux = config.linux.target;
+const specifiedOS = process.argv[2];
+if (specifiedOS) {
+  if (specifiedOS === 'windows') {
+    config.mac = undefined;
+    config.linux = undefined;
+    config.win = config.win.target;
+  } else if (specifiedOS === 'macos') {
+    config.linux = undefined;
+    config.win = undefined;
+    config.mac = config.mac.target;
+  } else if (specifiedOS === 'linux') {
+    config.mac = undefined;
+    config.win = undefined;
+    config.linux = config.linux.target;
+  }
+} else {
+  if (process.platform === 'darwin') options.mac = config.mac.target;
+  // Linux programs like chmod are not supported on Windows
+  if (process.platform !== 'win32') options.linux = config.linux.target;
+}
 
 builder.build(options).then(() => {
   console.log('\nSetup built in the "dist" folder.');
