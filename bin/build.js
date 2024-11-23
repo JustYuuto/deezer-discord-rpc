@@ -55,6 +55,9 @@ if (specifiedOS) {
   }
 }
 
-builder.build({ config }).then(() => {
+builder.build({
+  config,
+  publish: 'never'
+}).then(() => {
   console.log('\nSetup built in the "dist" folder.');
 });
