@@ -29,24 +29,28 @@ jobs:
         with:
           path: dist/*.snap
           name: ${{ runner.os }}-snap
+          if-no-files-found: error
 
       - name: Upload .deb file
         uses: actions/upload-artifact@v4
         with:
           path: dist/*.deb
           name: ${{ runner.os }}-deb
+          if-no-files-found: error
 
       - name: Upload .AppImage file
         uses: actions/upload-artifact@v4
         with:
           path: dist/*.AppImage
           name: ${{ runner.os }}-AppImage
+          if-no-files-found: error
 
       - name: Upload .rpm file
         uses: actions/upload-artifact@v4
         with:
           path: dist/*.rpm
           name: ${{ runner.os }}-rpm
+          if-no-files-found: error
 
   build-windows:
     runs-on: windows-latest
@@ -70,6 +74,8 @@ jobs:
         with:
           path: dist/*.exe
           name: ${{ runner.os }}-exe
+          if-no-files-found: error
+
 
   build-macos:
     runs-on: macos-latest
@@ -93,3 +99,4 @@ jobs:
         with:
           path: dist/*.dmg
           name: ${{ runner.os }}-dmg
+          if-no-files-found: error

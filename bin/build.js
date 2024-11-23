@@ -36,12 +36,6 @@ const config = {
   ]
 };
 
-const options = {
-  config,
-  win: ['nsis'],
-  x64: true,
-  publish: 'never',
-};
 const specifiedOS = process.argv[2];
 if (specifiedOS) {
   if (specifiedOS === 'windows') {
@@ -55,11 +49,12 @@ if (specifiedOS) {
     config.win = undefined;
   }
 } else {
-  if (process.platform === 'darwin') options.mac = config.mac.target;
-  // Linux programs like chmod are not supported on Windows
-  if (process.platform !== 'win32') options.linux = config.linux.target;
+  if (process.platform === 'win32') {
+    config.mac = undefined;
+    config.linux = undefined;
+  }
 }
 
-builder.build(options).then(() => {
+builder.build({ config }).then(() => {
   console.log('\nSetup built in the "dist" folder.');
 });
