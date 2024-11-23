@@ -8,3 +8,5 @@
 # Builds
 /build/
 /dist/
+
+.DS_Store
