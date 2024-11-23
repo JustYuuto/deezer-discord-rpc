@@ -1,0 +1,74 @@
+name: Build
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build
+        run: yarn build
+
+      - name: Upload .snap file
+        uses: actions/upload-artifact@v4
+        with:
+          path: dist/*.snap
+
+      - name: Upload .deb file
+        uses: actions/upload-artifact@v4
+        with:
+          path: dist/*.deb
+
+      - name: Upload .AppImage file
+        uses: actions/upload-artifact@v4
+        with:
+          path: dist/*.AppImage
+
+      - name: Upload .rpm file
+        uses: actions/upload-artifact@v4
+        with:
+          path: dist/*.rpm
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build
+        run: yarn build
+
+      - name: Upload .exe file
+        uses: actions/upload-artifact@v4
+        with:
+          path: dist/*.exe
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build
+        run: yarn build
+
+      - name: Upload .dmg file
+        uses: actions/upload-artifact@v4
+        with:
+          path: dist/*.dmg

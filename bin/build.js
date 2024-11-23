@@ -24,8 +24,8 @@ const config = {
   },
   linux: {
     category: 'Audio;AudioVideo',
-    target: ['snap', 'deb', 'AppImage'],
-    icon: join(__dirname, '..', 'src', 'img', 'app.icns'),
+    target: ['snap', 'deb', 'AppImage', 'rpm'],
+    icon: join(__dirname, '..', 'src', 'img', 'app.png'),
   },
   files: [
     '!src/*',
@@ -42,9 +42,9 @@ const options = {
   x64: true,
   publish: 'never',
 };
-if (process.platform === 'darwin') options.mac = ['dmg'];
+if (process.platform === 'darwin') options.mac = config.mac.target;
 // Linux programs like chmod are not supported on Windows
-if (process.platform !== 'win32') options.linux = ['snap', 'deb', 'AppImage'];
+if (process.platform !== 'win32') options.linux = config.linux.target;
 
 builder.build(options).then(() => {
   console.log('\nSetup built in the "dist" folder.');
