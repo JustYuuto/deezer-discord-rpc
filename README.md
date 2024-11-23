@@ -6,39 +6,29 @@
     <a href="https://github.com/JustYuuto/deezer-discord-rpc/commits"><img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/w/justyuuto/deezer-discord-rpc?style=for-the-badge"></a>
     <hr />
     <p>A Discord RPC for showing the music you're listening to on Deezer (like the Spotify integration).</p>
+    <a href="https://github.com/JustYuuto/deezer-discord-rpc/wiki/Troubleshooting">Check the troubleshooting page if you have issues</a>
 </div>
 
 ## Features
 
 * Updates instantly
-* Shows the song title, the song artist(s), the album cover (when the mouse is over the album cover, the album title is shown) and the song duration
-* On the RPC there's a "Listen along" button like on the Spotify integration. This is a link to the song
+* Shows the song title, the song artist(s), the album name and cover, and the song duration
+* Shows a "Listen on Deezer" button that opens the song on Deezer, if supported
 * An in-app updater
-* Can hide the activity if song is not playing
-* Can set a "Listening to" status (**requires your Discord token**)
+* Hides the activity if no song is playing
+* Sets a "Listening to" status on the profile
 * Includes an ad-blocker, so it can block Deezer ads, Sentry requests...
-* Supports songs, radios, personal songs, podcasts
+* Supports songs, radios, personal songs (MP3s), podcasts
 
 ## Screenshots
 
 #### RPC on profile:
 
-<p>With the "Playing" status:</p>
-
-![RPC on profile](screenshots/rpc_on_profile.png)
-
-<p>With the "Listening to" status:</p>
-
-![RPC on profile](screenshots/rpc_on_profile_2.png)
+![RPC on profile](screenshots/rpc.png)
 
 #### Tray menu:
 
 ![Tray menu](screenshots/tray_menu.png)
-
-## Todo
-
-* [x] Implement Discord WebSocket server to get a "Listening to" status on the profile
-* [x] Support podcasts
 
 ## License
 
