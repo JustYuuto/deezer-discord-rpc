@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.1
+
+* Fixed some changes on the app
+
 ## 1.3.0
 
 * Removed the "Playing" status, now it will always show "Listening to"

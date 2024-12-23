@@ -75,6 +75,19 @@ export async function load(app: Electron.App) {
     }
   });
 
+  win.webContents.on('did-stop-loading', () => {
+    if (win.webContents.navigationHistory.canGoBack()) {
+      runJs('backButton.style.opacity = \'100%\';');
+    } else {
+      runJs('backButton.style.opacity = \'30%\';');
+    }
+    if (win.webContents.navigationHistory.canGoForward()) {
+      runJs('forwardButton.style.opacity = \'100%\';');
+    } else {
+      runJs('forwardButton.style.opacity = \'30%\';');
+    }
+  });
+
   win.on('close', async (e) => {
     if (Config.get(app, 'dont_close_to_tray')) {
       await RPC.disconnect();
@@ -86,46 +99,37 @@ export async function load(app: Electron.App) {
     return false;
   });
 
-  wait(5000).then(() => {
-    runJs(`document.querySelector('.slider-track-input.mousetrap').addEventListener('click', () => ipcRenderer.send('update_activity', true))
-                 const trackObserver = new MutationObserver(() => ipcRenderer.send('update_activity', false));
-                 trackObserver.observe(document.querySelector('[data-testid="item_title"] a'), { childList: true, subtree: true, characterData: true });
-                 const playingObserver = new MutationObserver(() => ipcRenderer.send('update_activity', false));
-                 playingObserver.observe(document.querySelector('.chakra-button__group > button[data-testid^="play_button_"]'), { childList: true, subtree: true });`);
-    ipcMain.on('update_activity', (e, currentTimeChanged) => updateActivity(app, currentTimeChanged));
-    runJs(`const chakraStack = document.querySelector('#dzr-app > .naboo > div > div > a.chakra-link');
-                 const navContainer = document.createElement('div');
-                 navContainer.style.display = 'flex';
-                 navContainer.style.justifyContent = 'space-around';
-                 const backButton = document.createElement('button');
-                 backButton.addEventListener('click', () => ipcRenderer.send('nav_back'));
-                 backButton.textContent = '<';
-                 backButton.style.transform = 'scale(2, 4)';
-                 backButton.style.opacity = '30%';
-                 const forwardButton = document.createElement('button');
-                 forwardButton.addEventListener('click', () => ipcRenderer.send('nav_forward'));
-                 forwardButton.textContent = '>';
-                 forwardButton.style.transform = 'scale(2, 4)';
-                 forwardButton.style.opacity = '30%';
-                 navContainer.appendChild(backButton);
-                 navContainer.appendChild(forwardButton);
-                 chakraStack.replaceWith(navContainer);`);
-    ipcMain.on('nav_back', () => win.webContents.navigationHistory.goBack());
-    ipcMain.on('nav_forward', () => win.webContents.navigationHistory.goForward());
-    win.webContents.on('did-stop-loading', () => {
-      if (win.webContents.navigationHistory.canGoBack()) {
-        runJs('backButton.style.opacity = \'100%\';');
-      } else {
-        runJs('backButton.style.opacity = \'30%\';');
-      }
-      if (win.webContents.navigationHistory.canGoForward()) {
-        runJs('forwardButton.style.opacity = \'100%\';');
-      } else {
-        runJs('forwardButton.style.opacity = \'30%\';');
-      }
-    });
-    setThumbarButtons();
+  ipcMain.on('update_activity', (_, currentTimeChanged) => {
+    console.log('update_activity');
+    updateActivity(app, currentTimeChanged);
   });
+  ipcMain.on('nav_back', () => win.webContents.navigationHistory.goBack());
+  ipcMain.on('nav_forward', () => win.webContents.navigationHistory.goForward());
+
+  await wait(5000);
+  runJs(`document.querySelector('[data-testid="miniplayer_container"] .slider').addEventListener('click', () => ipcRenderer.send('update_activity', true))
+         const trackObserver = new MutationObserver(() => ipcRenderer.send('update_activity', false));
+         trackObserver.observe(document.querySelector('[data-testid="item_title"] a'), { childList: true, subtree: true, characterData: true });
+         const playingObserver = new MutationObserver(() => ipcRenderer.send('update_activity', false));
+         playingObserver.observe(document.querySelector('.chakra-button__group > button[data-testid^="play_button_"]'), { childList: true, subtree: true });`);
+  runJs(`const chakraStack = document.querySelector('#dzr-app > .naboo > div > div > a.chakra-link');
+         const navContainer = document.createElement('div');
+         navContainer.style.display = 'flex';
+         navContainer.style.justifyContent = 'space-around';
+         const backButton = document.createElement('button');
+         backButton.addEventListener('click', () => ipcRenderer.send('nav_back'));
+         backButton.textContent = '<';
+         backButton.style.transform = 'scale(2, 4)';
+         backButton.style.opacity = '30%';
+         const forwardButton = document.createElement('button');
+         forwardButton.addEventListener('click', () => ipcRenderer.send('nav_forward'));
+         forwardButton.textContent = '>';
+         forwardButton.style.transform = 'scale(2, 4)';
+         forwardButton.style.opacity = '30%';
+         navContainer.appendChild(backButton);
+         navContainer.appendChild(forwardButton);
+         chakraStack.replaceWith(navContainer);`);
+  setThumbarButtons();
 }
 
 export async function showWindow() {
