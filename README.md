@@ -30,6 +30,10 @@
 
 ![Tray menu](screenshots/tray_menu.png)
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=JustYuuto/deezer-discord-rpc&type=Date)](https://star-history.com/#JustYuuto/deezer-discord-rpc&Date)
+
 ## License
 
-Mozilla Public License 2.0
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
