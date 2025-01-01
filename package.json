@@ -13,7 +13,7 @@
     "copy-assets": "cpy ./src/img/* ./build/src/img/"
   },
   "dependencies": {
-    "@ghostery/adblocker-electron": "^2.1.1",
+    "@ghostery/adblocker-electron": "^2.3.1",
     "@xhayper/discord-rpc": "^1.2.0",
     "axios": "^1.7.7",
     "chalk": "4.1.2"
