@@ -4,7 +4,7 @@ import loadAdBlock from './AdBlock';
 import * as Config from './Config';
 import * as RPC from './RPC';
 import { log } from './Log';
-import { runJs, wait } from '../functions';
+import { runJs } from '../functions';
 import { BrowserWindow, ipcMain, shell, nativeImage, session } from 'electron';
 import { setActivity } from './Activity';
 
