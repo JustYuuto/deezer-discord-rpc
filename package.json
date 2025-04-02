@@ -13,9 +13,9 @@
     "copy-assets": "cpy ./src/img/* ./build/src/img/"
   },
   "dependencies": {
-    "@ghostery/adblocker-electron": "^2.1.1",
-    "@xhayper/discord-rpc": "^1.2.0",
-    "axios": "^1.7.7",
+    "@ghostery/adblocker-electron": "^2.5.0",
+    "@xhayper/discord-rpc": "^1.2.1",
+    "axios": "^1.8.4",
     "chalk": "4.1.2"
   },
   "devDependencies": {
@@ -24,13 +24,13 @@
     "@typescript-eslint/eslint-plugin": "^6.16.0",
     "@typescript-eslint/parser": "^6.16.0",
     "cpy-cli": "^5.0.0",
-    "electron": "^33.2.0",
-    "electron-builder": "^25.1.8",
+    "electron": "^35.1.2",
+    "electron-builder": "^26.0.12",
     "eslint": "^8.56.0",
     "fs-extra": "^11.2.0",
     "png-to-ico": "^2.1.8",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.8.2"
   },
   "repository": "https://github.com/JustYuuto/deezer-discord-rpc.git",
   "author": {
