@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.2
+
+- Upgraded packages
+- Fixed the RPC not updating in some cases
+- Fixed MP3s not showing on the RPC
+
 ## 1.3.1
 
 * Fixed some changes on the app
