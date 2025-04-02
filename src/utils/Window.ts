@@ -106,12 +106,23 @@ export async function load(app: Electron.App) {
   ipcMain.on('nav_back', () => win.webContents.navigationHistory.goBack());
   ipcMain.on('nav_forward', () => win.webContents.navigationHistory.goForward());
 
-  await wait(5000);
+  // Wait for the player to be fully initialized
+  await new Promise(() => {
+    const interval = setInterval(async (r) => {
+      const element = await runJs('document.querySelector(\'.marquee-content > [data-testid="item_title"]\')');
+      if (element) {
+        clearInterval(interval);
+        r();
+      }
+    }, 50);
+  });
+
   runJs(`document.querySelector('[data-testid="miniplayer_container"] .slider').addEventListener('click', () => ipcRenderer.send('update_activity', true))
          const trackObserver = new MutationObserver(() => ipcRenderer.send('update_activity', false));
-         trackObserver.observe(document.querySelector('[data-testid="item_title"] a'), { childList: true, subtree: true, characterData: true });
-         const playingObserver = new MutationObserver(() => ipcRenderer.send('update_activity', false));
-         playingObserver.observe(document.querySelector('.chakra-button__group > button[data-testid^="play_button_"]'), { childList: true, subtree: true });`);
+         trackObserver.observe(document.querySelector('.marquee-content > [data-testid="item_title"]'), { childList: true, subtree: true, characterData: true });
+         const playObserver = new MutationObserver(() => ipcRenderer.send('update_activity', false));
+         playObserver.observe(document.querySelector('.chakra-button__group > button[data-testid^="play_button_"]'), { attributes: true, childList: false, subtree: false });
+         document.querySelector('.chakra-button__group > button[data-testid^="play_button_"]').addEventListener('click', () => ipcRenderer.send('update_activity', false));`);
   runJs(`const chakraStack = document.querySelector('#dzr-app > .naboo > div > div > a.chakra-link');
          const navContainer = document.createElement('div');
          navContainer.style.display = 'flex';
