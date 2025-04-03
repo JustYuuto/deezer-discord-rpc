@@ -14,13 +14,17 @@ jobs:
         include:
           - os: ubuntu-latest
             build-command: yarn build linux
-            artifacts: ['dist/*.snap', 'dist/*.deb', 'dist/*.AppImage', 'dist/*.rpm']
+            artifacts: |
+              dist/*.deb
+              dist/*.AppImage
+              dist/*.rpm
+              dist/*.snap
           - os: windows-latest
             build-command: yarn build windows
-            artifacts: ['dist/*.exe']
+            artifacts: dist/*.exe
           - os: macos-latest
             build-command: yarn build macos
-            artifacts: ['dist/*.dmg']
+            artifacts: dist/*.dmg
 
     runs-on: ${{ matrix.os }}
 
@@ -42,6 +46,6 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          path: ${{ join(matrix.artifacts, '\n') }}
+          path: ${{ matrix.artifacts }}
           name: ${{ runner.os }}-artifacts
           if-no-files-found: error

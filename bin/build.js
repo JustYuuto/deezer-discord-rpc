@@ -27,7 +27,7 @@ const config = {
     target: ['snap', 'deb', 'AppImage', 'rpm'],
     icon: join(__dirname, '..', 'src', 'img', 'app.png'),
   },
-  artifactName: 'DeezerDiscordRPC-${arch}.${ext}',
+  artifactName: 'DeezerDiscordRPC-${os}-${arch}.${ext}',
   files: [
     '!src/*',
     '!src/**/*',
