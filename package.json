@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron ./build/src/index.js",
     "build:ts": "tsc --resolveJsonModule",
-    "build": "bun run build:ts && bun run copy-assets && bun scripts/build.ts",
+    "build": "bun run build:ts && bun run copy-assets && bun scripts/build.js",
     "run": "bun run build:ts && bun run copy-assets && bun run start",
     "postinstall": "electron-builder install-app-deps",
     "lint": "eslint --ext .ts ./src",

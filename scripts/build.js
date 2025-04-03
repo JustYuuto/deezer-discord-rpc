@@ -1,7 +1,7 @@
-import { existsSync, rmSync } from 'fs';
-import { resolve, join } from 'path';
-import { build } from 'electron-builder';
-import { Configuration } from 'app-builder-lib/out/configuration';
+/* eslint @typescript-eslint/no-require-imports: 0 */
+const { build } = require('electron-builder');
+const { existsSync, rmSync } = require('fs/promises');
+const { resolve, join } = require('path');
 
 // If the Electron app build folder exists, we need to delete it
 if (existsSync(resolve('dist'))) {
@@ -11,7 +11,7 @@ if (existsSync(resolve('dist'))) {
 
 // App build
 console.log('Building setup...');
-const config: Configuration = {
+const config = {
   appId: 'com.github.yuuto.deezerdiscordrpc',
   productName: 'Deezer Discord RPC',
   mac: {
