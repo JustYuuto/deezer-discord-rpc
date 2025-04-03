@@ -13,7 +13,7 @@ export async function setActivity(options: {
     timeLeft, playing, client, albumTitle, trackArtists, trackTitle,
     albumCover, app, type, trackId, songTime
   } = options;
-  const tooltipText = Config.get(app, 'tooltip_text');
+  const tooltipText = await Config.get(app, 'tooltip_text');
   switch (tooltipText) {
     case 'app_name':
       tray.setToolTip('Deezer Discord RPC');

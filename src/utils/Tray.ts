@@ -6,12 +6,13 @@ import { Menu, Tray } from 'electron';
 import { version } from '../../package.json';
 import { log } from './Log';
 import { win } from './Window';
+import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
 
 const iconPath = join(__dirname, '..', 'img', 'tray.png');
 
 export let tray: Tray | null = null;
 export async function init(app: Electron.App, client: import('@xhayper/discord-rpc').Client) {
-  app?.whenReady().then(() => {
+  app?.whenReady().then(async () => {
     tray = new Tray(iconPath);
     const contextMenu = Menu.buildFromTemplate([
       { label: 'Deezer Discord RPC', type: 'normal', click: () => win.show() },
@@ -19,19 +20,19 @@ export async function init(app: Electron.App, client: import('@xhayper/discord-r
       { label: 'Check for updates', type: 'normal', click: () => updater() },
       { type: 'separator' },
       {
-        label: 'Tooltip text', type: 'submenu', submenu: [
+        label: 'Tooltip text', type: 'submenu', submenu: await Promise.all([
           ['App name', 'app_name'],
           ['App version', 'app_version'],
           ['App name and version', 'app_name_and_version'],
           ['Artists song - Song title', 'artists_and_title'],
           ['Song title - Artists song', 'title_and_artists'],
-        ].map(v => ({
-          label: v[0], type: 'radio', id: v[1], checked: Config.get(app, 'tooltip_text') === v[1],
-          click: (menuItem) => Config.set(app, 'tooltip_text', menuItem.id)
-        }))
+        ].map(async (v): Promise<MenuItemConstructorOptions> => ({
+          label: v[0], type: 'radio', id: v[1], checked: await Config.get(app, 'tooltip_text') === v[1],
+          click: (menuItem) => Config.set(app, 'tooltip_text', menuItem.id),
+        })))
       },
       {
-        label: 'Don\'t close to tray', type: 'checkbox', checked: Config.get(app, 'dont_close_to_tray'),
+        label: 'Don\'t close to tray', type: 'checkbox', checked: await Config.get(app, 'dont_close_to_tray'),
         click: (menuItem) => Config.set(app, 'dont_close_to_tray', menuItem.checked)
       },
       {

@@ -2,11 +2,10 @@ import { join } from 'path';
 import { existsSync, writeFileSync } from 'fs';
 import { dialog } from 'electron';
 
-export function set(app: Electron.App, key: string, value: unknown) {
+export async function set(app: Electron.App, key: string, value: unknown) {
   const path = getConfigPath(app);
   if (!existsSync(path)) writeFileSync(path, '{}');
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const data = require(path);
+  const data = await import(path);
   data[key] = value;
   try {
     writeFileSync(path, JSON.stringify(data));
@@ -22,11 +21,10 @@ export function set(app: Electron.App, key: string, value: unknown) {
   }
 }
 
-export function get(app: Electron.App, key?: string) {
+export async function get(app: Electron.App, key?: string) {
   const path = getConfigPath(app);
   if (!existsSync(path)) writeFileSync(path, '{}');
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const data = require(path);
+  const data = await import(path);
   return key ? data[key] : data;
 }
 

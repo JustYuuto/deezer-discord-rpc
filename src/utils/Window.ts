@@ -12,8 +12,8 @@ export let win: BrowserWindow;
 let currentTrack: CurrentTrack;
 
 export async function load(app: Electron.App) {
-  const width = parseInt(Config.get(app, 'window_width')) || 1920;
-  const height = parseInt(Config.get(app, 'window_height')) || 1080;
+  const width = parseInt(await Config.get(app, 'window_width')) || 1920;
+  const height = parseInt(await Config.get(app, 'window_height')) || 1080;
   win = new BrowserWindow({
     width, height,
     minimizable: true,
@@ -89,7 +89,7 @@ export async function load(app: Electron.App) {
   });
 
   win.on('close', async (e) => {
-    if (Config.get(app, 'dont_close_to_tray')) {
+    if (await Config.get(app, 'dont_close_to_tray')) {
       await RPC.disconnect();
       return true;
     }
