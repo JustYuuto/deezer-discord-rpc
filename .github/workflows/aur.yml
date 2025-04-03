@@ -7,6 +7,7 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    if: github.repository == 'JustYuuto/deezer-discord-rpc'
 
     steps:
       - name: Checkout repository
