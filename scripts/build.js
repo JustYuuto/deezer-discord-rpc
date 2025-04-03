@@ -1,6 +1,6 @@
 /* eslint @typescript-eslint/no-require-imports: 0 */
 const { build } = require('electron-builder');
-const { existsSync, rmSync } = require('fs/promises');
+const { existsSync, rmSync } = require('fs');
 const { resolve, join } = require('path');
 
 // If the Electron app build folder exists, we need to delete it
