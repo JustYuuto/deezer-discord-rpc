@@ -13,17 +13,17 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         include:
           - os: ubuntu-latest
-            build-command: yarn build linux
+            build-command: bun run build linux
             artifacts: |
               dist/*.deb
               dist/*.AppImage
               dist/*.rpm
               dist/*.snap
           - os: windows-latest
-            build-command: yarn build windows
+            build-command: bun run build windows
             artifacts: dist/*.exe
           - os: macos-latest
-            build-command: yarn build macos
+            build-command: bun run build macos
             artifacts: dist/*.dmg
 
     runs-on: ${{ matrix.os }}
@@ -31,14 +31,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
+      - uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
-        run: yarn install
+        run: bun install --frozen-lockfile
 
       - name: Build
         run: ${{ matrix.build-command }}
