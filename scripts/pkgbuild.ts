@@ -31,7 +31,6 @@ license=('${license}')
 depends=('electron')
 source=("${downloadUrl}")
 md5sums=("${md5}")
-changelog="./CHANGELOG.md"
 
 package() {
     # Extract the .deb file
