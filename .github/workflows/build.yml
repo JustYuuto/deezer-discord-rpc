@@ -39,7 +39,10 @@ jobs:
         run: npm install
 
       - name: Build
-        run: npm run build:ts && bun run copy-assets && node scripts/build.js ${{ matrix.build-os }}
+        run: |
+          npm run build:ts
+          npm run copy-assets
+          node scripts/build.js ${{ matrix.build-os }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
