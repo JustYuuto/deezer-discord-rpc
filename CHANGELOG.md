@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.3
+
+* Package should now be available on the AUR repository
+* Fixed the tray icon not showing on Linux
+* Fixed the RPC not showing at all (sorry 😭😭)
+
 ## 1.3.2
 
 - Upgraded packages

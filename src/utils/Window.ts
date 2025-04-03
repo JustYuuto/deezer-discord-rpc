@@ -107,8 +107,8 @@ export async function load(app: Electron.App) {
   ipcMain.on('nav_forward', () => win.webContents.navigationHistory.goForward());
 
   // Wait for the player to be fully initialized
-  await new Promise(() => {
-    const interval = setInterval(async (r) => {
+  await new Promise<void>((r) => {
+    const interval = setInterval(async () => {
       const element = await runJs('document.querySelector(\'.marquee-content > [data-testid="item_title"]\')');
       if (element) {
         clearInterval(interval);
