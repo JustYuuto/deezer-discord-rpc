@@ -7,8 +7,23 @@ on:
     branches: [master]
 
 jobs:
-  build-linux:
-    runs-on: ubuntu-latest
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            build-command: yarn build linux
+            artifacts: ['dist/*.snap', 'dist/*.deb', 'dist/*.AppImage', 'dist/*.rpm']
+          - os: windows-latest
+            build-command: yarn build windows
+            artifacts: ['dist/*.exe']
+          - os: macos-latest
+            build-command: yarn build macos
+            artifacts: ['dist/*.dmg']
+
+    runs-on: ${{ matrix.os }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -22,80 +37,11 @@ jobs:
         run: yarn install
 
       - name: Build
-        run: yarn build linux
+        run: ${{ matrix.build-command }}
 
-      - name: Upload .snap file
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          path: dist/*.snap
-          name: ${{ runner.os }}-snap
-          if-no-files-found: error
-
-      - name: Upload .deb file
-        uses: actions/upload-artifact@v4
-        with:
-          path: dist/*.deb
-          name: ${{ runner.os }}-deb
-          if-no-files-found: error
-
-      - name: Upload .AppImage file
-        uses: actions/upload-artifact@v4
-        with:
-          path: dist/*.AppImage
-          name: ${{ runner.os }}-AppImage
-          if-no-files-found: error
-
-      - name: Upload .rpm file
-        uses: actions/upload-artifact@v4
-        with:
-          path: dist/*.rpm
-          name: ${{ runner.os }}-rpm
-          if-no-files-found: error
-
-  build-windows:
-    runs-on: windows-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Install dependencies
-        run: yarn install
-
-      - name: Build
-        run: yarn build windows
-
-      - name: Upload .exe file
-        uses: actions/upload-artifact@v4
-        with:
-          path: dist/*.exe
-          name: ${{ runner.os }}-exe
-          if-no-files-found: error
-
-  build-macos:
-    runs-on: macos-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Install dependencies
-        run: yarn install
-
-      - name: Build
-        run: yarn build macos
-
-      - name: Upload .dmg file
-        uses: actions/upload-artifact@v4
-        with:
-          path: dist/*.dmg
-          name: ${{ runner.os }}-dmg
+          path: ${{ join(matrix.artifacts, '\n') }}
+          name: ${{ runner.os }}-artifacts
           if-no-files-found: error

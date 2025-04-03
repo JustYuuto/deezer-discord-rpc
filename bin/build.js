@@ -27,6 +27,7 @@ const config = {
     target: ['snap', 'deb', 'AppImage', 'rpm'],
     icon: join(__dirname, '..', 'src', 'img', 'app.png'),
   },
+  artifactName: 'DeezerDiscordRPC-${arch}.${ext}',
   files: [
     '!src/*',
     '!src/**/*',
@@ -48,11 +49,9 @@ if (specifiedOS) {
     config.mac = undefined;
     config.win = undefined;
   }
-} else {
-  if (process.platform === 'win32') {
-    config.mac = undefined;
-    config.linux = undefined;
-  }
+} else if (process.platform === 'win32') {
+  config.mac = undefined;
+  config.linux = undefined;
 }
 
 builder.build({
