@@ -38,8 +38,9 @@ const config: Configuration = {
   ]
 };
 
-const specifiedOS = process.argv[2];
+const specifiedOS = ['windows', 'macos', 'linux'].includes(process.argv.pop() as string) ? process.argv.pop() : undefined;
 if (specifiedOS) {
+  console.log(`Building for ${specifiedOS}...`);
   if (specifiedOS === 'windows') {
     // @ts-expect-error Readonly property
     config.mac = undefined;

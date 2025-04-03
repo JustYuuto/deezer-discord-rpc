@@ -1,7 +1,25 @@
-import { writeFileSync } from 'fs';
+import { writeFile } from 'fs/promises';
 import { version, description, license } from '../package.json';
+import { pipeline } from 'stream';
+import { promisify } from 'util';
+import { createHash } from 'crypto';
 
-const file = `
+const pipelineAsync = promisify(pipeline);
+const downloadUrl = 'https://github.com/JustYuuto/deezer-discord-rpc/releases/download/latest/DeezerDiscordRPC-linux-amd64.deb';
+async function getMD5() {
+  const res = await fetch(downloadUrl);
+  if (!res.ok) throw new Error(`Failed to fetch file: ${res.statusText}`);
+  if (!res.body) throw new Error('No response body');
+  const body = res.body;
+  const hash = createHash('md5');
+  // @ts-expect-error Types
+  await pipelineAsync(body, hash);
+  return hash.digest('hex');
+}
+
+(async () => {
+  const md5 = await getMD5();
+  const file = `
 # Maintainer: Yuuto <notyuuto@outlook.com>
 pkgname=deezer-discord-rpc-bin
 pkgver=${version}
@@ -11,17 +29,17 @@ arch=('x86_64')
 url="https://github.com/JustYuuto/deezer-discord-rpc"
 license=('${license}')
 depends=('electron')
-source=("https://github.com/JustYuuto/deezer-discord-rpc/releases/download/latest/DeezerDiscordRPC-linux-amd64.deb")
+source=("${downloadUrl}")
+md5sums=("${md5}")
+changelog="./CHANGELOG.md"
 
 package() {
-    bsdtar -xf "$srcdir/deezer-discord-rpc_$pkgver_amd64.deb" -C "$pkgdir"
-    
-    install -Dm755 "$pkgdir/usr/lib/$pkgname/deezer-discord-rpc" "$pkgdir/usr/bin/deezer-discord-rpc"
-    ln -s "/usr/lib/$pkgname/deezer-discord-rpc" "$pkgdir/usr/bin/deezer-discord-rpc"
-    
-    install -Dm644 "$pkgdir/usr/share/icons/hicolor/128x128/apps/deezer-discord-rpc.png" "$pkgdir/usr/share/icons/hicolor/128x128/apps/$pkgname.png"
-    
-    install -Dm644 "$pkgdir/usr/share/applications/deezer-discord-rpc.desktop" "$pkgdir/usr/share/applications/deezer-discord-rpc.desktop"
+    # Extract the .deb file
+    bsdtar -xf "DeezerDiscordRPC-linux-amd64.deb" -C "$srcdir"
+
+    # Extract the data tarball
+    bsdtar -xf "$srcdir/data.tar.xz" -C "$pkgdir"
 }
 `;
-writeFileSync('PKGBUILD', file.trim());
+  await writeFile('PKGBUILD', file.trim());
+})();
