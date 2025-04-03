@@ -38,7 +38,8 @@ const config: Configuration = {
   ]
 };
 
-const specifiedOS = ['windows', 'macos', 'linux'].includes(process.argv.pop() as string) ? process.argv.pop() : undefined;
+const lastArg = process.argv.pop();
+const specifiedOS = ['windows', 'macos', 'linux'].includes(lastArg) ? lastArg : undefined;
 if (specifiedOS) {
   console.log(`Building for ${specifiedOS}...`);
   if (specifiedOS === 'windows') {
