@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.4
+
+* Fixed the updater downloading the wrong file
+
 ## 1.3.3
 
 * Package should now be available on the AUR repository
