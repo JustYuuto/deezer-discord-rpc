@@ -49,6 +49,10 @@ I'll try to see for a Brew (macOS) package in the future.
 
 [![Star History Chart](https://api.star-history.com/svg?repos=JustYuuto/deezer-discord-rpc&type=Date)](https://star-history.com/#JustYuuto/deezer-discord-rpc&Date)
 
+## Contributors
+
+[![Contributors](https://contrib.rocks/image?repo=JustYuuto/deezer-discord-rpc)](https://github.com/JustYuuto/deezer-discord-rpc/graphs/contributors)
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
