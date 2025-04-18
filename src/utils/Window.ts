@@ -75,16 +75,18 @@ export async function load(app: Electron.App) {
     }
   });
 
-  win.webContents.on('did-stop-loading', () => {
-    if (win.webContents.navigationHistory.canGoBack()) {
-      runJs('backButton.style.opacity = \'100%\';');
-    } else {
-      runJs('backButton.style.opacity = \'30%\';');
-    }
-    if (win.webContents.navigationHistory.canGoForward()) {
-      runJs('forwardButton.style.opacity = \'100%\';');
-    } else {
-      runJs('forwardButton.style.opacity = \'30%\';');
+  win.webContents.once('did-stop-loading', async () => {
+    if (await runJs('typeof backButton !== \'undefined\'')) {
+      if (win.webContents.navigationHistory.canGoBack()) {
+        runJs('backButton.style.opacity = \'100%\';');
+      } else {
+        runJs('backButton.style.opacity = \'30%\';');
+      }
+      if (win.webContents.navigationHistory.canGoForward()) {
+        runJs('forwardButton.style.opacity = \'100%\';');
+      } else {
+        runJs('forwardButton.style.opacity = \'30%\';');
+      }
     }
   });
 
@@ -100,7 +102,6 @@ export async function load(app: Electron.App) {
   });
 
   ipcMain.on('update_activity', (_, currentTimeChanged) => {
-    console.log('update_activity');
     updateActivity(app, currentTimeChanged);
   });
   ipcMain.on('nav_back', () => win.webContents.navigationHistory.goBack());
@@ -109,7 +110,7 @@ export async function load(app: Electron.App) {
   // Wait for the player to be fully initialized
   await new Promise<void>((r) => {
     const interval = setInterval(async () => {
-      const element = await runJs('document.querySelector(\'.marquee-content > [data-testid="item_title"]\')');
+      const element = await runJs('document.querySelector(\'[data-testid="item_title"]\')');
       if (element) {
         clearInterval(interval);
         r();
