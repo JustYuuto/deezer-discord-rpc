@@ -27,6 +27,10 @@ app.whenReady().then(async () => {
 
   RPC.connect();
 
+  app.on('quit', () => {
+    RPC.disconnect();
+  });
+
   app.on('activate', async () => {
     if (BrowserWindow.getAllWindows().length > 0) {
       const window = BrowserWindow.getAllWindows()[0];
