@@ -106,16 +106,27 @@ export async function load(app: Electron.App) {
   ipcMain.on('nav_back', () => win.webContents.navigationHistory.goBack());
   ipcMain.on('nav_forward', () => win.webContents.navigationHistory.goForward());
 
-  // Wait for the player to be fully initialized
-  await new Promise<void>((r) => {
-    const interval = setInterval(async () => {
-      const element = await runJs('document.querySelector(\'.marquee-content > [data-testid="item_title"]\')');
-      if (element) {
-        clearInterval(interval);
-        r();
-      }
-    }, 50);
-  });
+// Wait 3 seconds first, because Deezer is slow sometimes
+await new Promise((resolve) => setTimeout(resolve, 3000));
+
+await new Promise((resolve, reject) => {
+  let attempts = 0;
+  const maxAttempts = 200; // about 10 seconds at 50ms
+  const interval = setInterval(async () => {
+    attempts++;
+    const element = await runJs('document.querySelector(\'.marquee-content [data-testid="item_title"], [data-testid="item_title"]\')');
+    if (element) {
+      clearInterval(interval);
+      console.log(' Found title element, proceeding.');
+      resolve(null);
+    } else if (attempts > maxAttempts) {
+      clearInterval(interval);
+      console.error('❌ Failed to find title element in time.');
+      reject(new Error('Failed to find Deezer title element.'));
+    }
+  }, 50);
+});
+
 
   runJs(`document.querySelector('[data-testid="miniplayer_container"] .slider').addEventListener('click', () => ipcRenderer.send('update_activity', true))
          const trackObserver = new MutationObserver(() => ipcRenderer.send('update_activity', false));
