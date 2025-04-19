@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.5
+
+* Fixed the RPC (well, this time it should be fixed [I hope])
+
 ## 1.3.4
 
 * Fixed the updater downloading the wrong file
