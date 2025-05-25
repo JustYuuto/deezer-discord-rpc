@@ -20,7 +20,25 @@
 * Includes an ad-blocker, so it can block Deezer ads, Google Analytics, Sentry requests...
 * Supports songs, radios, personal songs (MP3s), podcasts
 
-## Download
+## Installation
+
+### Arch Linux (AUR)
+
+You can install the [`deezer-discord-rpc-bin`](https://aur.archlinux.org/packages/deezer-discord-rpc-bin) package from the AUR using your favorite AUR helper, such as `yay` or `paru`:
+
+```bash
+yay -S deezer-discord-rpc-bin
+```
+
+### Homebrew (macOS)
+
+You can install the app using Homebrew on macOS:
+
+```bash
+brew install --cask justyuuto/stuff/deezer-discord-rpc
+```
+
+### Pre-built Binaries
 
 | **Platform**                     | **Download**                                                                                                                                                                                                                                                     |
 |----------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -29,11 +47,8 @@
 | **Fedora**                       | [![](https://img.shields.io/github/downloads/JustYuuto/deezer-discord-rpc/latest/DeezerDiscordRPC-linux-x86_64.rpm?style=for-the-badge&logo=fedora)](https://github.com/JustYuuto/deezer-discord-rpc/releases/latest/download/DeezerDiscordRPC-linux-x86_64.rpm) |
 | `.snap`                          | [![](https://img.shields.io/github/downloads/JustYuuto/deezer-discord-rpc/latest/DeezerDiscordRPC-linux-amd64.snap?style=for-the-badge)](https://github.com/JustYuuto/deezer-discord-rpc/releases/latest/download/DeezerDiscordRPC-linux-amd64.snap)             |
 | `.AppImage`                      | [![](https://img.shields.io/github/downloads/JustYuuto/deezer-discord-rpc/latest/DeezerDiscordRPC-linux-x86_64.AppImage?style=for-the-badge)](https://github.com/JustYuuto/deezer-discord-rpc/releases/latest/download/DeezerDiscordRPC-linux-x86_64.AppImage)   |
-| **Arch Linux** (AUR)             | [![](https://img.shields.io/aur/version/deezer-discord-rpc-bin?style=for-the-badge&logo=Arch%20Linux)](https://aur.archlinux.org/packages/deezer-discord-rpc-bin)                                                                                                |
 | **macOS** (arm64, Apple Silicon) | [![](https://img.shields.io/github/downloads/JustYuuto/deezer-discord-rpc/latest/DeezerDiscordRPC-mac-arm64.dmg?style=for-the-badge&logo=apple)](https://github.com/JustYuuto/deezer-discord-rpc/releases/latest/download/DeezerDiscordRPC-mac-arm64.dmg)        |
 | **macOS** (x64, Intel)           | [![](https://img.shields.io/github/downloads/JustYuuto/deezer-discord-rpc/latest/DeezerDiscordRPC-mac-x64.dmg?style=for-the-badge&logo=apple)](https://github.com/JustYuuto/deezer-discord-rpc/releases/latest/download/DeezerDiscordRPC-mac-x64.dmg)            |
-
-I'll try to see for a Brew (macOS) package in the future.
 
 ## Screenshots
 
