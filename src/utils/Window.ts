@@ -34,9 +34,10 @@ export async function load(app: Electron.App) {
 
   await loadAdBlock(app, win);
 
-  await win.loadURL('https://www.deezer.com/login', {
+  await win.loadURL('https://account.deezer.com/login/', {
     // The default user agent does not work with Deezer (the player does not update by itself)
-    userAgent
+    userAgent,
+    httpReferrer: 'https://www.deezer.com/',
   });
 
   session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
